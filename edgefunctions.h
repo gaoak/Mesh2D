@@ -41,25 +41,6 @@ std::vector<double> radiusEdge(double s) {
     return reses[n];
 }
 
-int nLayersInFoil = findNlayers(hFirstLayerInFoil, progressInFoil, rBoundaryLayerInFoil, maxLayerhInFoil);
-
-std::vector<double> radiusEdgeInFoil(double s) {
-    int n = round(0.5*(1.+s)*nLayersInFoil);
-    static vector<vector<double> > reses;
-    if(reses.size()<nLayersInFoil+1) {
-        vector<double> p0(2, 0.); reses.push_back(p0);
-        double delta = hFirstLayerInFoil;
-        for(int n=1; n<=nLayersInFoil; ++n) {
-            vector<double> p1(2, 0.);
-            if(delta>=maxLayerhInFoil) delta = maxLayerhInFoil;
-            p1[0] = reses[reses.size()-1][0] + delta;
-            delta *= progressInFoil;
-            reses.push_back(p1);
-        }
-    }
-    return reses[n];
-}
-
 static void transform(std::vector<double> &p, double AoA) {
     double x = p[0], y = p[1];
     p[0] = x*cos(AoA) + y*sin(AoA);

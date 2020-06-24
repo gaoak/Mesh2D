@@ -5,10 +5,9 @@ do
     c++ -std=c++11 *.o -Og -o mesh-g -g
     ./mesh-g wake
     ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 2  -smooth 2 > logmesh.dat
-    echo "Mesh.RecombinationAlgorithm = 0;" >> airfoil.geo
-    ${GMSHBIN}gmsh airfoil.geo  -2 -algo meshadapt   > logmesh.dat
-    ./mesh-g wake merge FarField.msh airfoil.msh
-    rm *plt
-    $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
-    $NEKBIN/FieldConvert inFoil.xml inFoil.plt
+    ./mesh-g wake merge FarField.msh
+    rm test.dat test.vtu
+    $NEKBIN/FieldConvert test.xml test.vtu
+    cp test.xml airfoil_${aoa}.xml
+    cp test.vtu airfoil_${aoa}.vtu
 done
