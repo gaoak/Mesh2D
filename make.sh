@@ -6,8 +6,9 @@ do
     ./mesh-g wake
     ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 2  -smooth 2 > logmesh.dat
     ./mesh-g wake merge FarField.msh
-    rm test.dat test.vtu
+    rm test.plt test.vtu
     $NEKBIN/FieldConvert test.xml test.vtu
+    $NEKBIN/FieldConvert test.xml test.plt
     cp test.xml airfoil_${aoa}.xml
     cp test.vtu airfoil_${aoa}.vtu
 done
