@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
     edges0.push_back((void*)edge0);
     edges0.push_back((void*)edge0);
     Rects.push_back(RectRegion(edges0, "R_near_wall", false));
-    Rects[Rects.size()-1].MeshGen(CinnerEdge.m_N, CradiusEdge.m_N, eBoundaryLayer0, false);
+    Rects[Rects.size()-1].MeshGen(CinnerEdge.m_N, CradiusEdge.m_N, eBoundaryLayer1, false);
     Rects[Rects.size()-1].Tec360Pts("test0.dat");
     
     //give the normal direction, and points 12, 15
@@ -232,11 +232,11 @@ int main(int argc, char* argv[])
         //if(withwake) comp3.push_back(combinedReg.getCellsNumber());
         combinedReg.AddRegion(gmshReg);
         //wall
-        combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, 12, AoA);
-        combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, 12, AoA);
-        combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, 12, AoA);
-        combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, 12, AoA);
-        combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, 12, AoA);
+        combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, 3, AoA);
+        combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, 3, AoA);
+        combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, 2, AoA);
+        combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, 3, AoA);
+        combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, 3, AoA);
         combinedReg.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
         //inlet
         combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
@@ -270,11 +270,11 @@ int main(int argc, char* argv[])
         //if(withwake) comp3.push_back(combinedReg.getCellsNumber());
         inFoilRegion.AddRegion(gmshInFoil);
         //wall
-        inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 12, AoA);
-        inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, 12, AoA);
-        inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, 12, AoA);
-        inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, 12, AoA);
-        inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, 12, AoA);
+        inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 2, AoA);
+        inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, 2, AoA);
+        inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, 2, AoA);
+        inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, 2, AoA);
+        inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, 2, AoA);
         inFoilRegion.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
         //output
         inFoilRegion.outXml("inFoil.xml");
