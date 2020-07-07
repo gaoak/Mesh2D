@@ -14,19 +14,13 @@ using namespace std;
 int main(int argc, char* argv[])
 {
     bool merge = false;
-    bool withwake = false;
-    string mshfilename;
     string mshinfoilfilename1;
     string mshinfoilfilename2;
     for(int i=1; i<argc; ++i) {
         if(strcmp(argv[i], "merge")==0) {
-            mshfilename = string(argv[i+1]);
-            mshinfoilfilename1 = string(argv[i+2]);
-            mshinfoilfilename2 = string(argv[i+3]);
+            mshinfoilfilename1 = string(argv[i+1]);
+            mshinfoilfilename2 = string(argv[i+2]);
             merge = true;
-        }
-        if(strcmp(argv[i], "wake")==0) {
-            withwake = true;
         }
     }
     ////////////////////////////////////////
@@ -120,8 +114,9 @@ int main(int argc, char* argv[])
     farwakeRegion.transformation(farWakeAoA);
     //////////////combine region//////////
     MeshRegions combinedReg("R_Comb_", 1.E-6);
+    MeshRegions combinedRegwake("R_Comb_", 1.E-6);
     combinedReg.AddRegion(nearFieldReg);
-    if(withwake) combinedReg.AddRegion(farwakeRegion);
+    combinedRegwake.AddRegion(farwakeRegion);
 
     ///////////// generate inner airfoil boundary layer
     MeshRegions nearWallRegion("R_NearField_", 1.E-6);
@@ -197,26 +192,10 @@ int main(int argc, char* argv[])
     transform(breakpts[1], AoA);
 
     if(!merge) {
-        vector<int> comp0;
-        comp0.push_back(0); comp0.push_back(combinedReg.getCellsNumber());
-        combinedReg.outXml("manMade.xml");
-        combinedReg.outCOMPO("manMade.xml", comp0);
         //generate gmsh geo file
-        CoutterEdge.addEdge(Cedge9, (void*)edge9);
-        CoutterEdge.addEdge(Cedge10, (void*)edge10);
-        CoutterEdge.addEdge(Cedge11, (void*)edge11);
-        CoutterEdge.addEdge(Cedge12, (void*)edge12);
-        vector<vector<double>> box;
-        for(int i=0; i<CoutterEdge.m_N; ++i) {
-            double tmps = -1. + i*2./CoutterEdge.m_N;
-            vector<double> p0 = outterEdge(tmps);
-            box.push_back(p0);
-        }
         vector<double> center;
         center.push_back(0.); center.push_back(0.);
-        combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
         vector<vector<double>> nobox;
-        //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
         nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
         cout << "output CAD file" << endl;
         cout << "=======================================" << endl;
@@ -225,27 +204,8 @@ int main(int argc, char* argv[])
     //////////////gmsh region, far field region//////////
     // step 2 import mesh
     if(merge) {
-        MeshRegions gmshReg("R_gmsh_", 1.E-8);
-        gmshReg.loadFromMsh(mshfilename);
-        cout << "load " << mshfilename << endl;
-        vector<int> comp1;
-        comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
-        gmshReg.outXml("FarField.xml");
-        gmshReg.outCOMPO("FarField.xml", comp1);
-        if(!combinedReg.consistancyCheck(gmshReg)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        if(!gmshReg.consistancyCheck(combinedReg)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        ///////
         vector<int> comp3;
         comp3.push_back(0);
-        //comp3.push_back(nearFieldReg.getCellsNumber());
-        //if(withwake) comp3.push_back(combinedReg.getCellsNumber());
-        combinedReg.AddRegion(gmshReg);
         //wall
         combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, 12, AoA);
         combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, 12, AoA);
@@ -253,16 +213,15 @@ int main(int argc, char* argv[])
         combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, 12, AoA);
         combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, 12, AoA);
         combinedReg.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
-        //inlet
-        combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
-        //outlet
-        combinedReg.defineBoundary((void*)edge9 ,   Cedge9.m_N, 2);
-        //side
-        combinedReg.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
-        combinedReg.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
         //output
         combinedReg.outXml("outerRegion.xml");
         combinedReg.outCOMPO("outerRegion.xml", comp3);
+        cout << "------------------------------------" << endl;
+        cout << "------------------------------------" << endl;
+        
+        //wake
+        combinedRegwake.outXml("wakeRegion.xml");
+        combinedRegwake.outCOMPO("wakeRegion.xml", comp3);
         cout << "------------------------------------" << endl;
         cout << "------------------------------------" << endl;
         
