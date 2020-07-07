@@ -16,17 +16,18 @@ int main(int argc, char* argv[])
     bool merge = false;
     bool withwake = false;
     string mshfilename;
-    string mshinfoilfilename;
+    string mshinfoilfilename1;
+    string mshinfoilfilename2;
     for(int i=1; i<argc; ++i) {
         if(strcmp(argv[i], "merge")==0) {
             mshfilename = string(argv[i+1]);
-            mshinfoilfilename = string(argv[i+2]);
+            mshinfoilfilename1 = string(argv[i+2]);
+            mshinfoilfilename2 = string(argv[i+3]);
             merge = true;
         }
         if(strcmp(argv[i], "wake")==0) {
             withwake = true;
         }
-        
     }
     ////////////////////////////////////////
     cout << "start meshing --------" << endl;
@@ -148,6 +149,11 @@ int main(int argc, char* argv[])
         if(length<hFirstLayerInFoil) continue;
         layersInFoil[i] = findNlayers(hFirstLayerInFoil, progressInFoil, length, maxLayerhInFoil) -1;
     }
+    vector<vector<double> > breakpts;
+    for(int i=0; i<2; ++i) {
+        vector<double> p0(2, 100.);
+        breakpts.push_back(p0);
+    }
     for(int i=0; i<nWallPts-1; ++i) {
         int nl = min(layersInFoil[i], layersInFoil[i+1]);
         if(nl<=0) continue;
@@ -169,6 +175,12 @@ int main(int argc, char* argv[])
         bottom0.push_back(side1[0]);
         bottom1.push_back(side0[nl]);
         bottom1.push_back(side1[nl]);
+        int upperflap = 0;
+        if(side0[nl][1]<0.) {
+            upperflap = 1;
+        }
+        if(side0[nl][0]<breakpts[upperflap][0]) breakpts[upperflap] = side0[nl];
+        if(side1[nl][0]<breakpts[upperflap][0]) breakpts[upperflap] = side1[nl];
         std::vector<std::vector<std::vector<double> > > edges;
         edges.push_back(bottom0);
         edges.push_back(side0);
@@ -181,6 +193,8 @@ int main(int argc, char* argv[])
     }
     nearWallRegion.transformation(AoA);
     inFoilRegion.transformation(AoA);
+    transform(breakpts[0], AoA);
+    transform(breakpts[1], AoA);
 
     if(!merge) {
         vector<int> comp0;
@@ -202,7 +216,8 @@ int main(int argc, char* argv[])
         center.push_back(0.); center.push_back(0.);
         combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
         vector<vector<double>> nobox;
-        nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
+        //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
+        nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
         cout << "output CAD file" << endl;
         cout << "=======================================" << endl;
     }
@@ -252,23 +267,25 @@ int main(int argc, char* argv[])
         cout << "------------------------------------" << endl;
         
         //in airfoil mesh
-        MeshRegions gmshInFoil("R_gmsh_", 1.E-8);
-        gmshInFoil.loadFromMsh(mshinfoilfilename);
-        cout << "load " << mshinfoilfilename << endl;
-        if(!nearWallRegion.consistancyCheck(gmshInFoil)) {
+        MeshRegions gmshInFoil1("R_gmsh1_", 1.E-8);
+        MeshRegions gmshInFoil2("R_gmsh2_", 1.E-8);
+        gmshInFoil1.loadFromMsh(mshinfoilfilename1);
+        gmshInFoil2.loadFromMsh(mshinfoilfilename2);
+        cout << "load " << mshinfoilfilename1 << endl;
+        cout << "load " << mshinfoilfilename2 << endl;
+        if(!nearWallRegion.consistancyCheck(gmshInFoil1)) {
             cout << "Error: node mismatch, exit" << endl;
             return -1;
         }
-        if(!gmshInFoil.consistancyCheck(nearWallRegion)) {
+        if(!nearWallRegion.consistancyCheck(gmshInFoil2)) {
             cout << "Error: node mismatch, exit" << endl;
             return -1;
         }
+        inFoilRegion.AddRegion(gmshInFoil1);
+        inFoilRegion.AddRegion(gmshInFoil2);
         ///////
         vector<int> comp4;
         comp4.push_back(0);
-        //comp3.push_back(nearFieldReg.getCellsNumber());
-        //if(withwake) comp3.push_back(combinedReg.getCellsNumber());
-        inFoilRegion.AddRegion(gmshInFoil);
         //wall
         inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 12, AoA);
         inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, 12, AoA);
