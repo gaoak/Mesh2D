@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     edges0.push_back((void*)edge0);
     edges0.push_back((void*)edge0);
     Rects.push_back(RectRegion(edges0, "R_near_wall", false));
-    Rects[Rects.size()-1].MeshGen(CinnerEdge.m_N, CradiusEdge.m_N, eBoundaryLayer0, false);
+    Rects[Rects.size()-1].MeshGen(CinnerEdge.m_N, CradiusEdge.m_N, eBoundaryLayer1, false);
     Rects[Rects.size()-1].Tec360Pts("test0.dat");
     
     //give the normal direction, and points 12, 15
