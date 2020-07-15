@@ -1,4 +1,2 @@
-NekMesh -m extrude:layers=32 outerRegion.xml 3Dout.xml
-NekMesh -m extrude:layers=7 inFoil.xml 3Din.xml
-NekMesh 3Din.xml 3DinUcomp.xml:xml:uncompress
-NekMesh 3Dout.xml 3DoutUcomp.xml:xml:uncompress
+NekMesh -m extrude:layers=90 outerRegion.xml 3DoutUcomp.xml:xml:uncompress
+NekMesh -m extrude:layers=20 inFoil.xml 3DinUcomp.xml:xml:uncompress
