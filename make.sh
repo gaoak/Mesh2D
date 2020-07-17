@@ -5,7 +5,7 @@ do
     c++ -std=c++11 *.o -Og -o mesh-g -g
     ./mesh-g wake
     echo "gmsh FarField.geo"
-    ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 40  -smooth 2 > logmesh.dat
+    ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 80  -smooth 2 > logmesh.dat
     echo "Mesh.RecombinationAlgorithm = 0;" >> back_airfoil.geo
     echo "gmsh back_airfoil.geo"
     ${GMSHBIN}gmsh back_airfoil.geo  -2 -algo meshadapt   >> logmesh.dat

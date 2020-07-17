@@ -27,7 +27,7 @@ double infoilRatio = 0.03;
 
 double hFirstLayer = 0.015;
 double progress = 1.6;
-double rBoundaryLayer = 0.7;
+double rBoundaryLayer = 1.;
 double maxLayerh = 0.12;
 
 double chordLen= 1.;
@@ -42,26 +42,26 @@ int nUp2 = 6;
 int nFront = 7;
 double hTrailingEdge = hFirstLayer*2.;
 
-double wakeLen = 2.;
+double wakeLen = 1.;
 double wakeyUp  = 0.2*Thickness;
 double wakeDown =-0.2*Thickness;
-int nWake = 20;
-double nearWakeDiffuseAngle = 10./180.*M_PI;
+int nWake = 10;
+double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -40.;
 double xBoxRight = 40.;
 double yBoxUp = 40.;
 double yBoxDown = -40.;
-int nBoxLeft = 4;
-int nBoxRight = 4;
-int nBoxUp = 4;
-int nBoxDown = 4;
+int nBoxLeft = 2;
+int nBoxRight = 2;
+int nBoxUp = 2;
+int nBoxDown = 2;
 
-int nFarWakex = 10;
+int nFarWakex = 15;
 int nFarWakey = 18;
 double farWakeAoA = 10./180.*M_PI;
 double wakeDiffuseAngle = 20./180.*M_PI;
-double farWakeRight = 5.;
-double farWakeUp = 1.5;
-double farWakeDown = -2.;
+double farWakeRight = 6.;
+double farWakeUp = 1.0;
+double farWakeDown = -2.0;
 #endif
