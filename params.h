@@ -39,7 +39,7 @@ int nLow1 = 14;
 int nLow2 = 6;
 int nUp1 = 14;
 int nUp2 = 6;
-int nFront = 6;
+int nFront = 7;
 double hTrailingEdge = hFirstLayer*2.;
 
 double wakeLen = 2.;
