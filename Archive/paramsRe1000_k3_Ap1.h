@@ -23,6 +23,7 @@ double hFirstLayerInFoil = 0.003;
 double progressInFoil = 1.1;
 double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.02;
+double infoilRatio = 0.03;
 
 double hFirstLayer = 0.002;
 double progress = 1.2;

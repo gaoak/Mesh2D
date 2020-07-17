@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
     
     for(int i=1; i<nWallPts-1; ++i) {
         if(nearWallRegion.m_pts[boundary[wallID][i]][0] < xInFoil) continue;
-        double length = fabs(nearWallRegion.m_pts[boundary[wallID][i]][1]) - 0.1*fabs(nearWallRegion.m_pts[boundary[wallID][i+1]][0] - nearWallRegion.m_pts[boundary[wallID][i]][0]);
+        double length = fabs(nearWallRegion.m_pts[boundary[wallID][i]][1]) - infoilRatio*fabs(nearWallRegion.m_pts[boundary[wallID][i+1]][0] - nearWallRegion.m_pts[boundary[wallID][i]][0]);
         if(length<hFirstLayerInFoil) continue;
         layersInFoil[i] = findNlayers(hFirstLayerInFoil, progressInFoil, length, maxLayerhInFoil) -1;
     }
