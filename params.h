@@ -18,7 +18,7 @@ double chamber = FOILM*0.01;
 double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
-double xInFoil = 0.01;
+double xInFoil = 0.02;
 double hFirstLayerInFoil = 0.01;
 double progressInFoil = 1.1;
 double rBoundaryLayerInFoil = 1.;
