@@ -1,3 +1,4 @@
+//3D mesh for Re10k, k3, A=0.1, coarese mesh, 2000 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
@@ -27,7 +28,7 @@ double infoilRatio = 0.05;
 
 double hFirstLayer = 0.003;
 double progress = 1.6;
-double rBoundaryLayer = 0.3;
+double rBoundaryLayer = 0.35;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;
