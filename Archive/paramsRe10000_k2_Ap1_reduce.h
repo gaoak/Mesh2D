@@ -1,3 +1,4 @@
+//3D mesh for Re10k, k3, A=0.1, coarese mesh, 2000 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
