@@ -13,7 +13,7 @@ do
     echo "gmsh front_airfoil.geo"
     ${GMSHBIN}gmsh front_airfoil.geo  -2 -algo front2d -clscale 6  >> logmesh.dat
     ./mesh-g wake merge FarField.msh front_airfoil.msh back_airfoil.msh
-    rm *plt
-    $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
-    $NEKBIN/FieldConvert inFoil.xml inFoil.plt
+    rm *plt *vtu
+    $NEKBIN/FieldConvert outerRegion.xml outerRegion.vtu
+    $NEKBIN/FieldConvert inFoil.xml inFoil.vtu
 done

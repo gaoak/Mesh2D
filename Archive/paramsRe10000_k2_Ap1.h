@@ -1,3 +1,4 @@
+//2D mesh for Re10k, k2, k3, A=0.1, fine mesh9000 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20

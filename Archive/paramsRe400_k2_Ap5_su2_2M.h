@@ -1,3 +1,4 @@
+//for su2 use at Re400, k2, A=0.5, 2M mesh, very fine
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20

@@ -1,3 +1,4 @@
+// for 2D simulation of Re400, k2, A=0.5, mesh is fine, 4000 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20

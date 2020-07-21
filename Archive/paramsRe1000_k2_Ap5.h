@@ -1,3 +1,4 @@
+//for 2D simulation of Re1000, k2, A=0.5 flow, mesh is fine with 7700 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
