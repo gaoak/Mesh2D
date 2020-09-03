@@ -1,4 +1,5 @@
-//3D mesh for Re10k, k3, A=0.1, coarese mesh, 2000 elements
+//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
+//flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
@@ -19,41 +20,41 @@ double chamber = FOILM*0.01;
 double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
-double xInFoil = 0.01;
-double hFirstLayerInFoil = 0.003;
-double progressInFoil = 1.6;
+double xInFoil = 0.02;
+double hFirstLayerInFoil = 0.018;
+double progressInFoil = 1.4;
 double rBoundaryLayerInFoil = 1.;
-double maxLayerhInFoil = 0.03;
-double infoilRatio = 0.03;
+double maxLayerhInFoil = 0.04;
+double infoilRatio = 0.02;
 
-double hFirstLayer = 0.003;
-double progress = 1.8;
+double hFirstLayer = 0.02;
+double progress = 1.6;
 double rBoundaryLayer = 0.2;
-double rBoundaryLayer1 = 0.5;
-double rBoundaryLayer2 = 0.35;
-double rBoundaryLayer3 = 0.35;
-double rBoundaryLayer4 = 0.35;
-double rBoundaryLayer5 = 0.35;
-double rBoundaryLayer6 = 0.35;
-double rBoundaryLayer7 = 0.35;
-double maxLayerh = 0.08;
+double rBoundaryLayer1 = 0.2;
+double rBoundaryLayer2 = 0.2;
+double rBoundaryLayer3 = 0.2;
+double rBoundaryLayer4 = 0.2;
+double rBoundaryLayer5 = 0.2;
+double rBoundaryLayer6 = 0.8;
+double rBoundaryLayer7 = 0.8;
+double maxLayerh = 0.05;
 
 double chordLen= 1.;
-double xmidLow1 = 0.35;
-double xmidUp1 = 0.35;
+double xmidLow1 = 0.2;
+double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
 double xmidUp2 = 0.006;
-int nLow1 = 14;
-int nLow2 = 7;
-int nUp1 = 17;
-int nUp2 = 10;
-int nFront = 7;
-double hTrailingEdge = hFirstLayer*3.;
+int nLow1 = 12;
+int nLow2 = 6;
+int nUp1 = 10;
+int nUp2 = 15;
+int nFront = 6;
+double hTrailingEdge = hFirstLayer*2.;
 
 double wakeLen = 0.1;
-double wakeyUp  = 0.03*Thickness;
-double wakeDown =-0.03*Thickness;
-int nWake = 4;
+double wakeyUp  = 0.06*Thickness;
+double wakeDown =-0.06*Thickness;
+int nWake = 3;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -40.;
@@ -65,11 +66,11 @@ int nBoxRight = 2;
 int nBoxUp = 2;
 int nBoxDown = 2;
 
-int nFarWakex = 14;
-int nFarWakey = 10;
-double farWakeAoA = 0./180.*M_PI;
-double wakeDiffuseAngle = 15./180.*M_PI;
-double farWakeRight = 3.;
-double farWakeUp = 0.15;
-double farWakeDown = -0.55;
+int nFarWakex = 15;
+int nFarWakey = 18;
+double farWakeAoA = 10./180.*M_PI;
+double wakeDiffuseAngle = 20./180.*M_PI;
+double farWakeRight = 6.;
+double farWakeUp = 0.6;
+double farWakeDown = -1.5;
 #endif

@@ -38,6 +38,7 @@ std::vector<double> radiusEdge(double s) {
     int n = round(0.5*(1.+s)*nLayers);
     static vector<vector<double> > reses;
     if(reses.size()<nLayers+1) {
+        reses.clear();
         vector<double> p0(2, 0.); reses.push_back(p0);
         double delta = hFirstLayer;
         for(int n=1; n<=nLayers; ++n) {
