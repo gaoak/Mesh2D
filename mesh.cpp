@@ -32,39 +32,53 @@ int main(int argc, char* argv[])
     ////////////////////////////////////////
     cout << "start meshing --------" << endl;
     InitPts();
-    CinnerEdge.addEdge(Cedge2, (void*)edge2);
-    CinnerEdge.addEdge(Cedge3, (void*)edge3);
-    CinnerEdge.addEdge(Cedge4, (void*)edge4);
-    CinnerEdge.addEdge(Cedge5, (void*)edge5);
-    CinnerEdge.addEdge(Cedge6, (void*)edge6);
     /////////////////////////////////////////
     /////////near body region////////////////
     std::vector<RectRegion> Rects;
     //boundary layer region 0
     std::vector<void*> edges0;
-    edges0.push_back((void*)innerEdge);
+    //edge 2
+    edges0.push_back((void*)edge2);
     edges0.push_back((void*)radiusEdge);
     edges0.push_back((void*)edge0);
     edges0.push_back((void*)edge0);
     Rects.push_back(RectRegion(edges0, "R_near_wall", false));
-    Rects[Rects.size()-1].MeshGen(CinnerEdge.m_N, CradiusEdge.m_N, eBoundaryLayer1, false);
-    Rects[Rects.size()-1].Tec360Pts("test0.dat");
-    
+    Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].Tec360Pts("test2.dat");
+    // edge 3
+    edges0[0] = (void*)edge3;
+    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects[Rects.size()-1].MeshGen(Cedge3.m_N, nLayers3, eBoundaryLayer1, false);
+    // edge 4
+    edges0[0] = (void*)edge4;
+    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects[Rects.size()-1].MeshGen(Cedge4.m_N, nLayers4, eBoundaryLayer1, false);
+    // edge 5
+    edges0[0] = (void*)edge5;
+    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects[Rects.size()-1].MeshGen(Cedge5.m_N, nLayers5, eBoundaryLayer1, false);
+    // edge 6
+    edges0[0] = (void*)edge6;
+    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false);
+
     //give the normal direction, and points 12, 15
     vector<double> p1  = Rects[Rects.size()-1].getVertex(1);
     vector<double> n12 = Rects[Rects.size()-1].getVertex(2);
-    pts[15][0] = n12[0];
-    pts[15][1] = n12[1];
     n12[0] = n12[0] - p1[0]; n12[1] = n12[1] - p1[1];
     norm18[0] = n12[0]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     norm18[1] = n12[1]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
-    p1  = Rects[Rects.size()-1].getVertex(0);
-    n12 = Rects[Rects.size()-1].getVertex(3);
-    pts[12][0] = n12[0];
-    pts[12][1] = n12[1];
+    setRadiusLayers(nLayers7);
+    pts[15][0] = p1[0] + norm18[0]*radiusEdge(1.)[0];
+    pts[15][1] = p1[1] + norm18[1]*radiusEdge(1.)[0];
+    p1  = Rects[0].getVertex(0);
+    n12 = Rects[0].getVertex(3);
     n12[0] = n12[0] - p1[0]; n12[1] = n12[1] - p1[1];
     norm13[0] = n12[0]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     norm13[1] = n12[1]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
+    setRadiusLayers(nLayers1);
+    pts[12][0] = p1[0] + norm13[0]*radiusEdge(1.)[0];
+    pts[12][1] = p1[1] + norm13[1]*radiusEdge(1.)[0];
     //region 1
     std::vector<void*> edges1;
     edges1.push_back((void*)edge1);
@@ -81,6 +95,7 @@ int main(int argc, char* argv[])
     edges2.push_back((void*)edge13);
     Rects.push_back(RectRegion(edges2, "R_wake_Down"));
     Rects[Rects.size()-1].MeshGen(Cedge14.m_N, Cedge15.m_N);
+    Rects[Rects.size()-1].Tec360Pts("test1.dat");
     //region 3
     std::vector<void*> edges3;
     edges3.push_back((void*)edge7);
