@@ -27,7 +27,7 @@ double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.04;
 double infoilRatio = 0.02;
 
-double hFirstLayer = 0.018;
+double hFirstLayer = 0.016;
 double progress = 1.6;
 double rBoundaryLayer = 0.2;
 double rBoundaryLayer1 = 0.2;
@@ -37,24 +37,24 @@ double rBoundaryLayer4 = 0.2;
 double rBoundaryLayer5 = 0.2;
 double rBoundaryLayer6 = 0.8;
 double rBoundaryLayer7 = 0.8;
-double maxLayerh = 0.05;
+double maxLayerh = 0.09;
 
 double chordLen= 1.;
-double xmidLow1 = 0.2;
+double xmidLow1 = 0.4;
 double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
 double xmidUp2 = 0.006;
-int nLow1 = 12;
-int nLow2 = 6;
-int nUp1 = 10;
-int nUp2 = 15;
-int nFront = 6;
+int nLow1 = 9;
+int nLow2 = 7;
+int nUp1 = 8;
+int nUp2 = 10;
+int nFront = 5;
 double hTrailingEdge = hFirstLayer*2.;
 
 double wakeLen = 0.1;
-double wakeyUp  = 0.06*Thickness;
-double wakeDown =-0.06*Thickness;
-int nWake = 3;
+double wakeyUp  = 0.08*Thickness;
+double wakeDown =-0.08*Thickness;
+int nWake = 2;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -40.;
