@@ -9,9 +9,9 @@ do
     ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 80   > logmesh.dat
     echo "Mesh.RecombinationAlgorithm = 0;" >> back_airfoil.geo
     echo "gmsh back_airfoil.geo"
-    ${GMSHBIN}gmsh back_airfoil.geo  -2 -algo meshadapt   >> logmesh.dat
+    ${GMSHBIN}gmsh back_airfoil.geo  -2 -algo meshadapt -clscale 10  >> logmesh.dat
     echo "gmsh front_airfoil.geo"
-    ${GMSHBIN}gmsh front_airfoil.geo  -2 -algo front2d -clscale 6  >> logmesh.dat
+    ${GMSHBIN}gmsh front_airfoil.geo  -2 -algo front2d -clscale 10  >> logmesh.dat
     ./mesh-g wake merge FarField.msh front_airfoil.msh back_airfoil.msh
     rm *plt *vtu
     $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
