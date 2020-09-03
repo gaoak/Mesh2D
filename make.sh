@@ -6,7 +6,7 @@ do
     ./mesh-g wake
     echo "gmsh FarField.geo"
     echo "Mesh.RecombinationAlgorithm = 1;" >> FarField.geo
-    ${GMSHBIN}gmsh FarField.geo  -2 -algo front2d  -clscale 80   > logmesh.dat
+    ${GMSHBIN}gmsh FarField.geo  -2 -algo del2d  -clscale 80   > logmesh.dat
     echo "Mesh.RecombinationAlgorithm = 0;" >> back_airfoil.geo
     echo "gmsh back_airfoil.geo"
     ${GMSHBIN}gmsh back_airfoil.geo  -2 -algo meshadapt   >> logmesh.dat
