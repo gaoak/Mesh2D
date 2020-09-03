@@ -29,13 +29,6 @@ double infoilRatio = 0.03;
 double hFirstLayer = 0.003;
 double progress = 1.8;
 double rBoundaryLayer = 0.2;
-double rBoundaryLayer1 = 0.5;
-double rBoundaryLayer2 = 0.35;
-double rBoundaryLayer3 = 0.35;
-double rBoundaryLayer4 = 0.35;
-double rBoundaryLayer5 = 0.35;
-double rBoundaryLayer6 = 0.35;
-double rBoundaryLayer7 = 0.35;
 double maxLayerh = 0.08;
 
 double chordLen= 1.;
