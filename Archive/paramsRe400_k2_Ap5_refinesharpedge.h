@@ -21,13 +21,13 @@ double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.02;
-double hFirstLayerInFoil = 0.018;
-double progressInFoil = 1.4;
+double hFirstLayerInFoil = 0.006;
+double progressInFoil = 1.6;
 double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.04;
-double infoilRatio = 0.02;
+double infoilRatio = 0.05;
 
-double hFirstLayer = 0.016;
+double hFirstLayer = 0.006;
 double progress = 1.6;
 double rBoundaryLayer = 0.2;
 double rBoundaryLayer1 = 0.2;
@@ -44,17 +44,17 @@ double xmidLow1 = 0.5;
 double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
 double xmidUp2 = 0.006;
-int nLow1 = 7;
-int nLow2 = 9;
-int nUp1 = 8;
-int nUp2 = 10;
+int nLow1 = 12;
+int nLow2 = 12;
+int nUp1 = 12;
+int nUp2 = 12;
 int nFront = 5;
-double hTrailingEdge = hFirstLayer*2.;
+double hTrailingEdge = hFirstLayer*1.;
 
 double wakeLen = 0.1;
 double wakeyUp  = 0.08*Thickness;
 double wakeDown =-0.08*Thickness;
-int nWake = 2;
+int nWake = 3;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -13.;
@@ -73,6 +73,4 @@ double wakeDiffuseAngle = 18./180.*M_PI;
 double farWakeRight = 6.;
 double farWakeUp = 0.8;
 double farWakeDown = -1.;
-
-double curvedpts = 4;
 #endif
