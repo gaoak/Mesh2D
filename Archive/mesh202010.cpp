@@ -10,11 +10,6 @@
 using namespace std;
 
 #include"edgefunctions.h"
-int meshingNearBody(MeshRegions &combinedReg);
-int meshingWake(MeshRegions &combinedReg);
-int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts);
-int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion);
-int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts);
 
 int main(int argc, char* argv[])
 {
@@ -34,56 +29,10 @@ int main(int argc, char* argv[])
             withwake = true;
         }
     }
-    /// initialize
-    MeshRegions combinedReg("R_Comb_", 1.E-6);
-    MeshRegions nearFieldReg("R_NearField_", 1.E-6);
-    MeshRegions nearWallRegion("R_NearField_", 1.E-6);
-    MeshRegions inFoilRegion("R_inFoil_", 1.E-6);
-    InitPts();
+    ////////////////////////////////////////
     cout << "start meshing --------" << endl;
-    meshingNearBody(combinedReg);
-    nearWallRegion.AddRegion(combinedReg);
-    combinedReg.transformation(AoA);
-    if(withwake) meshingWake(combinedReg);
-    vector<vector<double> > breakpts;
-    meshingInFoil(nearWallRegion, inFoilRegion, breakpts);
-    nearWallRegion.transformation(AoA);
-    inFoilRegion.transformation(AoA);
-
-    if(!merge) {
-        outputGeo(combinedReg, nearWallRegion, breakpts);
-        cout << "output CAD file" << endl;
-        cout << "=======================================" << endl;
-    }
-    /////////////////////////////////////////////////////
-    //////////////gmsh region, far field region//////////
-    // step 2 import mesh
-    if(merge) {
-        MeshRegions gmshReg("R_gmsh_", 1.E-8);
-        gmshReg.loadFromMsh(mshfilename, 145./180.*3.14159);
-        cout << "load " << mshfilename << endl;
-        vector<int> comp1;
-        comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
-        gmshReg.outXml("FarField.xml");
-        gmshReg.outCOMPO("FarField.xml", comp1);
-        if(!combinedReg.consistancyCheck(gmshReg)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        if(!gmshReg.consistancyCheck(combinedReg)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        combinedReg.AddRegion(gmshReg);
-        outputXML(combinedReg, inFoilRegion);
-        cout << "------------------------------------" << endl;
-        cout << "------------------------------------" << endl;
-    }
-    return 0;
-}
-
-int meshingNearBody(MeshRegions &combinedReg)
-{
+    InitPts();
+    /////////////////////////////////////////
     /////////near body region////////////////
     std::vector<RectRegion> Rects;
     //boundary layer region 0
@@ -166,14 +115,13 @@ int meshingNearBody(MeshRegions &combinedReg)
     Rects[Rects.size()-1].MeshGen(Cedge7.m_N, Cedge16.m_N);
     
     ///////////// combine the near field mesh
+    MeshRegions nearFieldReg("R_NearField_", 1.E-6);
     for(unsigned int i=0; i<Rects.size(); ++i) {
-    	combinedReg.AddRegion(Rects[i]);
+    	nearFieldReg.AddRegion(Rects[i]);
     }
-    return 0;
-}
-
-int meshingWake(MeshRegions &combinedReg)
-{
+    nearFieldReg.transformation(AoA);
+    /////////////////////////////////////////////////////
+    //////////////far wake capture region//////////
     vector<double> pwakeLU;
     pwakeLU.push_back(pts[14][0]); pwakeLU.push_back(pts[14][1]);
     transform(pwakeLU, AoA);
@@ -195,12 +143,16 @@ int meshingWake(MeshRegions &combinedReg)
     farwakeRegion.MeshGen(Cedge19.m_N, Cedge20.m_N);
     farwakeRegion.transformation(farWakeAoA);
     //////////////combine region//////////
-    combinedReg.AddRegion(farwakeRegion);
-    return 0;
-}
+    MeshRegions combinedReg("R_Comb_", 1.E-6);
+    combinedReg.AddRegion(nearFieldReg);
+    if(withwake) combinedReg.AddRegion(farwakeRegion);
 
-int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts)
-{
+    ///////////// generate inner airfoil boundary layer
+    MeshRegions nearWallRegion("R_NearField_", 1.E-6);
+    MeshRegions inFoilRegion("R_inFoil_", 1.E-6);
+    for(unsigned int i=0; i<Rects.size(); ++i) {
+        nearWallRegion.AddRegion(Rects[i]);
+    }
     std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundary();
     int wallID = -1;
     for(int i=0; i<boundary.size(); ++i) {
@@ -221,6 +173,7 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
         if(length<hFirstLayerInFoil) continue;
         layersInFoil[i] = findNlayers(hFirstLayerInFoil, progressInFoil, length, maxLayerhInFoil) -1;
     }
+    vector<vector<double> > breakpts;
     for(int i=0; i<2; ++i) {
         vector<double> p0(2, 100.);
         breakpts.push_back(p0);
@@ -262,50 +215,13 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
         nearWallRegion.AddRegion(pic);
         inFoilRegion.AddRegion(pic);
     }
-    return 0;
-}
+    nearWallRegion.transformation(AoA);
+    inFoilRegion.transformation(AoA);
+    transform(breakpts[0], AoA);
+    transform(breakpts[1], AoA);
 
-int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
-{
-    vector<int> comp3;
-    comp3.push_back(0);
-    //wall
-    combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
-    //inlet
-    combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
-    //outlet
-    combinedReg.defineBoundary((void*)edge9 ,   Cedge9.m_N, 2);
-    //side
-    combinedReg.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
-    combinedReg.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
-    //output
-    combinedReg.outXml("outerRegion.xml");
-    combinedReg.outCOMPO("outerRegion.xml", comp3);
-        
-    //in airfoil mesh
-    vector<int> comp4;
-    comp4.push_back(0);
-    //wall
-    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
-    //output
-    inFoilRegion.outXml("inFoil.xml");
-    inFoilRegion.outCOMPO("inFoil.xml", comp4);
-    return 0;
-}
-
-int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts)
-{
-    vector<int> comp0;
+    if(!merge) {
+        vector<int> comp0;
         comp0.push_back(0); comp0.push_back(combinedReg.getCellsNumber());
         combinedReg.outXml("manMade.xml");
         combinedReg.outCOMPO("manMade.xml", comp0);
@@ -326,5 +242,86 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vect
         vector<vector<double>> nobox;
         //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
         nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
+        cout << "output CAD file" << endl;
+        cout << "=======================================" << endl;
+    }
+    /////////////////////////////////////////////////////
+    //////////////gmsh region, far field region//////////
+    // step 2 import mesh
+    if(merge) {
+        MeshRegions gmshReg("R_gmsh_", 1.E-8);
+        gmshReg.loadFromMsh(mshfilename, 145./180.*3.14159);
+        cout << "load " << mshfilename << endl;
+        vector<int> comp1;
+        comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
+        gmshReg.outXml("FarField.xml");
+        gmshReg.outCOMPO("FarField.xml", comp1);
+        if(!combinedReg.consistancyCheck(gmshReg)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        if(!gmshReg.consistancyCheck(combinedReg)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        ///////
+        vector<int> comp3;
+        comp3.push_back(0);
+        //comp3.push_back(nearFieldReg.getCellsNumber());
+        //if(withwake) comp3.push_back(combinedReg.getCellsNumber());
+        combinedReg.AddRegion(gmshReg);
+        //wall
+        combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
+        combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
+        combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
+        combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
+        combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
+        combinedReg.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
+        //inlet
+        combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
+        //outlet
+        combinedReg.defineBoundary((void*)edge9 ,   Cedge9.m_N, 2);
+        //side
+        combinedReg.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
+        combinedReg.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
+        //output
+        combinedReg.outXml("outerRegion.xml");
+        combinedReg.outCOMPO("outerRegion.xml", comp3);
+        cout << "------------------------------------" << endl;
+        cout << "------------------------------------" << endl;
+        
+        //in airfoil mesh
+        MeshRegions gmshInFoil1("R_gmsh1_", 1.E-8);
+        MeshRegions gmshInFoil2("R_gmsh2_", 1.E-8);
+        gmshInFoil1.loadFromMsh(mshinfoilfilename1);
+        gmshInFoil2.loadFromMsh(mshinfoilfilename2);
+        cout << "load " << mshinfoilfilename1 << endl;
+        cout << "load " << mshinfoilfilename2 << endl;
+        if(!nearWallRegion.consistancyCheck(gmshInFoil1)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        if(!nearWallRegion.consistancyCheck(gmshInFoil2)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        inFoilRegion.AddRegion(gmshInFoil1);
+        inFoilRegion.AddRegion(gmshInFoil2);
+        ///////
+        vector<int> comp4;
+        comp4.push_back(0);
+        //wall
+        inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
+        inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
+        inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
+        inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
+        inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
+        inFoilRegion.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
+        //output
+        inFoilRegion.outXml("inFoil.xml");
+        inFoilRegion.outCOMPO("inFoil.xml", comp4);
+        cout << "------------------------------------" << endl;
+        cout << "------------------------------------" << endl;
+    }
     return 0;
 }
