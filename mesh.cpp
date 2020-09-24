@@ -75,6 +75,27 @@ int main(int argc, char* argv[])
             return -1;
         }
         combinedReg.AddRegion(gmshReg);
+        //in airfoil mesh
+        MeshRegions gmshInFoil1("R_gmsh1_", 1.E-8);
+        gmshInFoil1.loadFromMsh(mshinfoilfilename1);
+        cout << "load " << mshinfoilfilename1 << endl;
+        if(!nearWallRegion.consistancyCheck(gmshInFoil1)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        inFoilRegion.AddRegion(gmshInFoil1);
+        MeshRegions gmshInFoil2("R_gmsh2_", 1.E-8);
+        gmshInFoil2.loadFromMsh(mshinfoilfilename2);
+        cout << "load " << mshinfoilfilename2 << endl;
+        if(!nearWallRegion.consistancyCheck(gmshInFoil2)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        if(!gmshInFoil2.consistancyCheck(nearWallRegion)) {
+            cout << "Error: node mismatch, exit" << endl;
+            return -1;
+        }
+        inFoilRegion.AddRegion(gmshInFoil2);
         outputXML(combinedReg, inFoilRegion);
         cout << "------------------------------------" << endl;
         cout << "------------------------------------" << endl;
