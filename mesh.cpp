@@ -262,6 +262,8 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
         nearWallRegion.AddRegion(pic);
         inFoilRegion.AddRegion(pic);
     }
+    transform(breakpts[0], AoA);
+    transform(breakpts[1], AoA);
     return 0;
 }
 
@@ -306,25 +308,25 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
 int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts)
 {
     vector<int> comp0;
-        comp0.push_back(0); comp0.push_back(combinedReg.getCellsNumber());
-        combinedReg.outXml("manMade.xml");
-        combinedReg.outCOMPO("manMade.xml", comp0);
-        //generate gmsh geo file
-        CoutterEdge.addEdge(Cedge9, (void*)edge9);
-        CoutterEdge.addEdge(Cedge10, (void*)edge10);
-        CoutterEdge.addEdge(Cedge11, (void*)edge11);
-        CoutterEdge.addEdge(Cedge12, (void*)edge12);
-        vector<vector<double>> box;
-        for(int i=0; i<CoutterEdge.m_N; ++i) {
-            double tmps = -1. + i*2./CoutterEdge.m_N;
-            vector<double> p0 = outterEdge(tmps);
-            box.push_back(p0);
-        }
-        vector<double> center;
-        center.push_back(0.); center.push_back(0.);
-        combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
-        vector<vector<double>> nobox;
-        //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
-        nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
+    comp0.push_back(0); comp0.push_back(combinedReg.getCellsNumber());
+    combinedReg.outXml("manMade.xml");
+    combinedReg.outCOMPO("manMade.xml", comp0);
+    //generate gmsh geo file
+    CoutterEdge.addEdge(Cedge9, (void*)edge9);
+    CoutterEdge.addEdge(Cedge10, (void*)edge10);
+    CoutterEdge.addEdge(Cedge11, (void*)edge11);
+    CoutterEdge.addEdge(Cedge12, (void*)edge12);
+    vector<vector<double>> box;
+    for(int i=0; i<CoutterEdge.m_N; ++i) {
+        double tmps = -1. + i*2./CoutterEdge.m_N;
+        vector<double> p0 = outterEdge(tmps);
+        box.push_back(p0);
+    }
+    vector<double> center;
+    center.push_back(0.); center.push_back(0.);
+    combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
+    vector<vector<double>> nobox;
+    //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
+    nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
     return 0;
 }
