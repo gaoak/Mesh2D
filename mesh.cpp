@@ -15,6 +15,7 @@ int meshingWake(MeshRegions &combinedReg);
 int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts);
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion);
 int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts);
+int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts);
 
 int main(int argc, char* argv[])
 {
@@ -25,9 +26,9 @@ int main(int argc, char* argv[])
     string mshinfoilfilename2;
     for(int i=1; i<argc; ++i) {
         if(strcmp(argv[i], "merge")==0) {
-            mshfilename = string(argv[i+1]);
-            mshinfoilfilename1 = string(argv[i+2]);
-            mshinfoilfilename2 = string(argv[i+3]);
+            if(argc>i+1) mshfilename = string(argv[i+1]);
+            if(argc>i+2) mshinfoilfilename1 = string(argv[i+2]);
+            if(argc>i+3) mshinfoilfilename2 = string(argv[i+3]);
             merge = true;
         }
         if(strcmp(argv[i], "wake")==0) {
@@ -46,7 +47,7 @@ int main(int argc, char* argv[])
     combinedReg.transformation(AoA);
     if(withwake) meshingWake(combinedReg);
     vector<vector<double> > breakpts;
-    meshingInFoil(nearWallRegion, inFoilRegion, breakpts);
+    meshingInFoil_v2(nearWallRegion, inFoilRegion, breakpts);
     nearWallRegion.transformation(AoA);
     inFoilRegion.transformation(AoA);
 
@@ -288,6 +289,96 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
     return 0;
 }
 
+int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts)
+{
+    std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundary();
+    int wallID = -1;
+    for(int i=0; i<boundary.size(); ++i) {
+        for(int j=0; j<boundary[i].size(); ++j) {
+            if(fabs(nearWallRegion.m_pts[boundary[i][j]][0]) + fabs(nearWallRegion.m_pts[boundary[i][j]][1]) < 0.1) {
+                wallID = i;
+                break;
+            }
+        }
+        if(wallID != -1) break;
+    }
+    int nWallPts = boundary[wallID].size();
+    vector<int> layersInFoil(nWallPts, 0);
+    vector<vector<double> > wallnorm(nWallPts);
+    
+    for(int i=1; i<nWallPts-1; ++i) {
+        vector<double> t1(2.);
+        vector<double> t2(2.);
+        vector<double> norm(2.);
+        double l1, l2;
+        t1[0] = nearWallRegion.m_pts[boundary[wallID][i  ]][0] - nearWallRegion.m_pts[boundary[wallID][i-1]][0];
+        t1[1] = nearWallRegion.m_pts[boundary[wallID][i  ]][1] - nearWallRegion.m_pts[boundary[wallID][i-1]][1];
+        t2[0] = nearWallRegion.m_pts[boundary[wallID][i+1]][0] - nearWallRegion.m_pts[boundary[wallID][i  ]][0];
+        t2[1] = nearWallRegion.m_pts[boundary[wallID][i+1]][1] - nearWallRegion.m_pts[boundary[wallID][i  ]][1];
+        l1 = t1[0]*t1[0] + t1[1]*t1[1];
+        l2 = t2[0]*t2[0] + t2[1]*t2[1];
+        norm[1] =-t1[0]/l1 - t2[0]/l2;
+        norm[0] = t1[1]/l1 + t2[1]/l2;
+        l1 = sqrt(norm[0]*norm[0] + norm[1]*norm[1]);
+        norm[0] /= l1;
+        norm[1] /= l1;
+        wallnorm[i] = norm;
+        if(nearWallRegion.m_pts[boundary[wallID][i]][0] < xInFoil) {
+            layersInFoil[i] = 1;
+        } else{
+            double length = fabs(nearWallRegion.m_pts[boundary[wallID][i]][1]) - infoilRatio*fabs(nearWallRegion.m_pts[boundary[wallID][i+1]][0] - nearWallRegion.m_pts[boundary[wallID][i]][0]);
+            if(length>=hFirstLayerInFoil) {
+                layersInFoil[i] = findNlayers(hFirstLayerInFoil, progressInFoil, length, maxLayerhInFoil) -1;
+            }
+        }
+    }
+    for(int i=0; i<2; ++i) {
+        vector<double> p0(2, 100.);
+        breakpts.push_back(p0);
+    }
+    for(int i=0; i<nWallPts-1; ++i) {
+        int nl = min(layersInFoil[i], layersInFoil[i+1]);
+        if(nl<=0) continue;
+        vector<vector<double> > side0;
+        vector<vector<double> > side1;
+        vector<vector<double> > bottom0;
+        vector<vector<double> > bottom1;
+        double sig = 1.;
+        for(int k=0; k<=nl; ++k) {
+            vector<double> p0(2);
+            vector<double> p1(2);
+            p0[0] = nearWallRegion.m_pts[boundary[wallID][i  ]][0] + wallnorm[i  ][0]*sig*radiusEdgeInFoil(k*2./nLayersInFoil - 1.)[0];
+            p0[1] = nearWallRegion.m_pts[boundary[wallID][i  ]][1] + wallnorm[i  ][1]*sig*radiusEdgeInFoil(k*2./nLayersInFoil - 1.)[0];
+            p1[0] = nearWallRegion.m_pts[boundary[wallID][i+1]][0] + wallnorm[i+1][0]*sig*radiusEdgeInFoil(k*2./nLayersInFoil - 1.)[0];
+            p1[1] = nearWallRegion.m_pts[boundary[wallID][i+1]][1] + wallnorm[i+1][1]*sig*radiusEdgeInFoil(k*2./nLayersInFoil - 1.)[0];
+            side0.push_back(p0);
+            side1.push_back(p1);
+        }
+        bottom0.push_back(side0[0]);
+        bottom0.push_back(side1[0]);
+        bottom1.push_back(side0[nl]);
+        bottom1.push_back(side1[nl]);
+        int upperflap = 0;
+        if(side0[nl][1]<0.) {
+            upperflap = 1;
+        }
+        if(side0[nl][0]<breakpts[upperflap][0]) breakpts[upperflap] = side0[nl];
+        if(side1[nl][0]<breakpts[upperflap][0]) breakpts[upperflap] = side1[nl];
+        std::vector<std::vector<std::vector<double> > > edges;
+        edges.push_back(bottom0);
+        edges.push_back(side0);
+        edges.push_back(bottom1);
+        edges.push_back(side1);
+        RectRegion pic = RectRegion(edges, "pic");
+        pic.MeshGen(1, nl);
+        nearWallRegion.AddRegion(pic);
+        inFoilRegion.AddRegion(pic);
+    }
+    transform(breakpts[0], AoA);
+    transform(breakpts[1], AoA);
+    return 0;
+}
+
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
 {
     vector<int> comp3;
@@ -348,6 +439,6 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vect
     combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
     vector<vector<double>> nobox;
     //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
-    nearWallRegion.outInnerRegion("airfoil.geo", breakpts, center, .1);
+    nearWallRegion.outOuterRegion("airfoil.geo", nobox, center, .1, false);
     return 0;
 }
