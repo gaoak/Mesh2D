@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     // step 2 import mesh
     if(merge) {
         MeshRegions gmshReg("R_gmsh_", 1.E-8);
-        gmshReg.loadFromMsh(mshfilename, 145./180.*3.14159);
+        gmshReg.loadFromMsh(mshfilename, 140./180.*3.14159);
         cout << "load " << mshfilename << endl;
         vector<int> comp1;
         comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
         combinedReg.AddRegion(gmshReg);
         //in airfoil mesh
         MeshRegions gmshInFoil1("R_gmsh1_", 1.E-8);
-        gmshInFoil1.loadFromMsh(mshinfoilfilename1);
+        gmshInFoil1.loadFromMsh(mshinfoilfilename1, 140./180.*3.14159);
         cout << "load " << mshinfoilfilename1 << endl;
         if(!nearWallRegion.consistancyCheck(gmshInFoil1)) {
             cout << "Error: node mismatch, exit" << endl;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         }
         inFoilRegion.AddRegion(gmshInFoil1);
         MeshRegions gmshInFoil2("R_gmsh2_", 1.E-8);
-        gmshInFoil2.loadFromMsh(mshinfoilfilename2);
+        gmshInFoil2.loadFromMsh(mshinfoilfilename2, 140./180.*3.14159);
         cout << "load " << mshinfoilfilename2 << endl;
         if(!nearWallRegion.consistancyCheck(gmshInFoil2)) {
             cout << "Error: node mismatch, exit" << endl;

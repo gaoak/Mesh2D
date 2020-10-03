@@ -57,14 +57,14 @@ double wakeDown =-0.08*Thickness;
 int nWake = 4;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
-double xBoxLeft = -13.;
-double xBoxRight = 17.;
-double yBoxUp = 10.;
-double yBoxDown = -10.;
+double xBoxLeft = -20.;
+double xBoxRight = 20.;
+double yBoxUp = 20.;
+double yBoxDown = -20.;
 int nBoxLeft = 4;
 int nBoxRight = 4;
-int nBoxUp = 6;
-int nBoxDown = 6;
+int nBoxUp = 4;
+int nBoxDown = 4;
 
 int nFarWakex = 21;
 int nFarWakey = 18;
