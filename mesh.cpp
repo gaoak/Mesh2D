@@ -117,7 +117,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges0.push_back((void*)edge0);
     Rects.push_back(RectRegion(edges0, "R_near_wall", false));
     setRadiusLayers(nLayers2);
-    Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false, hFirstLayer,0.);
     Rects[Rects.size()-1].Tec360Pts("test2.dat");
     // edge 3
     edges0[0] = (void*)edge3;
@@ -138,27 +138,32 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges0[0] = (void*)edge6;
     Rects.push_back(RectRegion(edges0, "R_near_wall", false));
     setRadiusLayers(nLayers6);
-    Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false, 0., hFirstLayer);
+    Rects[Rects.size()-1].Tec360Pts("test6.dat");
 
     //give the normal direction, and points 12, 15
-    vector<double> p1  = Rects[Rects.size()-1].getVertex(1);
+    vector<double> p1  = Rects[Rects.size()-1].getVertexOffset(1);
     vector<double> n12 = Rects[Rects.size()-1].getVertex(2);
+    pts[7][0] = p1[0];
+    pts[7][1] = p1[1];
+    pts[15][0] = n12[0];
+    pts[15][1] = n12[1];
     n12[0] = n12[0] - p1[0]; n12[1] = n12[1] - p1[1];
     norm18[0] = n12[0]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     norm18[1] = n12[1]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     setRadiusLayers(nLayers7);
-    pts[15][0] = p1[0] + norm18[0]*radiusEdge(1.)[0];
-    pts[15][1] = p1[1] + norm18[1]*radiusEdge(1.)[0];
     pts[14][0] = pts[0][0] + norm18[0]*radiusEdge(1.)[0];
     pts[14][1] = 0. + norm18[1]*radiusEdge(1.)[0];
-    p1  = Rects[0].getVertex(0);
+    p1  = Rects[0].getVertexOffset(0);
     n12 = Rects[0].getVertex(3);
+    pts[2][0] = p1[0];
+    pts[2][1] = p1[1];
+    pts[12][0] = n12[0];
+    pts[12][1] = n12[1];
     n12[0] = n12[0] - p1[0]; n12[1] = n12[1] - p1[1];
     norm13[0] = n12[0]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     norm13[1] = n12[1]/sqrt(n12[0]*n12[0] + n12[1]*n12[1]);
     setRadiusLayers(nLayers1);
-    pts[12][0] = p1[0] + norm13[0]*radiusEdge(1.)[0];
-    pts[12][1] = p1[1] + norm13[1]*radiusEdge(1.)[0];
     pts[13][0] = pts[1][0] + norm13[0]*radiusEdge(1.)[0];
     pts[13][1] = 0. + norm13[1]*radiusEdge(1.)[0];
     //region 1
@@ -169,6 +174,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges1.push_back((void*)edge8);
     Rects.push_back(RectRegion(edges1, "R_wake"));
     Rects[Rects.size()-1].MeshGen(Cedge1.m_N, Cedge0.m_N);
+    Rects[Rects.size()-1].Tec360Pts("testwake.dat");
     //region 2
     std::vector<void*> edges2;
     edges2.push_back((void*)edge14);
@@ -186,6 +192,21 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges3.push_back((void*)edge18);
     Rects.push_back(RectRegion(edges3, "R_wake_Up"));
     Rects[Rects.size()-1].MeshGen(Cedge7.m_N, Cedge16.m_N);
+    Rects[Rects.size()-1].Tec360Pts("test3.dat");
+    //regin trailing edge
+    pts[3][0] = naca.down(chordLen)[0];
+    pts[3][1] = naca.down(chordLen)[1];
+    pts[6][0] = naca.up(chordLen)[0];
+    pts[6][1] = naca.up(chordLen)[1];
+    std::vector<void*> edgest;
+    edgest.push_back((void*)edge8);
+    edgest.push_back((void*)edgeback7_7);
+    edgest.push_back((void*)edgeback2_7);
+    edgest.push_back((void*)edgeback2_2);
+    Rects.push_back(RectRegion(edgest, "R_wake_Up"));
+    Rects[Rects.size()-1].MeshGen(Cedge8.m_N, Cedgeback7_7.m_N);
+    Rects[Rects.size()-1].Tec360Pts("test4.dat");
+
     
     ///////////// combine the near field mesh
     for(unsigned int i=0; i<Rects.size(); ++i) {

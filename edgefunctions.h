@@ -218,8 +218,8 @@ std::vector<double> edge12(double s) {
 
 // straight edges in the wake
 LineEdge Cedge14(pts[12], pts[13], nWake, QUDREFINE0,  hTrailingEdge, 0.);
-LineEdge Cedge15(pts[13],  pts[1], nLayers1, QUDREFINE1, 0., (wakeyUp-wakeDown)/nTrailingEdge);
-LineEdge Cedge16(pts[0],  pts[14], nLayers7, QUDREFINE0, (wakeyUp-wakeDown)/nTrailingEdge, 0.);
+LineEdge Cedge15(pts[13],  pts[1], nLayers1-1, QUDREFINE1, 0., (wakeyUp-wakeDown)/nTrailingEdge);
+LineEdge Cedge16(pts[0],  pts[14], nLayers7-1, QUDREFINE0, (wakeyUp-wakeDown)/nTrailingEdge, 0.);
 LineEdge Cedge17(pts[14], pts[15], nWake, QUDREFINE1, 0., hTrailingEdge);
 std::vector<double> edge14(double s) {
     return Cedge14.Evaluate(s);
@@ -234,22 +234,28 @@ std::vector<double> edge17(double s) {
     return Cedge17.Evaluate(s);
 }
 // imaged edge
-LineEdge Cedge13(pts[2], pts[12], nLayers1,  UNIFORM, 0., 0.);
-LineEdge Cedge18(pts[15], pts[7], nLayers7, UNIFORM, 0., 0.);
+LineEdge Cedge13(pts[2], pts[12], nLayers1-1,  UNIFORM, 0., 0.);
+LineEdge Cedge18(pts[15], pts[7], nLayers7-1, UNIFORM, 0., 0.);
 vector<double> norm13(2,0.);
 vector<double> norm18(2,0.);
 std::vector<double> edge13(double s) {
     setRadiusLayers(nLayers1);
     vector<double> res(2);
-    res[0] = pts[2][0] + radiusEdge(s)[0]*norm13[0];
-    res[1] = pts[2][1] + radiusEdge(s)[0]*norm13[1];
+    double h0 = radiusEdge(2./nLayers1 - 1.)[0];
+    s = (s+1.)*(1.-1./nLayers1) + 2./nLayers1 - 1.;
+    double h = radiusEdge(s)[0]-h0;
+    res[0] = pts[2][0] + h*norm13[0];
+    res[1] = pts[2][1] + h*norm13[1];
     return res;
 }
 std::vector<double> edge18(double s) {
     setRadiusLayers(nLayers7);
     vector<double> res(2);
-    res[0] = pts[7][0] + radiusEdge(s)[0]*norm18[0];
-    res[1] = pts[7][1] + radiusEdge(s)[0]*norm18[1];
+    double h0 = radiusEdge(2./nLayers7 - 1.)[0];
+    s = (s+1.)*(1.-1./nLayers7) + 2./nLayers7 - 1.;
+    double h = radiusEdge(s)[0]-h0;
+    res[0] = pts[7][0] + h*norm18[0];
+    res[1] = pts[7][1] + h*norm18[1];
     return res;
 }
 // straight edges in the far wake
@@ -268,5 +274,19 @@ std::vector<double> edge21(double s) {
 }
 std::vector<double> edge22(double s) {
     return Cedge22.Evaluate(s);
+}
+
+//trailing edge
+LineEdge Cedgeback2_2(pts[3], pts[2], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeback7_7(pts[7], pts[6], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeback2_7(pts[3], pts[6], nTrailingEdge, UNIFORM, 0., 0.);
+std::vector<double> edgeback2_2(double s) {
+    return Cedgeback2_2.Evaluate(s);
+}
+std::vector<double> edgeback7_7(double s) {
+    return Cedgeback7_7.Evaluate(s);
+}
+std::vector<double> edgeback2_7(double s) {
+    return Cedgeback2_7.Evaluate(s);
 }
 #endif
