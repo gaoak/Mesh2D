@@ -44,16 +44,16 @@ double xmidLow1 = 0.5;
 double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
 double xmidUp2 = 0.006;
-int nLow1 = 12;
-int nLow2 = 10;
-int nUp1 = 12;
-int nUp2 = 10;
+int nLow1 = 9;
+int nLow2 = 11;
+int nUp1 = 9;
+int nUp2 = 11;
 int nFront = 5;
 double hTrailingEdge = hFirstLayer*1.;
 
 double wakeLen = 0.1;
-double wakeyUp  = 0.08*Thickness;
-double wakeDown =-0.08*Thickness;
+double wakeyUp  = 0.06*Thickness;
+double wakeDown =-0.06*Thickness;
 int nWake = 4;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 

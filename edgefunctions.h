@@ -142,11 +142,11 @@ std::vector<double> innerEdge(double s) {
 }
 
 // airfoil surfaces
-LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , QUDREFINE0, hTrailingEdge, 0.);
-LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , QUDREFINE1, 0., (sFrontUp+sFrontLow)/nFront);
+LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, 0.8*hTrailingEdge, 3., 5, 0., 0., 0);
+LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , BOUNDARYLAYER1, 0., 0., 0, (sFrontUp+sFrontLow)/nFront, 1.5, 7);
 LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
-LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2  , QUDREFINE0, (sFrontUp+sFrontLow)/nFront, 0.);
-LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , QUDREFINE1, 0., hTrailingEdge);
+LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2  , BOUNDARYLAYER0, (sFrontUp+sFrontLow)/nFront, 1.5, 7, 0., 0., 1);
+LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , BOUNDARYLAYER1, 0., 0., 0, 0.8*hTrailingEdge, 3., 5);
 std::vector<double> edge2(double s)
 {
 	std::vector<double> res = Cedge2.Evaluate(s);
