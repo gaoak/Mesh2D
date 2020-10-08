@@ -122,13 +122,29 @@ int InitPts(){
     pts[14][0] = chordLen + wakeLen;
     pts[14][1] = radiusEdge(1.)[0] + wakeLen*tan(nearWakeDiffuseAngle);
 
-    virtualpts[2][0] = 1.;
+    virtualpts[2][0] = pts[2][0];
+    virtualpts[2][1] = pts[2][1];
+    virtualpts[7][0] = pts[7][0];
+    virtualpts[7][1] = pts[7][1];
+
     virtualpts[3][0] = xmidLow1;
+    virtualpts[3][1] = naca.up(xmidLow1)[1];
+
     virtualpts[4][0] = xmidLow2;
+    virtualpts[4][1] = naca.up(xmidLow2)[1];
+
     virtualpts[5][0] = xmidUp2;
+    virtualpts[5][1] = naca.up(xmidUp2)[1];
+
     virtualpts[6][0] = xmidUp1;
-    virtualpts[7][0] = 1.;
+    virtualpts[6][1] = naca.up(xmidUp1)[1];
     return 0;
+}
+
+std::vector<double> roundTrailingEdge(std::vector<double> p)
+{
+	return p;
+    return naca.roundTrailingEdge(p);
 }
 
 
@@ -277,16 +293,16 @@ std::vector<double> edge22(double s) {
 }
 
 //trailing edge
-LineEdge Cedgeback2_2(pts[3], pts[2], 1, UNIFORM, 0., 0.);
-LineEdge Cedgeback7_7(pts[7], pts[6], 1, UNIFORM, 0., 0.);
-LineEdge Cedgeback2_7(pts[3], pts[6], nTrailingEdge, UNIFORM, 0., 0.);
-std::vector<double> edgeback2_2(double s) {
-    return Cedgeback2_2.Evaluate(s);
+LineEdge Cedgeb2_2(virtualpts[2], pts[2], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeb7_7(virtualpts[7], pts[7], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeb2_b7(virtualpts[7], virtualpts[2], nTrailingEdge, UNIFORM, 0., 0.);
+std::vector<double> edgeb2_2(double s) {
+    return Cedgeb2_2.Evaluate(s);
 }
-std::vector<double> edgeback7_7(double s) {
-    return Cedgeback7_7.Evaluate(s);
+std::vector<double> edgeb7_7(double s) {
+    return Cedgeb7_7.Evaluate(s);
 }
-std::vector<double> edgeback2_7(double s) {
-    return Cedgeback2_7.Evaluate(s);
+std::vector<double> edgeb2_b7(double s) {
+    return Cedgeb2_b7.Evaluate(s);
 }
 #endif

@@ -194,17 +194,13 @@ int meshingNearBody(MeshRegions &combinedReg)
     Rects[Rects.size()-1].MeshGen(Cedge7.m_N, Cedge16.m_N);
     Rects[Rects.size()-1].Tec360Pts("test3.dat");
     //regin trailing edge
-    pts[3][0] = naca.down(chordLen)[0];
-    pts[3][1] = naca.down(chordLen)[1];
-    pts[6][0] = naca.up(chordLen)[0];
-    pts[6][1] = naca.up(chordLen)[1];
     std::vector<void*> edgest;
     edgest.push_back((void*)edge8);
-    edgest.push_back((void*)edgeback7_7);
-    edgest.push_back((void*)edgeback2_7);
-    edgest.push_back((void*)edgeback2_2);
+    edgest.push_back((void*)edgeb7_7);
+    edgest.push_back((void*)edgeb2_b7);
+    edgest.push_back((void*)edgeb2_2);
     Rects.push_back(RectRegion(edgest, "R_wake_Up"));
-    Rects[Rects.size()-1].MeshGen(Cedge8.m_N, Cedgeback7_7.m_N);
+    Rects[Rects.size()-1].MeshGen(Cedge8.m_N, Cedgeb7_7.m_N);
     Rects[Rects.size()-1].Tec360Pts("test4.dat");
 
     
@@ -405,12 +401,15 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     vector<int> comp3;
     comp3.push_back(0);
     //wall
-    combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
+    combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
     combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
     combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
     combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
+    combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0,  curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.RemapBoundaryPts((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.RemapBoundaryPts((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.RemapBoundaryPts((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0,  curvedpts, AoA, 1, (void*)roundTrailingEdge);
     //inlet
     combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
     //outlet
@@ -426,12 +425,15 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     vector<int> comp4;
     comp4.push_back(0);
     //wall
-    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA);
+    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
     inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
     inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
     inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge8,  Cedge8.m_N,0,  2, AoA);
+    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.RemapBoundaryPts((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.RemapBoundaryPts((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.RemapBoundaryPts((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
     //output
     inFoilRegion.outXml("inFoil.xml");
     inFoilRegion.outCOMPO("inFoil.xml", comp4);
