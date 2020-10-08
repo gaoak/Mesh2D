@@ -147,7 +147,6 @@ std::vector<double> roundTrailingEdge(std::vector<double> p)
     return naca.roundTrailingEdge(p);
 }
 
-
 double sFrontUp = naca.finds(xmidUp2,    1);
 double sFrontLow = naca.finds(xmidLow2, -1);
 double smid1= naca.finds(chordLen, 1) - naca.finds(xmidUp1, 1);

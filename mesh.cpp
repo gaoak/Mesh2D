@@ -420,7 +420,7 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     //output
     combinedReg.outXml("outerRegion.xml");
     combinedReg.outCOMPO("outerRegion.xml", comp3);
-        
+
     //in airfoil mesh
     vector<int> comp4;
     comp4.push_back(0);
