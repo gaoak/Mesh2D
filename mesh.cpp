@@ -416,8 +416,42 @@ int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, ve
     return 0;
 }
 
+
+
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
 {
+    //output outer region without wall for Omesh
+    MeshRegions oRegion("Oreg", 1E-6);
+    std::vector<std::vector<int>> boundary = combinedReg.extractBoundary();
+    int wallID = -1;
+    for(int i=0; i<boundary.size(); ++i) {
+        for(int j=0; j<boundary[i].size(); ++j) {
+            if(fabs(combinedReg.m_pts[boundary[i][j]][0]) + fabs(combinedReg.m_pts[boundary[i][j]][1]) < 0.1) {
+                wallID = i;
+                break;
+            }
+        }
+        if(wallID != -1) break;
+    }
+    std::set<int> excludepts;
+    for(int i=0; i<boundary[wallID].size(); ++i) {
+        excludepts.insert(boundary[wallID][i]);
+    }
+    oRegion.AddRegion(combinedReg, excludepts);
+    vector<int> comp2;
+    comp2.push_back(0);
+    //inlet
+    oRegion.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
+    //outlet
+    oRegion.defineBoundary((void*)edge9 ,   Cedge9.m_N, 2);
+    //side
+    oRegion.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
+    oRegion.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
+    //output
+    oRegion.outXml("outerRegion2.xml");
+    oRegion.outCOMPO("outerRegion2.xml", comp2);
+
+    //output outer region
     vector<int> comp3;
     comp3.push_back(0);
     //wall
@@ -442,12 +476,12 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     vector<int> comp4;
     comp4.push_back(0);
     //wall
-    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
-    inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
-    inFoilRegion.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, 2, AoA);
+    inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, 2, AoA);
+    inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, 2, AoA);
+    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
     //output
     inFoilRegion.outXml("inFoil.xml");
     inFoilRegion.outCOMPO("inFoil.xml", comp4);
@@ -473,7 +507,10 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vect
     }
     vector<double> center;
     center.push_back(0.); center.push_back(0.);
+
+    //output outer inner region (no wall) for Omesh
     combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
+    combinedReg.omeshBoundaryMapping("wallmapping.dat", center, 0.1);
     vector<vector<double>> nobox;
     //nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
     nearWallRegion.outOuterRegion("airfoil.geo", nobox, center, .1, false);

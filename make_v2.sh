@@ -13,5 +13,6 @@ do
     ./mesh-g wake merge FarField.msh airfoil.msh
     rm *plt *vtu
     $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
+    $NEKBIN/FieldConvert outerRegion2.xml outerRegion2.plt
     $NEKBIN/FieldConvert inFoil.xml inFoil.plt
 done

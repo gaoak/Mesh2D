@@ -49,7 +49,6 @@ int nLow2 = 11;
 int nUp1 = 9;
 int nUp2 = 11;
 int nFront = 5;
-double hTrailingEdge = hFirstLayer*0.8;
 
 double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;

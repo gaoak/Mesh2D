@@ -157,6 +157,7 @@ std::vector<double> innerEdge(double s) {
 }
 
 // airfoil surfaces
+double hTrailingEdge = naca.roundTrailingSize();
 LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, hTrailingEdge, 3., 5, 0., 0., 0);
 LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , BOUNDARYLAYER1, 0., 0., 0, (sFrontUp+sFrontLow)/nFront, 1.5, 7);
 LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
@@ -193,8 +194,8 @@ std::vector<double> edge4(double s)
 
 // straight edges around the airfoil
 LineEdge Cedge0(pts[0], pts[1], nTrailingEdge,  UNIFORM, 0., 0.);
-LineEdge Cedge1(pts[1], pts[2], nWake, QUDREFINE1, 0., 0.7*hTrailingEdge);
-LineEdge Cedge7(pts[7], pts[0], nWake, QUDREFINE0, 0.7*hTrailingEdge, 0.);
+LineEdge Cedge1(pts[1], pts[2], nWake, BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge+hFirstLayer, 2., 2);
+LineEdge Cedge7(pts[7], pts[0], nWake, BOUNDARYLAYER0, hTrailingEdge+hFirstLayer, 2., 2, 0., 0., 0);
 LineEdge Cedge8(pts[2], pts[7], nTrailingEdge, UNIFORM, 0., 0.);
 std::vector<double> edge0(double s) {
     return Cedge0.Evaluate(s);
