@@ -115,28 +115,28 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges0.push_back((void*)radiusEdge);
     edges0.push_back((void*)edge0);
     edges0.push_back((void*)edge0);
-    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects.push_back(RectRegion(edges0, "Rwall2", false));
     setRadiusLayers(nLayers2);
     Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false, hFirstLayer,0.);
     Rects[Rects.size()-1].Tec360Pts("test2.dat");
     // edge 3
     edges0[0] = (void*)edge3;
-    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects.push_back(RectRegion(edges0, "Rwall3", false));
     setRadiusLayers(nLayers3);
     Rects[Rects.size()-1].MeshGen(Cedge3.m_N, nLayers3, eBoundaryLayer1, false);
     // edge 4
     edges0[0] = (void*)edge4;
-    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects.push_back(RectRegion(edges0, "Rwall4", false));
     setRadiusLayers(nLayers4);
     Rects[Rects.size()-1].MeshGen(Cedge4.m_N, nLayers4, eBoundaryLayer1, false);
     // edge 5
     edges0[0] = (void*)edge5;
-    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects.push_back(RectRegion(edges0, "Rwall5", false));
     setRadiusLayers(nLayers5);
     Rects[Rects.size()-1].MeshGen(Cedge5.m_N, nLayers5, eBoundaryLayer1, false);
     // edge 6
     edges0[0] = (void*)edge6;
-    Rects.push_back(RectRegion(edges0, "R_near_wall", false));
+    Rects.push_back(RectRegion(edges0, "Rwall6", false));
     setRadiusLayers(nLayers6);
     Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false, 0., hFirstLayer);
     Rects[Rects.size()-1].Tec360Pts("test6.dat");
@@ -172,7 +172,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges1.push_back((void*)edge0);
     edges1.push_back((void*)edge7);
     edges1.push_back((void*)edge8);
-    Rects.push_back(RectRegion(edges1, "R_wake"));
+    Rects.push_back(RectRegion(edges1, "RTrailing"));
     Rects[Rects.size()-1].MeshGen(Cedge1.m_N, Cedge0.m_N);
     Rects[Rects.size()-1].Tec360Pts("testwake.dat");
     //region 2
@@ -181,7 +181,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges2.push_back((void*)edge15);
     edges2.push_back((void*)edge1);
     edges2.push_back((void*)edge13);
-    Rects.push_back(RectRegion(edges2, "R_wake_Down"));
+    Rects.push_back(RectRegion(edges2, "RTrailDown"));
     Rects[Rects.size()-1].MeshGen(Cedge14.m_N, Cedge15.m_N);
     Rects[Rects.size()-1].Tec360Pts("test1.dat");
     //region 3
@@ -190,7 +190,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges3.push_back((void*)edge16);
     edges3.push_back((void*)edge17);
     edges3.push_back((void*)edge18);
-    Rects.push_back(RectRegion(edges3, "R_wake_Up"));
+    Rects.push_back(RectRegion(edges3, "RTrailUp"));
     Rects[Rects.size()-1].MeshGen(Cedge7.m_N, Cedge16.m_N);
     Rects[Rects.size()-1].Tec360Pts("test3.dat");
     //regin trailing edge
@@ -448,8 +448,8 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     oRegion.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
     oRegion.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
     //output
-    oRegion.outXml("outerRegion2.xml");
-    oRegion.outCOMPO("outerRegion2.xml", comp2);
+    oRegion.outXml("outerRegion_Otip.xml");
+    oRegion.outCOMPO("outerRegion_Otip.xml", comp2);
 
     //output outer region
     vector<int> comp3;

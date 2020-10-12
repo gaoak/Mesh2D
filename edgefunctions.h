@@ -233,10 +233,10 @@ std::vector<double> edge12(double s) {
 }
 
 // straight edges in the wake
-LineEdge Cedge14(pts[12], pts[13], nWake, QUDREFINE0,  hTrailingEdge, 0.);
+LineEdge Cedge14(pts[12], pts[13], nWake, BOUNDARYLAYER0, hTrailingEdge+hFirstLayer, 2., 2, 0., 0., 0);
 LineEdge Cedge15(pts[13],  pts[1], nLayers1-1, QUDREFINE1, 0., (wakeyUp-wakeDown)/nTrailingEdge);
 LineEdge Cedge16(pts[0],  pts[14], nLayers7-1, QUDREFINE0, (wakeyUp-wakeDown)/nTrailingEdge, 0.);
-LineEdge Cedge17(pts[14], pts[15], nWake, QUDREFINE1, 0., hTrailingEdge);
+LineEdge Cedge17(pts[14], pts[15], nWake, BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge+hFirstLayer, 2., 2);
 std::vector<double> edge14(double s) {
     return Cedge14.Evaluate(s);
 }
