@@ -14,9 +14,9 @@ int meshingNearBody(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts);
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion);
-int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts);
+int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts, MeshRegions &FarFieldReg, vector<double> pC);
 int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts);
-
+int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p);
 int main(int argc, char* argv[])
 {
     bool merge = false;
@@ -45,6 +45,9 @@ int main(int argc, char* argv[])
     meshingNearBody(combinedReg);
     nearWallRegion.AddRegion(combinedReg);
     combinedReg.transformation(AoA);
+    MeshRegions FarFieldReg("RFar", 1.E-6);
+    vector<double> pC;
+    meshingOuterBoundary(FarFieldReg, pC);
     if(withwake) meshingWake(combinedReg);
     vector<vector<double> > breakpts;
     meshingInFoil_v2(nearWallRegion, inFoilRegion, breakpts);
@@ -52,7 +55,7 @@ int main(int argc, char* argv[])
     inFoilRegion.transformation(AoA);
 
     if(!merge) {
-        outputGeo(combinedReg, nearWallRegion, breakpts);
+        outputGeo(combinedReg, nearWallRegion, breakpts, FarFieldReg, pC);
         cout << "output CAD file" << endl;
         cout << "=======================================" << endl;
     }
@@ -60,6 +63,7 @@ int main(int argc, char* argv[])
     //////////////gmsh region, far field region//////////
     // step 2 import mesh
     if(merge) {
+        combinedReg.AddRegion(FarFieldReg);
         MeshRegions gmshReg("R_gmsh_", 1.E-8);
         gmshReg.loadFromMsh(mshfilename, 135./180.*3.14159);
         cout << "load " << mshfilename << endl;
@@ -208,6 +212,139 @@ int meshingNearBody(MeshRegions &combinedReg)
     	combinedReg.AddRegion(Rects[i]);
     }
     combinedReg.RemapPts((void*)roundTrailingEdge);
+    return 0;
+}
+
+int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p)
+{
+    vector<double> pD = edge10(-1. + 1*2./Cedge10.m_N);
+    vector<double> pH = edge10( 1. - 1*2./Cedge10.m_N);
+    vector<double> pE = edge12(-1. + 1*2./Cedge12.m_N);
+    vector<double> pA = edge12( 1. - 1*2./Cedge12.m_N);
+    vector<double> p8 = edge9(-1.);
+    vector<double> p9 = edge9(1.);
+    vector<double> p10 = edge11(-1.);
+    vector<double> p11 = edge11(1.);
+    vector<vector<vector<double> > > edges;
+    // right edge
+    vector<vector<double> > EA8;
+    vector<vector<double> > E89;
+    vector<vector<double> > ED9;
+    vector<vector<double> > EAD;
+    EA8.push_back(pA);
+    EA8.push_back(p8);
+    ED9.push_back(pD);
+    ED9.push_back(p9);
+    for(int i=0; i<=Cedge9.m_N; ++i) {
+        double tmps = -1. + i*2./Cedge9.m_N;
+        vector<double> p0 = edge9(tmps);
+        E89.push_back(p0);
+        p0[0] = pD[0]*(p0[1] - pA[1])/(pD[1] - pA[1]) + pA[0]*(p0[1] - pD[1])/(pA[1] - pD[1]);
+        EAD.push_back(p0);
+    }
+    edges.clear();
+    edges.push_back(EA8);
+    edges.push_back(E89);
+    edges.push_back(ED9);
+    edges.push_back(EAD);
+    RectRegion pic9 = RectRegion(edges, "pic");
+    pic9.MeshGen(1, Cedge9.m_N);
+    combinedReg.AddRegion(pic9);
+    // left  edge
+    vector<vector<double> > EH10;
+    vector<vector<double> > E1011;
+    vector<vector<double> > EE11;
+    vector<vector<double> > EHE;
+    EH10.push_back(pH);
+    EH10.push_back(p10);
+    EE11.push_back(pE);
+    EE11.push_back(p11);
+    for(int i=0; i<=Cedge11.m_N; ++i) {
+        double tmps = -1. + i*2./Cedge11.m_N;
+        vector<double> p0 = edge11(tmps);
+        E1011.push_back(p0);
+        p0[0] = pH[0]*(p0[1] - pE[1])/(pH[1] - pE[1]) + pE[0]*(p0[1] - pH[1])/(pE[1] - pH[1]);
+        EHE.push_back(p0);
+    }
+    edges.clear();
+    edges.push_back(EH10);
+    edges.push_back(E1011);
+    edges.push_back(EE11);
+    edges.push_back(EHE);
+    RectRegion pic11 = RectRegion(edges, "pic");
+    pic11.MeshGen(1, Cedge11.m_N);
+    combinedReg.AddRegion(pic11);
+    // upper edge
+    vector<double> pB = EAD[1];
+    vector<double> pC = EAD[EAD.size()-2];
+    vector<double> pG = EHE[1];
+    vector<double> pF = EHE[EHE.size()-2];
+    vector<vector<double> > EDH;
+    vector<vector<double> > ECG;
+    vector<vector<double> > ECD;
+    vector<vector<double> > EHG;
+    ECD.push_back(pD);
+    ECD.push_back(pC);
+    EHG.push_back(pH);
+    EHG.push_back(pG);
+    for(int i=1; i<Cedge10.m_N; ++i) {
+        double tmps = -1. + i*2./Cedge10.m_N;
+        vector<double> p0 = edge10(tmps);
+        EDH.push_back(p0);
+        p0[1] = pC[1]*(p0[0] - pG[0])/(pC[0] - pG[0]) + pG[1]*(p0[0] - pC[0])/(pG[0] - pC[0]);
+        if(i==1) {
+            ECG.push_back(pC);
+        } else if(i==Cedge10.m_N - 1) {
+            ECG.push_back(pG);
+        } else {
+            ECG.push_back(p0);
+        }
+    }
+    edges.clear();
+    edges.push_back(ECD);
+    edges.push_back(EDH);
+    edges.push_back(EHG);
+    edges.push_back(ECG);
+    RectRegion pic10 = RectRegion(edges, "pic");
+    pic10.MeshGen(1, Cedge10.m_N-2);
+    combinedReg.AddRegion(pic10);
+    // lower edge
+    vector<vector<double> > EAE;
+    vector<vector<double> > EBF;
+    vector<vector<double> > EAB;
+    vector<vector<double> > EEF;
+    EAB.push_back(pA);
+    EAB.push_back(pB);
+    EEF.push_back(pE);
+    EEF.push_back(pF);
+    for(int i=1; i<Cedge12.m_N; ++i) {
+        double tmps = -1. + i*2./Cedge12.m_N;
+        vector<double> p0 = edge12(tmps);
+        EAE.push_back(p0);
+        p0[1] = pB[1]*(p0[0] - pF[0])/(pB[0] - pF[0]) + pF[1]*(p0[0] - pB[0])/(pF[0] - pB[0]);
+        if(i==1) {
+            EBF.push_back(pF);
+        } else if(i==Cedge12.m_N - 1) {
+            EBF.push_back(pB);
+        } else {
+            EBF.push_back(p0);
+        }
+    }
+    edges.clear();
+    edges.push_back(EAB);
+    edges.push_back(EBF);
+    edges.push_back(EEF);
+    edges.push_back(EAE);
+    RectRegion pic12 = RectRegion(edges, "pic");
+    pic12.MeshGen(1, Cedge12.m_N-2);
+    combinedReg.AddRegion(pic12);
+    //
+    p = pC;
+    //
+    //vector<int> comp4;
+    //comp4.push_back(0);
+    //combinedReg.outXml("manout.xml");
+    //combinedReg.outCOMPO("manout.xml", comp4);
     return 0;
 }
 
@@ -488,21 +625,23 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     return 0;
 }
 
-int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts)
+int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vector<double> > &breakpts,  MeshRegions &FarFieldReg, vector<double> pC)
 {
-    vector<int> comp0;
-    comp0.push_back(0); comp0.push_back(combinedReg.getCellsNumber());
-    combinedReg.outXml("manMade.xml");
-    combinedReg.outCOMPO("manMade.xml", comp0);
     //generate gmsh geo file
-    CoutterEdge.addEdge(Cedge9, (void*)edge9);
-    CoutterEdge.addEdge(Cedge10, (void*)edge10);
-    CoutterEdge.addEdge(Cedge11, (void*)edge11);
-    CoutterEdge.addEdge(Cedge12, (void*)edge12);
     vector<vector<double>> box;
-    for(int i=0; i<CoutterEdge.m_N; ++i) {
-        double tmps = -1. + i*2./CoutterEdge.m_N;
-        vector<double> p0 = outterEdge(tmps);
+    std::vector<std::vector<int>> boundary = FarFieldReg.extractBoundary();
+    int wallID = -1;
+    for(int i=0; i<boundary.size(); ++i) {
+        for(int j=0; j<boundary[i].size(); ++j) {
+            if(fabs(FarFieldReg.m_pts[boundary[i][j]][0] - pC[0]) + fabs(FarFieldReg.m_pts[boundary[i][j]][1] - pC[1]) < 1E-6) {
+                wallID = i;
+                break;
+            }
+        }
+        if(wallID != -1) break;
+    }
+    for(int i=0; i<boundary[wallID].size(); ++i) {
+        vector<double> p0 = FarFieldReg.m_pts[boundary[wallID][i]];
         box.push_back(p0);
     }
     vector<double> center;
