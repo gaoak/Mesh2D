@@ -26,7 +26,7 @@ int nLayers6 = findNlayers(hFirstLayer, progress, rBoundaryLayer6, maxLayerh);
 int nLayers7 = findNlayers(hFirstLayer, progress, rBoundaryLayer7, maxLayerh);
 
 NACAmpxx naca(chamber, chamberp, Thickness);
-int nTrailingEdge = ceil( (naca.up(chordLen)[1] - naca.down(chordLen)[1])/hFirstLayer);
+int nTrailingEdge = std::max(2, (int)ceil( (naca.up(chordLen)[1] - naca.down(chordLen)[1])/hFirstLayer) );
 double pts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
@@ -158,11 +158,11 @@ std::vector<double> innerEdge(double s) {
 
 // airfoil surfaces
 double hTrailingEdge = naca.roundTrailingSize();
-LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, hTrailingEdge, 3., 5, 0., 0., 0);
+LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, hTrailingEdge, (hTrailingEdge+hFirstLayer)/hTrailingEdge, 5, 0., 0., 0);
 LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , BOUNDARYLAYER1, 0., 0., 0, (sFrontUp+sFrontLow)/nFront, 1.5, 7);
 LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
 LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2  , BOUNDARYLAYER0, (sFrontUp+sFrontLow)/nFront, 1.5, 7, 0., 0., 1);
-LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge, 3., 5);
+LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge, (hTrailingEdge+hFirstLayer)/hTrailingEdge, 5);
 std::vector<double> edge2(double s)
 {
 	std::vector<double> res = Cedge2.Evaluate(s);
@@ -234,8 +234,8 @@ std::vector<double> edge12(double s) {
 
 // straight edges in the wake
 LineEdge Cedge14(pts[12], pts[13], nWake, BOUNDARYLAYER0, hTrailingEdge+hFirstLayer, 2., 2, 0., 0., 0);
-LineEdge Cedge15(pts[13],  pts[1], nLayers1-1, QUDREFINE1, 0., (wakeyUp-wakeDown)/nTrailingEdge);
-LineEdge Cedge16(pts[0],  pts[14], nLayers7-1, QUDREFINE0, (wakeyUp-wakeDown)/nTrailingEdge, 0.);
+LineEdge Cedge15(pts[13],  pts[1], nLayers1-1, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer*progress, progress, (nLayers1-1)*2/3);
+LineEdge Cedge16(pts[0],  pts[14], nLayers7-1, BOUNDARYLAYER0, hFirstLayer*progress, progress, (nLayers7-1)*2/3, 0., 0., 0);
 LineEdge Cedge17(pts[14], pts[15], nWake, BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge+hFirstLayer, 2., 2);
 std::vector<double> edge14(double s) {
     return Cedge14.Evaluate(s);
