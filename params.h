@@ -1,5 +1,5 @@
-//for 2D simulation of Re <= 1000, k2, A=0.5, mesh is reduced to extreme,
-//flexible boundary thickness, with 8500 elements
+//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
+//flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
@@ -28,50 +28,50 @@ double maxLayerhInFoil = 0.04;
 double infoilRatio = 0.03;
 
 double hFirstLayer = 0.005;
-double progress = 1.2;
-double rBoundaryLayer  = 0.8;
-double rBoundaryLayer1 = 0.8;
-double rBoundaryLayer2 = 0.8;
-double rBoundaryLayer3 = 0.8;
-double rBoundaryLayer4 = 0.8;
-double rBoundaryLayer5 = 0.8;
+double progress = 1.6;
+double rBoundaryLayer = 0.2;
+double rBoundaryLayer1 = 0.2;
+double rBoundaryLayer2 = 0.2;
+double rBoundaryLayer3 = 0.2;
+double rBoundaryLayer4 = 0.2;
+double rBoundaryLayer5 = 0.2;
 double rBoundaryLayer6 = 0.8;
 double rBoundaryLayer7 = 0.8;
-double maxLayerh = 0.05;
+double maxLayerh = 0.1;
 
 double chordLen= 1.;
-double xmidLow1 = 0.2;
-double xmidUp1 = 0.2;
+double xmidLow1 = 0.5;
+double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
 double xmidUp2 = 0.006;
-int nLow1 = 28;
-int nLow2 = 12;
-int nUp1 = 28;
-int nUp2 = 12;
-int nFront = 12;
+int nLow1 = 9;
+int nLow2 = 11;
+int nUp1 = 9;
+int nUp2 = 11;
+int nFront = 6;
 
-double wakeLen = 0.08;
+double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;
 double wakeDown =-0.06*Thickness;
 int nWake = 4;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
-double xBoxLeft = -40.;
-double xBoxRight = 40.;
-double yBoxUp = 40.;
-double yBoxDown = -40.;
-int nBoxLeft = 8;
-int nBoxRight = 8;
-int nBoxUp = 8;
-int nBoxDown = 8;
+double xBoxLeft = -20.;
+double xBoxRight = 30.;
+double yBoxUp = 20.;
+double yBoxDown = -20.;
+int nBoxLeft = 4;
+int nBoxRight = 4;
+int nBoxUp = 5;
+int nBoxDown = 5;
 
-int nFarWakex = 80;
-int nFarWakey = 50;
-double farWakeAoA = 10./180.*M_PI;
-double wakeDiffuseAngle = 22./180.*M_PI;
-double farWakeRight = 13.;
-double farWakeUp = 1.5;
-double farWakeDown = -1.5;
+int nFarWakex = 21;
+int nFarWakey = 18;
+double farWakeAoA = 13./180.*M_PI;
+double wakeDiffuseAngle = 18./180.*M_PI;
+double farWakeRight = 6.;
+double farWakeUp = 0.8;
+double farWakeDown = -1.;
 
 int curvedpts = 6;
 #endif

@@ -48,7 +48,7 @@ int nLow1 = 9;
 int nLow2 = 11;
 int nUp1 = 9;
 int nUp2 = 11;
-int nFront = 5;
+int nFront = 6;
 
 double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;
@@ -57,13 +57,13 @@ int nWake = 4;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -20.;
-double xBoxRight = 20.;
+double xBoxRight = 30.;
 double yBoxUp = 20.;
 double yBoxDown = -20.;
 int nBoxLeft = 4;
 int nBoxRight = 4;
-int nBoxUp = 4;
-int nBoxDown = 4;
+int nBoxUp = 5;
+int nBoxDown = 5;
 
 int nFarWakex = 21;
 int nFarWakey = 18;
