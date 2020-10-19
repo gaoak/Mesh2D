@@ -21,14 +21,14 @@ double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.01;
-double hFirstLayerInFoil = 0.003;
+double hFirstLayerInFoil = 0.005;
 double progressInFoil = 1.6;
 double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.03;
 double infoilRatio = 0.03;
 
-double hFirstLayer = 0.003;
-double progress = 1.8;
+double hFirstLayer = 0.005;
+double progress = 1.6;
 double rBoundaryLayer = 0.2;
 double rBoundaryLayer1 = 0.2;
 double rBoundaryLayer2 = 0.2;
