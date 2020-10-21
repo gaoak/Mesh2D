@@ -21,8 +21,8 @@ int InitPts(){
 
 LineEdge Cedge0(pts[0], pts[1], Nx, UNIFORM, 0., 0.);
 LineEdge Cedge1(pts[1], pts[2], Ny, UNIFORM, 0., 0.);
-LineEdge Cedge2(pts[2], pts[3], Nx, UNIFORM, 0., 0.);
-LineEdge Cedge3(pts[3], pts[0], Ny, UNIFORM, 0., 0.);
+LineEdge Cedge2(pts[3], pts[2], Nx, UNIFORM, 0., 0.);
+LineEdge Cedge3(pts[0], pts[3], Ny, UNIFORM, 0., 0.);
 
 std::vector<double> edge0(double s) {
     return Cedge0.Evaluate(s);
