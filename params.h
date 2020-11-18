@@ -8,7 +8,7 @@
 #endif
 static double FOILM   = 0.;
 static double FOILP   = 0.;
-static double FOILT   = 12.;
+static double FOILT   = 15.;
 double AoA = FOILAOA/180.*M_PI;
 double chamber = FOILM*0.01;
 double chamberp = FOILP*0.1;
@@ -37,7 +37,9 @@ double chordLen= 1.;
 double xmidLow1 = 0.2;
 double xmidUp1 = 0.2;
 double xmidLow2 = 0.006;
+double growthrateLow2 = 1.3;
 double xmidUp2 = 0.006;
+double growthrateUp2 = 1.3;
 int nLow1 = 28;
 int nLow2 = 13;
 int nUp1 = 28;
@@ -61,7 +63,7 @@ int nBoxDown = 10;
 
 int nFarWakex = 100;
 int nFarWakey = 50;
-double farWakeAoA = 6./180.*M_PI;
+double farWakeAoA = 0./180.*M_PI;
 double wakeDiffuseAngle = 18./180.*M_PI;
 double farWakeRight = 20.;
 double farWakeUp = 1.5;
