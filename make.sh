@@ -1,7 +1,7 @@
 #!/bin/bash
-for aoa in  15
+for aoa in  0
 do
-    c++ -std=c++11 -DOUTPUTEXP -DFOILAOA=${aoa} -DFOILM=0 -DFOILP=0 -DFOILT=12  *.cpp CAD2D/*.cpp -c -Og -g
+    c++ -std=c++11 -DOUTPUTEXP -DFOILAOA=${aoa}  *.cpp CAD2D/*.cpp -c -Og -g
     c++ -std=c++11 *.o -Og -o mesh-g -g
     ./mesh-g wake
     echo "gmsh FarField.geo"

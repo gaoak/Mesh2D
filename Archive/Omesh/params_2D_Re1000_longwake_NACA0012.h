@@ -4,17 +4,11 @@
 #define PARAMS_H
 #define NUMPTS 20
 #ifndef FOILAOA
-    #define FOILAOA 15
+    #define FOILAOA 0
 #endif
-#ifndef FOILM
-    #define FOILM 0
-#endif
-#ifndef FOILP
-    #define FOILP 0
-#endif
-#ifndef FOILT
-    #define FOILT 12
-#endif
+static double FOILM   = 0.;
+static double FOILP   = 0.;
+static double FOILT   = 12.;
 double AoA = FOILAOA/180.*M_PI;
 double chamber = FOILM*0.01;
 double chamberp = FOILP*0.1;
