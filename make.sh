@@ -1,7 +1,5 @@
 #!/bin/bash
-for aoa in  0
-do
-    c++ -std=c++11 -DOUTPUTEXP -DFOILAOA=${aoa}  *.cpp CAD2D/*.cpp -c -Og -g
+    c++ -std=c++11 -DOUTPUTEXP   *.cpp CAD2D/*.cpp -c -Og -g
     c++ -std=c++11 *.o -Og -o mesh-g -g
     ./mesh-g wake
     echo "gmsh FarField.geo"
@@ -15,4 +13,3 @@ do
     $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
     $NEKBIN/FieldConvert outerRegion_Otip.xml outerRegion_Otip.plt
     $NEKBIN/FieldConvert inFoil.xml inFoil.plt
-done

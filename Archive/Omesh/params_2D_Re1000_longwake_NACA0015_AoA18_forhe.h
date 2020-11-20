@@ -3,10 +3,10 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-static double FOILAOA = 20.;// AoA
+static double FOILAOA = 18.;// AoA
 static double FOILM   = 0.; // NACA 0
 static double FOILP   = 0.; // 0
-static double FOILT   = 12.;// 12
+static double FOILT   = 15.;// 12
 
 double AoA = FOILAOA/180.*M_PI;
 double chamber = FOILM*0.01;
