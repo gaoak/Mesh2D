@@ -37,7 +37,7 @@ double rBoundaryLayer4 = 0.2;
 double rBoundaryLayer5 = 0.4;
 double rBoundaryLayer6 = 0.8;
 double rBoundaryLayer7 = 0.8;
-double maxLayerh = 0.1;
+double maxLayerh = 0.08;
 
 double chordLen= 1.;
 double xmidLow1 = 0.5;
@@ -48,8 +48,8 @@ double xmidUp2 = 0.006;
 double growthrateUp2 = 1.5;
 int nLow1 = 9;
 int nLow2 = 11;
-int nUp1 = 9;
-int nUp2 = 11;
+int nUp1 = 10;
+int nUp2 = 12;
 int nFront = 6;
 
 double wakeLen = 0.1;
