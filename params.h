@@ -21,13 +21,13 @@ double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.01;
-double hFirstLayerInFoil = 0.003;
+double hFirstLayerInFoil = 0.005;
 double progressInFoil = 1.6;
 double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.04;
 double infoilRatio = 0.03;
 
-double hFirstLayer = 0.003;
+double hFirstLayer = 0.005;
 double progress = 1.6;
 double rBoundaryLayer = 0.2;
 double rBoundaryLayer1 = 0.2;
@@ -76,4 +76,7 @@ double farWakeUp = 0.8;
 double farWakeDown = -1.;
 
 int curvedpts = 6;
+// also need by extrude.sh
+int wingn = 71 ;
+int tipn  =  9 ;
 #endif

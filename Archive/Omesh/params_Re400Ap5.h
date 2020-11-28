@@ -76,4 +76,7 @@ double farWakeUp = 0.8;
 double farWakeDown = -1.;
 
 int curvedpts = 6;
+// also need by extrude.sh
+int wingn = 40 ;
+int tipn  =  9 ;
 #endif
