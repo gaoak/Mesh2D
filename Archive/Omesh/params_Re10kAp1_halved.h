@@ -44,7 +44,7 @@ int nLow1 = 28;
 int nLow2 = 10;
 int nUp1 = 40;
 int nUp2 = 12;
-int nFront = 8;
+int nFront = 10;
 
 double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;
