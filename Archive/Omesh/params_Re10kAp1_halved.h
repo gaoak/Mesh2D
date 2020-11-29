@@ -31,18 +31,18 @@ double rBoundaryLayer4 = 0.2;
 double rBoundaryLayer5 = 0.3;
 double rBoundaryLayer6 = 0.3;
 double rBoundaryLayer7 = 0.3;
-double maxLayerh = 0.05;
+double maxLayerh = 0.025;
 
 double chordLen= 1.;
-double xmidLow1 = 0.35;
-double xmidUp1 = 0.35;
+double xmidLow1 = 0.15;
+double xmidUp1 = 0.15;
 double xmidLow2 = 0.006;
-double growthrateLow2 = 1.5;
+double growthrateLow2 = 1.4;
 double xmidUp2 = 0.006;
-double growthrateUp2 = 1.5;
-int nLow1 = 16;
-int nLow2 = 12;
-int nUp1 = 16;
+double growthrateUp2 = 1.4;
+int nLow1 = 28;
+int nLow2 = 10;
+int nUp1 = 40;
 int nUp2 = 12;
 int nFront = 8;
 
@@ -73,5 +73,5 @@ int curvedpts = 6;
 // also need by extrude.sh
 int wingn = 61 ;
 int tipn  =  9 ;
-double tiprefinelength = 2. ;
+double tiprefinelength = 1. ;
 #endif

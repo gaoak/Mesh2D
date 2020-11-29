@@ -79,4 +79,5 @@ int curvedpts = 6;
 // also need by extrude.sh
 int wingn = 60 ;
 int tipn  =  9 ;
+double tiprefinelength = 2. ;
 #endif
