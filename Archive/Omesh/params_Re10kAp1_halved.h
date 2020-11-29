@@ -49,7 +49,7 @@ int nFront = 8;
 double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;
 double wakeDown =-0.06*Thickness;
-int nWake = 4;
+int nWake = 6;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -20.;
