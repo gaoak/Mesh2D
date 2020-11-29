@@ -43,7 +43,7 @@ double growthrateUp2 = 1.5;
 int nLow1 = 16;
 int nLow2 = 12;
 int nUp1 = 16;
-int nUp2 = 13;
+int nUp2 = 15;
 int nFront = 7;
 
 double wakeLen = 0.1;
