@@ -24,7 +24,7 @@ double xInFoil = 0.01;
 double hFirstLayerInFoil = 0.005;
 double progressInFoil = 1.6;
 double rBoundaryLayerInFoil = 1.;
-double maxLayerhInFoil = 0.04;
+double maxLayerhInFoil = 0.03;
 double infoilRatio = 0.03;
 
 double hFirstLayer = 0.005;
@@ -34,14 +34,14 @@ double rBoundaryLayer1 = 0.2;
 double rBoundaryLayer2 = 0.2;
 double rBoundaryLayer3 = 0.2;
 double rBoundaryLayer4 = 0.2;
-double rBoundaryLayer5 = 0.4;
-double rBoundaryLayer6 = 1.0;
-double rBoundaryLayer7 = 1.0;
+double rBoundaryLayer5 = 0.3;
+double rBoundaryLayer6 = 0.5;
+double rBoundaryLayer7 = 0.5;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;
-double xmidLow1 = 0.4;
-double xmidUp1 = 0.4;
+double xmidLow1 = 0.35;
+double xmidUp1 = 0.35;
 double xmidLow2 = 0.006;
 double growthrateLow2 = 1.5;
 double xmidUp2 = 0.006;
@@ -49,8 +49,8 @@ double growthrateUp2 = 1.5;
 int nLow1 = 16;
 int nLow2 = 12;
 int nUp1 = 16;
-int nUp2 = 13;
-int nFront = 7;
+int nUp2 = 12;
+int nFront = 8;
 
 double wakeLen = 0.1;
 double wakeyUp  = 0.06*Thickness;
@@ -67,16 +67,18 @@ int nBoxRight = 4;
 int nBoxUp = 5;
 int nBoxDown = 5;
 
-int nFarWakex = 20;
-int nFarWakey = 22;
-double farWakeAoA = 13./180.*M_PI;
-double wakeDiffuseAngle = 18./180.*M_PI;
+int nFarWakex = 28;
+int nFarWakey = 16;
+double farWakeAoA = 0./180.*M_PI;
+double wakeDiffuseAngle = 15./180.*M_PI;
 double farWakeRight = 4.;
-double farWakeUp = 0.8;
-double farWakeDown = -1.;
+double farWakeUp = 0.2;
+double farWakeDown = -0.6;
 
 int curvedpts = 6;
 // also need by extrude.sh
-int wingn = 71 ;
+int wingn = 60 ;
 int tipn  =  9 ;
+double tiprefinelength = 2. ;
+int refinementn = 
 #endif
