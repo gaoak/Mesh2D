@@ -5,17 +5,17 @@
 double pts[NUMPTS][2];
 
 int InitPts(){
-    pts[0][0] = 0.;
-    pts[0][1] = 0.;
+    pts[0][0] = xleft;
+    pts[0][1] = ylow;
     
-    pts[1][0] = 1.;
-    pts[1][1] = 0.;
+    pts[1][0] = xright;
+    pts[1][1] = ylow;
     
-    pts[2][0] = 1.;
-    pts[2][1] = 1.;
+    pts[2][0] = xright;
+    pts[2][1] = yup;
     
-    pts[3][0] = 0.;
-    pts[3][1] = 1.;
+    pts[3][0] = xleft;
+    pts[3][1] = yup;
     return 0;
 }
 

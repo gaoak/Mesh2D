@@ -4,9 +4,9 @@
 #define PARAMS_H
 #define NUMPTS 20
 double xleft = 0.;
-double xright = 7.;
+double xright = 1.;
 double ylow = 0.;
-double yup = 2.;
-int Nx = 112;
+double yup = 1.;
+int Nx = 32;
 int Ny = 32;
 #endif
