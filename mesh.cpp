@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     combinedReg.defineBoundary((void*)edge03,  Cedge03.m_N, 1);
     combinedReg.defineBoundary((void*)edge69 , Cedge69.m_N, 2);
     combinedReg.defineBoundary((void*)edge06,  Cedge06.m_N, 3);
-    combinedReg.defineBoundary((void*)edge39,  Cedge38.m_N, 4);
+    combinedReg.defineBoundary((void*)edge39,  Cedge39.m_N, 4);
     //output
     combinedReg.outXml("square.xml");
     combinedReg.outCOMPO("square.xml", comp2);
