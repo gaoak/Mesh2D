@@ -47,8 +47,8 @@ int nUp2 = 21;
 int nFront = 19;
 
 double wakeLen = 0.1;
-double wakeyUp  = 0.06*Thickness;
-double wakeDown =-0.06*Thickness;
+double wakeyUp  = 2.*hFirstLayer;
+double wakeDown =-2.*hFirstLayer;
 int nWake = 6;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
