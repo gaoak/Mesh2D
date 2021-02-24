@@ -12,7 +12,7 @@ double p0y = 0.;
 double p1y = 1.;
 double p2y = 5.;
 
-double hfirstlayer = 0.005;
+double hfirstlayer = 0.025;
 double hgrowth = 1.5;
 double meshsize = 0.025;
 int N1y = 6;
