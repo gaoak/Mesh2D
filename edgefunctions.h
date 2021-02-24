@@ -17,7 +17,7 @@ int findNlayers(double h, double q, double R, double m){
 }
 
 int N1x = std::ceil((p2x-p1x)/meshsize);
-int N0y = findNlayers(hfirstlayer, hgrowth, p1y-p0y, meshsize);
+int N1y = findNlayers(hfirstlayer, hgrowth, p2y-p1y, meshsize);
 
 CompositEdge Cedge03;
 CompositEdge Cedge69;
@@ -56,10 +56,14 @@ std::vector<double> edge69(double s) {
     return Cedge69.Evaluate(s);
 }
 
-LineEdge Cedge04(pts[0], pts[4], N0y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N0y-1, 0, 0, 0);
-LineEdge Cedge46(pts[4], pts[6], N1y, BOUNDARYLAYER0, meshsize, hgrowth, N1y-1, 0, 0, 0);
-std::vector<double> edge04(double s) {
-    return Cedge04.Evaluate(s);
+LineEdge Cedge010(pts[0], pts[10], N0y, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0y-1);
+LineEdge Cedge104(pts[10], pts[4], N1y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N1y-1, 0, 0, 0);
+LineEdge Cedge46(pts[4], pts[6], N2y, BOUNDARYLAYER0, meshsize, hgrowth, N2y-1, 0, 0, 0);
+std::vector<double> edge010(double s) {
+    return Cedge010.Evaluate(s);
+}
+std::vector<double> edge104(double s) {
+    return Cedge104.Evaluate(s);
 }
 std::vector<double> edge46(double s) {
     return Cedge46.Evaluate(s);
@@ -68,10 +72,14 @@ std::vector<double> edge06(double s) {
     return Cedge06.Evaluate(s);
 }
 
-LineEdge Cedge35(pts[3], pts[5], N0y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N0y-1, 0, 0, 0);
-LineEdge Cedge59(pts[5], pts[9], N1y, BOUNDARYLAYER0, meshsize, hgrowth, N1y-1, 0, 0, 0);
-std::vector<double> edge35(double s) {
-    return Cedge35.Evaluate(s);
+LineEdge Cedge311(pts[3], pts[11], N0y, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0y-1);
+LineEdge Cedge115(pts[11], pts[5], N1y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N1y-1, 0, 0, 0);
+LineEdge Cedge59(pts[5], pts[9], N2y, BOUNDARYLAYER0, meshsize, hgrowth, N2y-1, 0, 0, 0);
+std::vector<double> edge311(double s) {
+    return Cedge311.Evaluate(s);
+}
+std::vector<double> edge115(double s) {
+    return Cedge115.Evaluate(s);
 }
 std::vector<double> edge59(double s) {
     return Cedge59.Evaluate(s);
@@ -90,19 +98,24 @@ int InitPts(){
     pts[3][0] = p3x;
     pts[3][1] = p0y;
 
+    pts[10][0] = p0x;
+    pts[10][1] = p1y;
+    pts[11][0] = p3x;
+    pts[11][1] = p1y;
+
     pts[4][0] = p0x;
-    pts[4][1] = p1y;
+    pts[4][1] = p2y;
     pts[5][0] = p3x;
-    pts[5][1] = p1y;
+    pts[5][1] = p2y;
 
     pts[6][0] = p0x;
-    pts[6][1] = p2y;
+    pts[6][1] = p3y;
     pts[7][0] = p1x;
-    pts[7][1] = p2y;
+    pts[7][1] = p3y;
     pts[8][0] = p2x;
-    pts[8][1] = p2y;
+    pts[8][1] = p3y;
     pts[9][0] = p3x;
-    pts[9][1] = p2y;
+    pts[9][1] = p3y;
 
     Cedge03.addEdge(Cedge01, (void*) edge01);
     Cedge03.addEdge(Cedge12, (void*) edge12);
@@ -112,10 +125,12 @@ int InitPts(){
     Cedge69.addEdge(Cedge78, (void*) edge78);
     Cedge69.addEdge(Cedge89, (void*) edge89);
 
-    Cedge06.addEdge(Cedge04, (void*) edge04);
+    Cedge06.addEdge(Cedge010, (void*) edge010);
+    Cedge06.addEdge(Cedge104, (void*) edge104);
     Cedge06.addEdge(Cedge46, (void*) edge46);
 
-    Cedge39.addEdge(Cedge35, (void*) edge35);
+    Cedge39.addEdge(Cedge311, (void*) edge311);
+    Cedge39.addEdge(Cedge115, (void*) edge115);
     Cedge39.addEdge(Cedge59, (void*) edge59);
     return 0;
 }
