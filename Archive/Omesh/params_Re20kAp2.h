@@ -1,4 +1,4 @@
-//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
+//for 3D simulation of Re20k, k2, A=0.2, mesh is reduced to extreme,
 //flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
