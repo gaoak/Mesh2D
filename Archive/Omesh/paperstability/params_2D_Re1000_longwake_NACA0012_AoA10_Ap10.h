@@ -3,7 +3,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-static double FOILAOA = 15.;// AoA
+static double FOILAOA = 10.;// AoA
 static double FOILM   = 0.; // NACA 0
 static double FOILP   = 0.; // 0
 static double FOILT   = 12.;// 12
