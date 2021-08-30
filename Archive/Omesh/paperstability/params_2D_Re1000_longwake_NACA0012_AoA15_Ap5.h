@@ -22,14 +22,14 @@ double infoilRatio = 0.03;
 
 double hFirstLayer = 0.005;
 double progress = 1.2;
-double rBoundaryLayer  = 1.;
-double rBoundaryLayer1 = 1.;
-double rBoundaryLayer2 = 1.;
-double rBoundaryLayer3 = 1.;
-double rBoundaryLayer4 = 1.;
-double rBoundaryLayer5 = 1.;
-double rBoundaryLayer6 = 1.;
-double rBoundaryLayer7 = 1.;
+double rBoundaryLayer  = 0.8;
+double rBoundaryLayer1 = 0.8;
+double rBoundaryLayer2 = 0.8;
+double rBoundaryLayer3 = 0.8;
+double rBoundaryLayer4 = 0.8;
+double rBoundaryLayer5 = 0.8;
+double rBoundaryLayer6 = 0.8;
+double rBoundaryLayer7 = 0.8;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;
@@ -60,13 +60,13 @@ int nBoxRight = 10;
 int nBoxUp = 10;
 int nBoxDown = 10;
 
-int nFarWakex = 120;
-int nFarWakey = 66;
+int nFarWakex = 100;
+int nFarWakey = 50;
 double farWakeAoA = 10./180.*M_PI;
-double wakeDiffuseAngle = 18./180.*M_PI;
+double wakeDiffuseAngle = 14./180.*M_PI;
 double farWakeRight = 20.;
-double farWakeUp = 2.;
-double farWakeDown = -2.;
+double farWakeUp = 1.5;
+double farWakeDown = -1.5;
 
 int curvedpts = 6;
 #endif

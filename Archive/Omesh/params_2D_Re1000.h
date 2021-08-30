@@ -3,11 +3,18 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-static double FOILAOA = 15.;// AoA
-static double FOILM   = 0.; // NACA 0
-static double FOILP   = 0.; // 0
-static double FOILT   = 12.;// 12
-
+#ifndef FOILAOA
+    #define FOILAOA 15
+#endif
+#ifndef FOILM
+    #define FOILM 0
+#endif
+#ifndef FOILP
+    #define FOILP 0
+#endif
+#ifndef FOILT
+    #define FOILT 12
+#endif
 double AoA = FOILAOA/180.*M_PI;
 double chamber = FOILM*0.01;
 double chamberp = FOILP*0.1;
@@ -22,27 +29,25 @@ double infoilRatio = 0.03;
 
 double hFirstLayer = 0.005;
 double progress = 1.2;
-double rBoundaryLayer  = 1.;
-double rBoundaryLayer1 = 1.;
-double rBoundaryLayer2 = 1.;
-double rBoundaryLayer3 = 1.;
-double rBoundaryLayer4 = 1.;
-double rBoundaryLayer5 = 1.;
-double rBoundaryLayer6 = 1.;
-double rBoundaryLayer7 = 1.;
+double rBoundaryLayer  = 0.8;
+double rBoundaryLayer1 = 0.8;
+double rBoundaryLayer2 = 0.8;
+double rBoundaryLayer3 = 0.8;
+double rBoundaryLayer4 = 0.8;
+double rBoundaryLayer5 = 0.8;
+double rBoundaryLayer6 = 0.8;
+double rBoundaryLayer7 = 0.8;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;
 double xmidLow1 = 0.2;
 double xmidUp1 = 0.2;
 double xmidLow2 = 0.006;
-double growthrateLow2 = 1.3;
 double xmidUp2 = 0.006;
-double growthrateUp2 = 1.3;
 int nLow1 = 28;
-int nLow2 = 13;
+int nLow2 = 12;
 int nUp1 = 28;
-int nUp2 = 13;
+int nUp2 = 12;
 int nFront = 12;
 
 double wakeLen = 0.08;
@@ -52,21 +57,21 @@ int nWake = 4;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -40.;
-double xBoxRight = 60.;
+double xBoxRight = 40.;
 double yBoxUp = 40.;
 double yBoxDown = -40.;
-int nBoxLeft = 10;
-int nBoxRight = 10;
-int nBoxUp = 10;
-int nBoxDown = 10;
+int nBoxLeft = 8;
+int nBoxRight = 8;
+int nBoxUp = 8;
+int nBoxDown = 8;
 
-int nFarWakex = 120;
-int nFarWakey = 66;
+int nFarWakex = 80;
+int nFarWakey = 50;
 double farWakeAoA = 10./180.*M_PI;
-double wakeDiffuseAngle = 18./180.*M_PI;
-double farWakeRight = 20.;
-double farWakeUp = 2.;
-double farWakeDown = -2.;
+double wakeDiffuseAngle = 22./180.*M_PI;
+double farWakeRight = 13.;
+double farWakeUp = 1.5;
+double farWakeDown = -1.5;
 
 int curvedpts = 6;
 #endif

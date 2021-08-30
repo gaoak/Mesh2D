@@ -16,18 +16,29 @@ int findNlayers(double h, double q, double R, double m){
     }
     return n;
 }
-int nLayers = findNlayers(hFirstLayer, progress, rBoundaryLayer, maxLayerh);
+int nLayers  = findNlayers(hFirstLayer, progress, rBoundaryLayer,  maxLayerh);
+int nLayers1 = findNlayers(hFirstLayer, progress, rBoundaryLayer1, maxLayerh);
+int nLayers2 = findNlayers(hFirstLayer, progress, rBoundaryLayer2, maxLayerh);
+int nLayers3 = findNlayers(hFirstLayer, progress, rBoundaryLayer3, maxLayerh);
+int nLayers4 = findNlayers(hFirstLayer, progress, rBoundaryLayer4, maxLayerh);
+int nLayers5 = findNlayers(hFirstLayer, progress, rBoundaryLayer5, maxLayerh);
+int nLayers6 = findNlayers(hFirstLayer, progress, rBoundaryLayer6, maxLayerh);
+int nLayers7 = findNlayers(hFirstLayer, progress, rBoundaryLayer7, maxLayerh);
 
 NACAmpxx naca(chamber, chamberp, Thickness);
-int nTrailingEdge = ceil( (naca.up(chordLen)[1] - naca.down(chordLen)[1])/hFirstLayer);
+int nTrailingEdge = std::max(2, (int)ceil( (naca.up(chordLen)[1] - naca.down(chordLen)[1])/hFirstLayer) );
 double pts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
 LineEdge CradiusEdge(pts[0], pts[1], nLayers, UNIFORM, 0., 0.);
+void setRadiusLayers(int n) {
+    nLayers = n;
+}
 std::vector<double> radiusEdge(double s) {
     int n = round(0.5*(1.+s)*nLayers);
     static vector<vector<double> > reses;
     if(reses.size()<nLayers+1) {
+        reses.clear();
         vector<double> p0(2, 0.); reses.push_back(p0);
         double delta = hFirstLayer;
         for(int n=1; n<=nLayers; ++n) {
@@ -103,21 +114,38 @@ int InitPts(){
     pts[11][0] = xBoxLeft;
     pts[11][1] = yBoxDown;
     
+    setRadiusLayers(nLayers1);
     pts[13][0] = chordLen + wakeLen;
     pts[13][1] = -radiusEdge(1.)[0] - wakeLen*tan(nearWakeDiffuseAngle);
     
+    setRadiusLayers(nLayers7);
     pts[14][0] = chordLen + wakeLen;
     pts[14][1] = radiusEdge(1.)[0] + wakeLen*tan(nearWakeDiffuseAngle);
 
-    virtualpts[2][0] = 1.;
+    virtualpts[2][0] = pts[2][0];
+    virtualpts[2][1] = pts[2][1];
+    virtualpts[7][0] = pts[7][0];
+    virtualpts[7][1] = pts[7][1];
+
     virtualpts[3][0] = xmidLow1;
+    virtualpts[3][1] = naca.up(xmidLow1)[1];
+
     virtualpts[4][0] = xmidLow2;
+    virtualpts[4][1] = naca.up(xmidLow2)[1];
+
     virtualpts[5][0] = xmidUp2;
+    virtualpts[5][1] = naca.up(xmidUp2)[1];
+
     virtualpts[6][0] = xmidUp1;
-    virtualpts[7][0] = 1.;
+    virtualpts[6][1] = naca.up(xmidUp1)[1];
     return 0;
 }
 
+std::vector<double> roundTrailingEdge(std::vector<double> p)
+{
+	//return p;
+    return naca.roundTrailingEdge(p);
+}
 
 double sFrontUp = naca.finds(xmidUp2,    1);
 double sFrontLow = naca.finds(xmidLow2, -1);
@@ -129,11 +157,12 @@ std::vector<double> innerEdge(double s) {
 }
 
 // airfoil surfaces
-LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , QUDREFINE0, hTrailingEdge, 0.);
-LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , QUDREFINE1, 0., (sFrontUp+sFrontLow)/nFront);
+double hTrailingEdge = naca.roundTrailingSize();
+LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, hTrailingEdge, (hTrailingEdge+hFirstLayer)/hTrailingEdge, 5, 0., 0., 0);
+LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , BOUNDARYLAYER1, 0., 0., 0, (sFrontUp+sFrontLow)/nFront, growthrateLow2, std::min(10, nLow2-1) );
 LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
-LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2  , QUDREFINE0, (sFrontUp+sFrontLow)/nFront, 0.);
-LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , QUDREFINE1, 0., hTrailingEdge);
+LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2  , BOUNDARYLAYER0, (sFrontUp+sFrontLow)/nFront, growthrateUp2, std::min(10, nUp2-1), 0., 0., 1);
+LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge, (hTrailingEdge+hFirstLayer)/hTrailingEdge, 5);
 std::vector<double> edge2(double s)
 {
 	std::vector<double> res = Cedge2.Evaluate(s);
@@ -165,8 +194,8 @@ std::vector<double> edge4(double s)
 
 // straight edges around the airfoil
 LineEdge Cedge0(pts[0], pts[1], nTrailingEdge,  UNIFORM, 0., 0.);
-LineEdge Cedge1(pts[1], pts[2], nWake, QUDREFINE1, 0., 0.7*hTrailingEdge);
-LineEdge Cedge7(pts[7], pts[0], nWake, QUDREFINE0, 0.7*hTrailingEdge, 0.);
+LineEdge Cedge1(pts[1], pts[2], nWake, BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge+hFirstLayer, 2., 2);
+LineEdge Cedge7(pts[7], pts[0], nWake, BOUNDARYLAYER0, hTrailingEdge+hFirstLayer, 2., 2, 0., 0., 0);
 LineEdge Cedge8(pts[2], pts[7], nTrailingEdge, UNIFORM, 0., 0.);
 std::vector<double> edge0(double s) {
     return Cedge0.Evaluate(s);
@@ -204,10 +233,10 @@ std::vector<double> edge12(double s) {
 }
 
 // straight edges in the wake
-LineEdge Cedge14(pts[12], pts[13], nWake, QUDREFINE0,  hTrailingEdge, 0.);
-LineEdge Cedge15(pts[13],  pts[1], nLayers, QUDREFINE1, 0., (wakeyUp-wakeDown)/nTrailingEdge);
-LineEdge Cedge16(pts[0],  pts[14], nLayers, QUDREFINE0, (wakeyUp-wakeDown)/nTrailingEdge, 0.);
-LineEdge Cedge17(pts[14], pts[15], nWake, QUDREFINE1, 0., hTrailingEdge);
+LineEdge Cedge14(pts[12], pts[13], nWake, BOUNDARYLAYER0, hTrailingEdge+hFirstLayer, 2., 2, 0., 0., 0);
+LineEdge Cedge15(pts[13],  pts[1], nLayers1-1, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer*progress, progress, (nLayers1-1)*2/3);
+LineEdge Cedge16(pts[0],  pts[14], nLayers7-1, BOUNDARYLAYER0, hFirstLayer*progress, progress, (nLayers7-1)*2/3, 0., 0., 0);
+LineEdge Cedge17(pts[14], pts[15], nWake, BOUNDARYLAYER1, 0., 0., 0, hTrailingEdge+hFirstLayer, 2., 2);
 std::vector<double> edge14(double s) {
     return Cedge14.Evaluate(s);
 }
@@ -221,20 +250,28 @@ std::vector<double> edge17(double s) {
     return Cedge17.Evaluate(s);
 }
 // imaged edge
-LineEdge Cedge13(pts[2], pts[12], nLayers,  UNIFORM, 0., 0.);
-LineEdge Cedge18(pts[15], pts[7], nLayers, UNIFORM, 0., 0.);
+LineEdge Cedge13(pts[2], pts[12], nLayers1-1,  UNIFORM, 0., 0.);
+LineEdge Cedge18(pts[15], pts[7], nLayers7-1, UNIFORM, 0., 0.);
 vector<double> norm13(2,0.);
 vector<double> norm18(2,0.);
 std::vector<double> edge13(double s) {
+    setRadiusLayers(nLayers1);
     vector<double> res(2);
-    res[0] = pts[2][0] + radiusEdge(s)[0]*norm13[0];
-    res[1] = pts[2][1] + radiusEdge(s)[0]*norm13[1];
+    double h0 = radiusEdge(2./nLayers1 - 1.)[0];
+    s = (s+1.)*(1.-1./nLayers1) + 2./nLayers1 - 1.;
+    double h = radiusEdge(s)[0]-h0;
+    res[0] = pts[2][0] + h*norm13[0];
+    res[1] = pts[2][1] + h*norm13[1];
     return res;
 }
 std::vector<double> edge18(double s) {
+    setRadiusLayers(nLayers7);
     vector<double> res(2);
-    res[0] = pts[7][0] + radiusEdge(s)[0]*norm18[0];
-    res[1] = pts[7][1] + radiusEdge(s)[0]*norm18[1];
+    double h0 = radiusEdge(2./nLayers7 - 1.)[0];
+    s = (s+1.)*(1.-1./nLayers7) + 2./nLayers7 - 1.;
+    double h = radiusEdge(s)[0]-h0;
+    res[0] = pts[7][0] + h*norm18[0];
+    res[1] = pts[7][1] + h*norm18[1];
     return res;
 }
 // straight edges in the far wake
@@ -253,5 +290,19 @@ std::vector<double> edge21(double s) {
 }
 std::vector<double> edge22(double s) {
     return Cedge22.Evaluate(s);
+}
+
+//trailing edge
+LineEdge Cedgeb2_2(virtualpts[2], pts[2], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeb7_7(virtualpts[7], pts[7], 1, UNIFORM, 0., 0.);
+LineEdge Cedgeb2_b7(virtualpts[7], virtualpts[2], nTrailingEdge, UNIFORM, 0., 0.);
+std::vector<double> edgeb2_2(double s) {
+    return Cedgeb2_2.Evaluate(s);
+}
+std::vector<double> edgeb7_7(double s) {
+    return Cedgeb7_7.Evaluate(s);
+}
+std::vector<double> edgeb2_b7(double s) {
+    return Cedgeb2_b7.Evaluate(s);
 }
 #endif
