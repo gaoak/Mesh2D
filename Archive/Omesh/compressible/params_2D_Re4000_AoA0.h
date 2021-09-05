@@ -3,7 +3,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-static double FOILAOA = 15.;// AoA
+static double FOILAOA = 0.;// AoA
 static double FOILM   = 0.; // NACA 0
 static double FOILP   = 0.; // 0
 static double FOILT   = 12.;// 12
@@ -62,7 +62,7 @@ int nBoxDown = 70;
 
 int nFarWakex = 50;
 int nFarWakey = 50;
-double farWakeAoA = 4./180.*M_PI;
+double farWakeAoA = 0./180.*M_PI;
 double wakeDiffuseAngle = 8./180.*M_PI;
 double farWakeRight = 2.5;
 double farWakeUp = 0.5;
