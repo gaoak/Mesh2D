@@ -11,7 +11,7 @@ double theta5 = 0.75*M_PI;
 double theta4 = 1.25*M_PI;
 double theta33 = 1.75*M_PI;
 
-double hFirstLayer = 0.03;
+double hFirstLayer = 0.005;
 double progress = 1.2;
 double rBoundaryLayer2 = 1.;
 double rBoundaryLayer3 = 1.;
@@ -27,17 +27,17 @@ int Ncyl5 = 24;
 // geometry infomation
 double chordLen= 1.;
 
-double xBoxLeft = -30.;
-double xBoxRight = 30.;
-double yBoxUp = 30.;
-double yBoxDown = -30.;
-int nBoxLeft = 16;
-int nBoxRight = 16;
-int nBoxUp = 16;
-int nBoxDown = 16;
+double xBoxLeft = -40.;
+double xBoxRight = 60.;
+double yBoxUp = 40.;
+double yBoxDown = -40.;
+int nBoxLeft = 20;
+int nBoxRight = 20;
+int nBoxUp = 20;
+int nBoxDown = 20;
 
-int nFarWakex = 44;
-int nFarWakey = 40;
+int nFarWakex = 80;
+int nFarWakey = 60;
 double farWakeAoA = 0./180.*M_PI;
 double wakeDiffuseAngle = 5./180.*M_PI;
 double farWakeRight = 20.;
