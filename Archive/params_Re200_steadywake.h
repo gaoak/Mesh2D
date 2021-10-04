@@ -28,7 +28,7 @@ int Ncyl5 = 24;
 double chordLen= 1.;
 
 double xBoxLeft = -30.;
-double xBoxRight = 30.;
+double xBoxRight = 40.;
 double yBoxUp = 30.;
 double yBoxDown = -30.;
 int nBoxLeft = 16;
