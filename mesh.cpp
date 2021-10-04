@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
     if(merge) {
         combinedReg.AddRegion(FarFieldReg);
         MeshRegions gmshReg("R_gmsh_", 1.E-8);
-        gmshReg.loadFromMsh(mshfilename, 135./180.*3.14159);
+        gmshReg.loadFromMsh(mshfilename, 120./180.*3.14159);
         cout << "load " << mshfilename << endl;
         vector<int> comp1;
         comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
