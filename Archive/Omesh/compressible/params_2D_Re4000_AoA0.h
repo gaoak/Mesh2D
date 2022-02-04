@@ -3,7 +3,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-static double FOILAOA = 20.;// AoA
+static double FOILAOA = 0.;// AoA
 static double FOILM   = 0.; // NACA 0
 static double FOILP   = 0.; // 0
 static double FOILT   = 12.;// 12
@@ -22,15 +22,15 @@ double infoilRatio = 0.03;
 
 double hFirstLayer = 0.005;
 double progress = 1.2;
-double rBoundaryLayer  = 0.8;
-double rBoundaryLayer1 = 0.8;
-double rBoundaryLayer2 = 0.8;
-double rBoundaryLayer3 = 0.8;
-double rBoundaryLayer4 = 0.8;
-double rBoundaryLayer5 = 0.8;
-double rBoundaryLayer6 = 0.8;
-double rBoundaryLayer7 = 0.8;
-double maxLayerh = 0.05;
+double rBoundaryLayer  = 0.3;
+double rBoundaryLayer1 = 0.3;
+double rBoundaryLayer2 = 0.3;
+double rBoundaryLayer3 = 0.3;
+double rBoundaryLayer4 = 0.3;
+double rBoundaryLayer5 = 0.3;
+double rBoundaryLayer6 = 0.3;
+double rBoundaryLayer7 = 0.3;
+double maxLayerh = 0.015;
 
 double chordLen= 1.;
 double xmidLow1 = 0.2;
@@ -39,34 +39,34 @@ double xmidLow2 = 0.006;
 double growthrateLow2 = 1.3;
 double xmidUp2 = 0.006;
 double growthrateUp2 = 1.3;
-int nLow1 = 28;
-int nLow2 = 13;
-int nUp1 = 28;
-int nUp2 = 13;
-int nFront = 12;
+int nLow1 = 64;
+int nLow2 = 26;
+int nUp1 = 64;
+int nUp2 = 26;
+int nFront = 20;
 
 double wakeLen = 0.08;
 double wakeyUp  = 0.06*Thickness;
 double wakeDown =-0.06*Thickness;
-int nWake = 4;
+int nWake = 6;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -40.;
 double xBoxRight = 60.;
 double yBoxUp = 40.;
 double yBoxDown = -40.;
-int nBoxLeft = 10;
-int nBoxRight = 10;
-int nBoxUp = 10;
-int nBoxDown = 10;
+int nBoxLeft = 56;
+int nBoxRight = 56;
+int nBoxUp = 70;
+int nBoxDown = 70;
 
-int nFarWakex = 100;
+int nFarWakex = 50;
 int nFarWakey = 50;
-double farWakeAoA = 10./180.*M_PI;
-double wakeDiffuseAngle = 14./180.*M_PI;
-double farWakeRight = 20.;
-double farWakeUp = 1.5;
-double farWakeDown = -1.5;
+double farWakeAoA = 0./180.*M_PI;
+double wakeDiffuseAngle = 8./180.*M_PI;
+double farWakeRight = 2.5;
+double farWakeUp = 0.5;
+double farWakeDown = -0.5;
 
 int curvedpts = 6;
 #endif

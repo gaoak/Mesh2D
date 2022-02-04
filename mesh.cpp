@@ -122,28 +122,31 @@ int meshingNearBody(MeshRegions &combinedReg)
     Rects.push_back(RectRegion(edges0, "Rwall2", false));
     setRadiusLayers(nLayers2);
     Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false, hFirstLayer,0.);
-    Rects[Rects.size()-1].Tec360Pts("test2.dat");
+    Rects[Rects.size()-1].Tec360Pts("test0.dat");
     // edge 3
     edges0[0] = (void*)edge3;
     Rects.push_back(RectRegion(edges0, "Rwall3", false));
     setRadiusLayers(nLayers3);
     Rects[Rects.size()-1].MeshGen(Cedge3.m_N, nLayers3, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].Tec360Pts("test1.dat");
     // edge 4
     edges0[0] = (void*)edge4;
     Rects.push_back(RectRegion(edges0, "Rwall4", false));
     setRadiusLayers(nLayers4);
     Rects[Rects.size()-1].MeshGen(Cedge4.m_N, nLayers4, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].Tec360Pts("test3.dat");
     // edge 5
     edges0[0] = (void*)edge5;
     Rects.push_back(RectRegion(edges0, "Rwall5", false));
     setRadiusLayers(nLayers5);
     Rects[Rects.size()-1].MeshGen(Cedge5.m_N, nLayers5, eBoundaryLayer1, false);
+    Rects[Rects.size()-1].Tec360Pts("test4.dat");
     // edge 6
     edges0[0] = (void*)edge6;
     Rects.push_back(RectRegion(edges0, "Rwall6", false));
     setRadiusLayers(nLayers6);
     Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false, 0., hFirstLayer);
-    Rects[Rects.size()-1].Tec360Pts("test6.dat");
+    Rects[Rects.size()-1].Tec360Pts("test5.dat");
 
     //give the normal direction, and points 12, 15
     vector<double> p1  = Rects[Rects.size()-1].getVertexOffset(1);
@@ -187,7 +190,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges2.push_back((void*)edge13);
     Rects.push_back(RectRegion(edges2, "RTrailDown"));
     Rects[Rects.size()-1].MeshGen(Cedge14.m_N, Cedge15.m_N);
-    Rects[Rects.size()-1].Tec360Pts("test1.dat");
+    Rects[Rects.size()-1].Tec360Pts("test6.dat");
     //region 3
     std::vector<void*> edges3;
     edges3.push_back((void*)edge7);
@@ -196,7 +199,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges3.push_back((void*)edge18);
     Rects.push_back(RectRegion(edges3, "RTrailUp"));
     Rects[Rects.size()-1].MeshGen(Cedge7.m_N, Cedge16.m_N);
-    Rects[Rects.size()-1].Tec360Pts("test3.dat");
+    Rects[Rects.size()-1].Tec360Pts("test7.dat");
     //regin trailing edge
     std::vector<void*> edgest;
     edgest.push_back((void*)edge8);
@@ -205,7 +208,7 @@ int meshingNearBody(MeshRegions &combinedReg)
     edgest.push_back((void*)edgeb2_2);
     Rects.push_back(RectRegion(edgest, "R_wake_Up"));
     Rects[Rects.size()-1].MeshGen(Cedge8.m_N, Cedgeb7_7.m_N);
-    Rects[Rects.size()-1].Tec360Pts("test4.dat");
+    Rects[Rects.size()-1].Tec360Pts("test8.dat");
     
     ///////////// combine the near field mesh
     for(unsigned int i=0; i<Rects.size(); ++i) {
@@ -249,6 +252,7 @@ int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p)
     edges.push_back(EAD);
     RectRegion pic9 = RectRegion(edges, "pic");
     pic9.MeshGen(1, Cedge9.m_N);
+    pic9.Tec360Pts("pic9.dat");
     combinedReg.AddRegion(pic9);
     // left  edge
     vector<vector<double> > EH10;
@@ -273,6 +277,7 @@ int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p)
     edges.push_back(EHE);
     RectRegion pic11 = RectRegion(edges, "pic");
     pic11.MeshGen(1, Cedge11.m_N);
+    pic11.Tec360Pts("pic11.dat");
     combinedReg.AddRegion(pic11);
     // upper edge
     vector<double> pB = EAD[1];
@@ -307,6 +312,7 @@ int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p)
     edges.push_back(ECG);
     RectRegion pic10 = RectRegion(edges, "pic");
     pic10.MeshGen(1, Cedge10.m_N-2);
+    pic10.Tec360Pts("pic10.dat");
     combinedReg.AddRegion(pic10);
     // lower edge
     vector<vector<double> > EAE;
@@ -337,6 +343,7 @@ int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p)
     edges.push_back(EAE);
     RectRegion pic12 = RectRegion(edges, "pic");
     pic12.MeshGen(1, Cedge12.m_N-2);
+    pic12.Tec360Pts("pic12.dat");
     combinedReg.AddRegion(pic12);
     //
     p = pC;
@@ -370,6 +377,7 @@ int meshingWake(MeshRegions &combinedReg)
     RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
     farwakeRegion.MeshGen(Cedge19.m_N, Cedge20.m_N);
     farwakeRegion.transformation(farWakeAoA);
+    farwakeRegion.Tec360Pts("testfarwake.dat");
     //////////////combine region//////////
     combinedReg.AddRegion(farwakeRegion);
     return 0;

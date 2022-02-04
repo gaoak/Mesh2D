@@ -10,6 +10,6 @@
     ${GMSHBIN}gmsh airfoil.geo  -2 -algo meshadapt -clscale 10  >> logmesh.dat
     ./mesh-g wake merge FarField.msh airfoil.msh
     rm *plt *vtu
-    $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
-    $NEKBIN/FieldConvert outerRegion_Otip.xml outerRegion_Otip.plt
-    $NEKBIN/FieldConvert inFoil.xml inFoil.plt
+    $NEKBIN/FieldConvert outerRegion.xml outerRegion.vtu
+    $NEKBIN/FieldConvert outerRegion_Otip.xml outerRegion_Otip.vtu
+    $NEKBIN/FieldConvert inFoil.xml inFoil.vtu
