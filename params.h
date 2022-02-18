@@ -61,11 +61,11 @@ int nBoxRight = 4;
 int nBoxUp = 5;
 int nBoxDown = 5;
 
-int nFarWakex = 20;
+int nFarWakex = 30;
 int nFarWakey = 33;
 double farWakeAoA = 13./180.*M_PI;
 double wakeDiffuseAngle = 18./180.*M_PI;
-double farWakeRight = 4.;
+double farWakeRight = 5.5;
 double farWakeUp = 1.5;
 double farWakeDown = -1.2;
 
