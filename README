@@ -5,6 +5,7 @@ to use:
 
 git clone https://github.com/gaoak/Mesh2D.git
 cd Mesh2D
+git checkout multiseg
 git submodule init
 git submodule update
 
