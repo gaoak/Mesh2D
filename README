@@ -1,2 +1,15 @@
 This branch generates 2D airfoil mesh or auxilliary 2D for 3D wing meshing
 20200710 generate 2D base mesh for 3D extruded and glued mesh.
+
+to use:
+
+git clone https://github.com/gaoak/Mesh2D.git
+cd Mesh2D
+git submodule init
+git submodule update
+
+To generate 2D mesh
+bash make.sh
+
+To generate 3D mesh, first do
+bash extrude.sh
