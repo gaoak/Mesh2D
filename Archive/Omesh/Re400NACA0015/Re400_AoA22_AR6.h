@@ -75,7 +75,8 @@ int wingn = 44 ;//elements over wing span
 int wingnrefine = 20;//elements over wing refined region
 int tipn  =  8 ;//elements over the tip
 int tipnrefine = 6;//elements over tip refined region
-double tiprefinelength = 2.5 ;//length of refined region
+double wingrefinelength = 2.5 ;//length of refined region
+double tiprefinelength = 1.5 ;//length of refined region
 double spanlength = 6.;//wing span
 double domainz = 16.;//domain size
 #define  SWEPTANGLE 0
