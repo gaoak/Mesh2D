@@ -15,13 +15,13 @@ double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.01;
-double hFirstLayerInFoil = 0.02;
+double hFirstLayerInFoil = 0.01;
 double progressInFoil = 1.6;
 double rBoundaryLayerInFoil = 1.;
 double maxLayerhInFoil = 0.04;
 double infoilRatio = 0.03;
 
-double hFirstLayer = 0.02;
+double hFirstLayer = 0.01;
 double progress = 1.3;
 double rBoundaryLayer = 0.2;
 double rBoundaryLayer1 = 0.2;
@@ -65,16 +65,16 @@ int nFarWakex = 41;
 int nFarWakey = 18;
 double farWakeAoA = 2./180.*M_PI;
 double wakeDiffuseAngle = 8./180.*M_PI;
-double farWakeRight = 15.;
+double farWakeRight = 12.;
 double farWakeUp = 0.8;
 double farWakeDown = -1.2;
 
 int curvedpts = 6;
 // 3D geometry infomation
-int wingn = 40 ;//elements over wing span
+int wingn = 44 ;//elements over wing span
 int wingnrefine = 20;//elements over wing refined region
-int tipn  =  12 ;//elements over the tip
-int tipnrefine = 10;//elements over tip refined region
+int tipn  =  8 ;//elements over the tip
+int tipnrefine = 6;//elements over tip refined region
 double tiprefinelength = 2.5 ;//length of refined region
 double spanlength = 6.;//wing span
 double domainz = 16.;//domain size
