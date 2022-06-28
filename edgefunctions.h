@@ -25,8 +25,9 @@ int nLayers5 = findNlayers(hFirstLayer, progress, rBoundaryLayer5, maxLayerh);
 int nLayers6 = findNlayers(hFirstLayer, progress, rBoundaryLayer6, maxLayerh);
 int nLayers7 = findNlayers(hFirstLayer, progress, rBoundaryLayer7, maxLayerh);
 
-NACAmpxx naca(chamber, chamberp, Thickness);
-int nTrailingEdge = std::max(2, (int)ceil( (naca.up(chordLen)[1] - naca.down(chordLen)[1])/hFirstLayer) );
+SplineEdge upper("data/clarky_up.dat");
+SplineEdge lower("data/clarky_low.dat");
+int nTrailingEdge = std::max(2, (int)ceil( (upper.Evaluate(chordLen)[1] - lower.Evaluate(chordLen)[1])/hFirstLayer) );
 double pts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
@@ -84,23 +85,23 @@ int InitPts(){
     pts[1][0] = chordLen + wakeLen;
     pts[1][1] = wakeDown;
     
-    pts[2][0] = naca.down(chordLen)[0];
-    pts[2][1] = naca.down(chordLen)[1];
+    pts[2][0] = lower.Evaluate(chordLen)[0];
+    pts[2][1] = lower.Evaluate(chordLen)[1];
     
-    pts[3][0] = naca.down(xmidLow1)[0];
-    pts[3][1] = naca.down(xmidLow1)[1];
+    pts[3][0] = lower.Evaluate(xmidLow1)[0];
+    pts[3][1] = lower.Evaluate(xmidLow1)[1];
     
-    pts[4][0] = naca.down(xmidLow2)[0];
-    pts[4][1] = naca.down(xmidLow2)[1];
+    pts[4][0] = lower.Evaluate(xmidLow2)[0];
+    pts[4][1] = lower.Evaluate(xmidLow2)[1];
     
-    pts[5][0] = naca.up(xmidUp2)[0];
-    pts[5][1] = naca.up(xmidUp2)[1];
+    pts[5][0] = upper.Evaluate(xmidUp2)[0];
+    pts[5][1] = upper.Evaluate(xmidUp2)[1];
     
-    pts[6][0] = naca.up(xmidUp1)[0];
-    pts[6][1] = naca.up(xmidUp1)[1];
+    pts[6][0] = upper.Evaluate(xmidUp1)[0];
+    pts[6][1] = upper.Evaluate(xmidUp1)[1];
     
-    pts[7][0] = naca.up(chordLen)[0];
-    pts[7][1] = naca.up(chordLen)[1];
+    pts[7][0] = upper.Evaluate(chordLen)[0];
+    pts[7][1] = upper.Evaluate(chordLen)[1];
     
     pts[8][0] = xBoxRight;
     pts[8][1] = yBoxDown;
@@ -128,28 +129,22 @@ int InitPts(){
     virtualpts[7][1] = pts[7][1];
 
     virtualpts[3][0] = xmidLow1;
-    virtualpts[3][1] = naca.up(xmidLow1)[1];
+    virtualpts[3][1] = lower.Evaluate(xmidLow1)[1];
 
     virtualpts[4][0] = xmidLow2;
-    virtualpts[4][1] = naca.up(xmidLow2)[1];
+    virtualpts[4][1] = lower.Evaluate(xmidLow2)[1];
 
     virtualpts[5][0] = xmidUp2;
-    virtualpts[5][1] = naca.up(xmidUp2)[1];
+    virtualpts[5][1] = upper.Evaluate(xmidUp2)[1];
 
     virtualpts[6][0] = xmidUp1;
-    virtualpts[6][1] = naca.up(xmidUp1)[1];
+    virtualpts[6][1] = upper.Evaluate(xmidUp1)[1];
     return 0;
 }
 
-std::vector<double> roundTrailingEdge(std::vector<double> p)
-{
-	//return p;
-    return naca.roundTrailingEdge(p);
-}
-
-double sFrontUp = naca.finds(xmidUp2,    1);
-double sFrontLow = naca.finds(xmidLow2, -1);
-double smid1= naca.finds(chordLen, 1) - naca.finds(xmidUp1, 1);
+double sFrontUp  = upper.finds(xmidUp2,  0);
+double sFrontLow = lower.finds(xmidLow2, 0);
+double smid1= upper.finds(chordLen, 0) - upper.finds(xmidUp1, 0);
 
 CompositEdge CinnerEdge;
 std::vector<double> innerEdge(double s) {
@@ -157,7 +152,7 @@ std::vector<double> innerEdge(double s) {
 }
 
 // airfoil surfaces
-double hTrailingEdge = naca.roundTrailingSize();
+double hTrailingEdge = upper.Evaluate(chordLen)[1] - lower.Evaluate(chordLen)[1];
 LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1 , BOUNDARYLAYER0, hTrailingEdge, (hTrailingEdge+hFirstLayer)/hTrailingEdge, 5, 0., 0., 0);
 LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2 , BOUNDARYLAYER1, 0., 0., 0, (sFrontUp+sFrontLow)/nFront, growthrateLow2, std::min(10, nLow2-1) );
 LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
@@ -166,30 +161,28 @@ LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1  , BOUNDARYLAYER1, 0., 0., 0,
 std::vector<double> edge2(double s)
 {
 	std::vector<double> res = Cedge2.Evaluate(s);
-	return naca.down(res[0]);
+	return lower.Evaluate(res[0]);
 }
 std::vector<double> edge3(double s)
 {
 	std::vector<double> res = Cedge3.Evaluate(s);
-	return naca.down(res[0]);
+	return lower.Evaluate(res[0]);
 }
 std::vector<double> edge5(double s)
 {
 	std::vector<double> res = Cedge5.Evaluate(s);
-	return naca.up(res[0]);
+	return upper.Evaluate(res[0]);
 }
 std::vector<double> edge6(double s)
 {
 	std::vector<double> res = Cedge6.Evaluate(s);
-	return naca.up(res[0]);
+	return upper.Evaluate(res[0]);
 }
 std::vector<double> edge4(double s)
 {
-	double ys = -sqrt(xmidLow2), ye = sqrt(xmidUp2);
-	s = ys + (s+1.)*(ye-ys)/2.;
-	double x = s*s;
-    if(s<0.) return naca.down(x);
-    else     return naca.up(x);
+	std::vector<double> res = Cedge4.Evaluate(s);
+    if(res[1]<0.00047) return lower.Evaluate(res[1], 1);
+    else     return upper.Evaluate(res[1], 1);
 }
 
 // straight edges around the airfoil

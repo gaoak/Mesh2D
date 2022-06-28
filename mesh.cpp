@@ -7,6 +7,7 @@
 #include"CAD2D/RectRegion.h"
 #include"CAD2D/LineEdge.h"
 #include"CAD2D/airfoil.h"
+#include"CAD2D/SplineEdge.h"
 using namespace std;
 
 #include"edgefunctions.h"
@@ -214,7 +215,6 @@ int meshingNearBody(MeshRegions &combinedReg)
     for(unsigned int i=0; i<Rects.size(); ++i) {
     	combinedReg.AddRegion(Rects[i]);
     }
-    combinedReg.RemapPts((void*)roundTrailingEdge);
     return 0;
 }
 
@@ -600,12 +600,12 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     vector<int> comp3;
     comp3.push_back(0);
     //wall
-    combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1);
     combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
     combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
     combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
-    combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1, (void*)roundTrailingEdge);
-    combinedReg.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0,  curvedpts, AoA, 1, (void*)roundTrailingEdge);
+    combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1);
+    combinedReg.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0,  curvedpts, AoA, 1);
     //inlet
     combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
     //outlet
@@ -621,12 +621,12 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     vector<int> comp4;
     comp4.push_back(0);
     //wall
-    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edge2, Cedge2.m_N, 0, 2, AoA, 1);
     inFoilRegion.defineBoundary((void*)edge3, Cedge3.m_N, 0, 2, AoA);
     inFoilRegion.defineBoundary((void*)edge4, Cedge4.m_N, 0, 2, AoA);
     inFoilRegion.defineBoundary((void*)edge5, Cedge5.m_N, 0, 2, AoA);
-    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
-    inFoilRegion.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, 2, AoA, 1, (void*)roundTrailingEdge);
+    inFoilRegion.defineBoundary((void*)edge6, Cedge6.m_N, 0, 2, AoA, 1);
+    inFoilRegion.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0, 2, AoA, 1);
     //output
     inFoilRegion.outXml("inFoil.xml");
     inFoilRegion.outCOMPO("inFoil.xml", comp4);
