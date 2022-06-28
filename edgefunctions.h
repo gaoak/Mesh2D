@@ -25,8 +25,8 @@ int nLayers5 = findNlayers(hFirstLayer, progress, rBoundaryLayer5, maxLayerh);
 int nLayers6 = findNlayers(hFirstLayer, progress, rBoundaryLayer6, maxLayerh);
 int nLayers7 = findNlayers(hFirstLayer, progress, rBoundaryLayer7, maxLayerh);
 
-SplineEdge upper("data/clarky_up.dat");
-SplineEdge lower("data/clarky_low.dat");
+SplineEdge upper("data/uppersurface");
+SplineEdge lower("data/lowersurface");
 int nTrailingEdge = std::max(2, (int)ceil( (upper.Evaluate(chordLen)[1] - lower.Evaluate(chordLen)[1])/hFirstLayer) );
 double pts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
