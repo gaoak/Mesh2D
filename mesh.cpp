@@ -37,16 +37,16 @@ int main(int argc, char* argv[])
         }
     }
     /// initialize
-    MeshRegions combinedReg("R_Comb_", 1.E-6);
-    MeshRegions nearFieldReg("R_NearField_", 1.E-6);
-    MeshRegions nearWallRegion("R_NearField_", 1.E-6);
-    MeshRegions inFoilRegion("R_inFoil_", 1.E-6);
+    MeshRegions combinedReg("R_Comb_", 3.E-5);
+    MeshRegions nearFieldReg("R_NearField_", 5.E-5);
+    MeshRegions nearWallRegion("R_NearField_", 3.E-5);
+    MeshRegions inFoilRegion("R_inFoil_", 3.E-5);
     InitPts();
     cout << "start meshing --------" << endl;
     meshingNearBody(combinedReg);
     nearWallRegion.AddRegion(combinedReg);
     combinedReg.transformation(AoA);
-    MeshRegions FarFieldReg("RFar", 1.E-6);
+    MeshRegions FarFieldReg("RFar", 3.E-5);
     vector<double> pC;
     meshingOuterBoundary(FarFieldReg, pC);
     if(withwake) meshingWake(combinedReg);
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     // step 2 import mesh
     if(merge) {
         combinedReg.AddRegion(FarFieldReg);
-        MeshRegions gmshReg("R_gmsh_", 1.E-8);
+        MeshRegions gmshReg("R_gmsh_", 3.E-5);
         gmshReg.loadFromMsh(mshfilename, 135./180.*3.14159);
         cout << "load " << mshfilename << endl;
         vector<int> comp1;
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
         }
         combinedReg.AddRegion(gmshReg);
         //in airfoil mesh
-        MeshRegions gmshInFoil1("R_gmsh1_", 1.E-8);
+        MeshRegions gmshInFoil1("R_gmsh1_", 3.E-5);
         gmshInFoil1.loadFromMsh(mshinfoilfilename1, 135./180.*3.14159);
         cout << "load " << mshinfoilfilename1 << endl;
         if(!nearWallRegion.consistancyCheck(gmshInFoil1)) {
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
             return -1;
         }
         inFoilRegion.AddRegion(gmshInFoil1);
-        MeshRegions gmshInFoil2("R_gmsh2_", 1.E-8);
+        MeshRegions gmshInFoil2("R_gmsh2_", 3.E-5);
         gmshInFoil2.loadFromMsh(mshinfoilfilename2, 135./180.*3.14159);
         cout << "load " << mshinfoilfilename2 << endl;
         if(!nearWallRegion.consistancyCheck(gmshInFoil2)) {
@@ -398,7 +398,7 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
     }
     int nWallPts = boundary[wallID].size();
     vector<int> layersInFoil(nWallPts, 0);
-    
+
     for(int i=1; i<nWallPts-1; ++i) {
         if(nearWallRegion.m_pts[boundary[wallID][i]][0] < xInFoil) continue;
         double length = fabs(nearWallRegion.m_pts[boundary[wallID][i]][1]) - infoilRatio*fabs(nearWallRegion.m_pts[boundary[wallID][i+1]][0] - nearWallRegion.m_pts[boundary[wallID][i]][0]);
@@ -560,8 +560,6 @@ int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, ve
     transform(breakpts[1], AoA);
     return 0;
 }
-
-
 
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
 {
