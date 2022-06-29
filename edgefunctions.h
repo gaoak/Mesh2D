@@ -128,16 +128,16 @@ int InitPts(){
     virtualpts[7][0] = pts[7][0];
     virtualpts[7][1] = pts[7][1];
 
-    virtualpts[3][0] = xmidLow1;
+    virtualpts[3][0] = lower.Evaluate(xmidLow1)[0];
     virtualpts[3][1] = lower.Evaluate(xmidLow1)[1];
 
-    virtualpts[4][0] = xmidLow2;
+    virtualpts[4][0] = lower.Evaluate(xmidLow2)[0];
     virtualpts[4][1] = lower.Evaluate(xmidLow2)[1];
 
-    virtualpts[5][0] = xmidUp2;
+    virtualpts[5][0] = upper.Evaluate(xmidUp2)[0];
     virtualpts[5][1] = upper.Evaluate(xmidUp2)[1];
 
-    virtualpts[6][0] = xmidUp1;
+    virtualpts[6][0] = upper.Evaluate(xmidUp1)[0];
     virtualpts[6][1] = upper.Evaluate(xmidUp1)[1];
     return 0;
 }
@@ -182,15 +182,9 @@ std::vector<double> edge4(double s)
 {
     std::vector<double> LE{0, 0.00047};
     std::vector<double> res = Cedge4.Evaluate(s);
-    std::vector<double> p;
-    double ys = -sqrt(xmidLow2), ye = sqrt(xmidUp2);
-	double tmp = ys + (s+1.)*(ye-ys)/2.;
-	res[0] = tmp*tmp;
-    int d = 1;
-    if(1. - abs(s) < 1.1E-4) d = 0;
-    if(res[1]<=LE[1]) p = lower.Evaluate(res[d], d);
-    else     p = upper.Evaluate(res[d], d);
-    return p;
+    if(res[1]<=LE[1]) res = lower.Evaluate(res[1], 1);
+    else     res = upper.Evaluate(res[1], 1);
+    return res;
 }
 
 // straight edges around the airfoil
