@@ -1,17 +1,15 @@
-//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
+//for 3D simulation of Re10000, k2, A=0.1, mesh is reduced to extreme,
 //flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-
-#define FOILAOA 0
-#define FOILM 0
-#define FOILP 0
-#define FOILT 11.7
-
+#ifndef FOILAOA
+    #define FOILAOA 4
+#endif
+#ifndef FOILT
+    #define FOILT 11.7
+#endif
 double AoA = FOILAOA/180.*M_PI;
-double chamber = FOILM*0.01;
-double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.01;
@@ -28,9 +26,9 @@ double rBoundaryLayer1 = 0.2;
 double rBoundaryLayer2 = 0.2;
 double rBoundaryLayer3 = 0.2;
 double rBoundaryLayer4 = 0.2;
-double rBoundaryLayer5 = 0.2;
-double rBoundaryLayer6 = 0.2;
-double rBoundaryLayer7 = 0.2;
+double rBoundaryLayer5 = 0.3;
+double rBoundaryLayer6 = 0.3;
+double rBoundaryLayer7 = 0.3;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;

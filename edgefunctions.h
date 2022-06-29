@@ -181,8 +181,13 @@ std::vector<double> edge6(double s)
 std::vector<double> edge4(double s)
 {
 	std::vector<double> res = Cedge4.Evaluate(s);
-    if(res[1]<0.00047) return lower.Evaluate(res[1], 1);
-    else     return upper.Evaluate(res[1], 1);
+    int d = 1;
+    std::vector<double> p;
+    if(1. - abs(s) < 1E-10) d = 0;
+    if(res[1]<0.00047) p = lower.Evaluate(res[d], d);
+    else     p = upper.Evaluate(res[d], d);
+    std::cout << "edge4 pts: (" << res[0] << "," << res[1] << "): " << p[0] << "," << p[1] << std::endl;
+    return p;
 }
 
 // straight edges around the airfoil

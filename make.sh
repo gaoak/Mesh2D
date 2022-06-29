@@ -12,4 +12,4 @@
     rm *plt *vtu
     $NEKBIN/FieldConvert outerRegion.xml outerRegion.plt
     $NEKBIN/FieldConvert outerRegion_Otip.xml outerRegion_Otip.plt
-    $NEKBIN/FieldConvert inFoil.xml inFoil.plt
+    #$NEKBIN/FieldConvert inFoil.xml inFoil.plt
