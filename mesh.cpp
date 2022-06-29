@@ -123,31 +123,31 @@ int meshingNearBody(MeshRegions &combinedReg)
     edges0.push_back((void*)edge0);
     Rects.push_back(RectRegion(edges0, "Rwall2", false));
     setRadiusLayers(nLayers2);
-    Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer0, false, hFirstLayer,0.);
+    Rects[Rects.size()-1].MeshGen(Cedge2.m_N, nLayers2, eBoundaryLayer1, false, hFirstLayer,0.);
     Rects[Rects.size()-1].Tec360Pts("test0.dat");
     // edge 3
     edges0[0] = (void*)edge3;
     Rects.push_back(RectRegion(edges0, "Rwall3", false));
     setRadiusLayers(nLayers3);
-    Rects[Rects.size()-1].MeshGen(Cedge3.m_N, nLayers3, eBoundaryLayer0, false);
+    Rects[Rects.size()-1].MeshGen(Cedge3.m_N, nLayers3, eBoundaryLayer1, false);
     Rects[Rects.size()-1].Tec360Pts("test1.dat");
     // edge 4
     edges0[0] = (void*)edge4;
     Rects.push_back(RectRegion(edges0, "Rwall4", false));
     setRadiusLayers(nLayers4);
-    Rects[Rects.size()-1].MeshGen(Cedge4.m_N, nLayers4, eBoundaryLayer0, false);
+    Rects[Rects.size()-1].MeshGen(Cedge4.m_N, nLayers4, eBoundaryLayer1, false);
     Rects[Rects.size()-1].Tec360Pts("test3.dat");
     // edge 5
     edges0[0] = (void*)edge5;
     Rects.push_back(RectRegion(edges0, "Rwall5", false));
     setRadiusLayers(nLayers5);
-    Rects[Rects.size()-1].MeshGen(Cedge5.m_N, nLayers5, eBoundaryLayer0, false);
+    Rects[Rects.size()-1].MeshGen(Cedge5.m_N, nLayers5, eBoundaryLayer1, false);
     Rects[Rects.size()-1].Tec360Pts("test4.dat");
     // edge 6
     edges0[0] = (void*)edge6;
     Rects.push_back(RectRegion(edges0, "Rwall6", false));
     setRadiusLayers(nLayers6);
-    Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer0, false, 0., hFirstLayer);
+    Rects[Rects.size()-1].MeshGen(Cedge6.m_N, nLayers6, eBoundaryLayer1, false, 0., hFirstLayer);
     Rects[Rects.size()-1].Tec360Pts("test5.dat");
 
     //give the normal direction, and points 12, 15
@@ -601,9 +601,7 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
     //wall
     combinedReg.defineBoundary((void*)edge2, Cedge2.m_N, 0, curvedpts, AoA, 1);
     combinedReg.defineBoundary((void*)edge3, Cedge3.m_N, 0, curvedpts, AoA);
-    std::cout << "===================curved edge4================" << std::endl;
     combinedReg.defineBoundary((void*)edge4, Cedge4.m_N, 0, curvedpts, AoA);
-    std::cout << "!!!!!!!!!!!!!!!!!!!curved edge4!!!!!!!!!!!!!!!!" << std::endl;
     combinedReg.defineBoundary((void*)edge5, Cedge5.m_N, 0, curvedpts, AoA);
     combinedReg.defineBoundary((void*)edge6, Cedge6.m_N, 0, curvedpts, AoA, 1);
     combinedReg.defineBoundary((void*)edgeb2_b7, Cedgeb2_b7.m_N, 0,  curvedpts, AoA, 1);
