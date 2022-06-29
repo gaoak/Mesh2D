@@ -180,13 +180,16 @@ std::vector<double> edge6(double s)
 }
 std::vector<double> edge4(double s)
 {
-	std::vector<double> res = Cedge4.Evaluate(s);
-    int d = 1;
+    std::vector<double> LE{0, 0.00047};
+    std::vector<double> res = Cedge4.Evaluate(s);
     std::vector<double> p;
-    if(1. - abs(s) < 1E-10) d = 0;
-    if(res[1]<0.00047) p = lower.Evaluate(res[d], d);
+    double ys = -sqrt(xmidLow2), ye = sqrt(xmidUp2);
+	double tmp = ys + (s+1.)*(ye-ys)/2.;
+	res[0] = tmp*tmp;
+    int d = 1;
+    if(1. - abs(s) < 1.1E-4) d = 0;
+    if(res[1]<=LE[1]) p = lower.Evaluate(res[d], d);
     else     p = upper.Evaluate(res[d], d);
-    std::cout << "edge4 pts: (" << res[0] << "," << res[1] << "): " << p[0] << "," << p[1] << std::endl;
     return p;
 }
 

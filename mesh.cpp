@@ -56,15 +56,6 @@ int main(int argc, char* argv[])
     nearWallRegion.transformation(AoA);
     inFoilRegion.transformation(AoA);
 
-    
-    std::ofstream edge4file("edge4.dat");
-    edge4file << "variables = x, y\n";
-    for(double s=-1.; s<=1.;s+=0.0001) {
-        vector<double> p = edge4(s);
-        edge4file << p[0] << " " << p[1] << "\n";
-    }
-    edge4file.close();
-
     if(!merge) {
         outputGeo(combinedReg, nearWallRegion, breakpts, FarFieldReg, pC);
         cout << "output CAD file" << endl;
