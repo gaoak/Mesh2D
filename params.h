@@ -4,7 +4,7 @@
 #define PARAMS_H
 #define NUMPTS 20
 
-#define FOILAOA 0
+#define FOILAOA 4
 #define FOILM 0
 #define FOILP 0
 #define FOILT 11.7
@@ -28,9 +28,9 @@ double rBoundaryLayer1 = 0.2;
 double rBoundaryLayer2 = 0.2;
 double rBoundaryLayer3 = 0.2;
 double rBoundaryLayer4 = 0.2;
-double rBoundaryLayer5 = 0.2;
-double rBoundaryLayer6 = 0.2;
-double rBoundaryLayer7 = 0.2;
+double rBoundaryLayer5 = 0.3;
+double rBoundaryLayer6 = 0.3;
+double rBoundaryLayer7 = 0.3;
 double maxLayerh = 0.05;
 
 double chordLen= 1.;
@@ -56,18 +56,18 @@ double xBoxLeft = -20.;
 double xBoxRight = 30.;
 double yBoxUp = 20.;
 double yBoxDown = -20.;
-int nBoxLeft = 4;
-int nBoxRight = 4;
-int nBoxUp = 5;
-int nBoxDown = 5;
+int nBoxLeft = 8;
+int nBoxRight = 8;
+int nBoxUp = 10;
+int nBoxDown = 10;
 
-int nFarWakex = 28;
-int nFarWakey = 16;
+int nFarWakex = 56;
+int nFarWakey = 14;
 double farWakeAoA = 0./180.*M_PI;
-double wakeDiffuseAngle = 15./180.*M_PI;
-double farWakeRight = 4.;
-double farWakeUp = 0.2;
-double farWakeDown = -0.6;
+double wakeDiffuseAngle = 7./180.*M_PI;
+double farWakeRight = 10.;
+double farWakeUp = 0.3;
+double farWakeDown = -0.4;
 
 int curvedpts = 6;
 // also need by extrude.sh

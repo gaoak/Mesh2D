@@ -1,15 +1,17 @@
-//for 3D simulation of Re10000, k2, A=0.1, mesh is reduced to extreme,
+//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
 //flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-#ifndef FOILAOA
-    #define FOILAOA 4
-#endif
-#ifndef FOILT
-    #define FOILT 11.7
-#endif
+
+#define FOILAOA 4
+#define FOILM 0
+#define FOILP 0
+#define FOILT 11.7
+
 double AoA = FOILAOA/180.*M_PI;
+double chamber = FOILM*0.01;
+double chamberp = FOILP*0.1;
 double Thickness = FOILT*0.01;
 
 double xInFoil = 0.01;
@@ -54,18 +56,18 @@ double xBoxLeft = -20.;
 double xBoxRight = 30.;
 double yBoxUp = 20.;
 double yBoxDown = -20.;
-int nBoxLeft = 4;
-int nBoxRight = 4;
-int nBoxUp = 5;
-int nBoxDown = 5;
+int nBoxLeft = 8;
+int nBoxRight = 8;
+int nBoxUp = 10;
+int nBoxDown = 10;
 
-int nFarWakex = 28;
-int nFarWakey = 16;
+int nFarWakex = 56;
+int nFarWakey = 14;
 double farWakeAoA = 0./180.*M_PI;
-double wakeDiffuseAngle = 15./180.*M_PI;
-double farWakeRight = 4.;
-double farWakeUp = 0.2;
-double farWakeDown = -0.6;
+double wakeDiffuseAngle = 7./180.*M_PI;
+double farWakeRight = 10.;
+double farWakeUp = 0.3;
+double farWakeDown = -0.4;
 
 int curvedpts = 6;
 // also need by extrude.sh
