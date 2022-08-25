@@ -23,8 +23,9 @@ CompositEdge Cedge03;
 CompositEdge Cedge69;
 CompositEdge Cedge06;
 CompositEdge Cedge39;
+CompositEdge Cedgewall;
 
-LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER1, 0, 0, 0, (p2x-p1x)/N1x, hgrowth, N0x-1);
+LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0x-1);
 LineEdge Cedge12(pts[1], pts[2], N1x, UNIFORM, 0., 0.);
 LineEdge Cedge23(pts[2], pts[3], N2x, BOUNDARYLAYER0, (p2x-p1x)/N1x, hgrowth, N0x-1, 0, 0, 0);
 std::vector<double> edge01(double s) {
@@ -88,6 +89,23 @@ std::vector<double> edge39(double s) {
     return Cedge39.Evaluate(s);
 }
 
+LineEdge Cedge1213(pts[12], pts[13], N0y, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0y-1);
+LineEdge Cedge1315(pts[11], pts[5], N1y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N1y-1, 0, 0, 0);
+LineEdge Cedge1214(pts[5], pts[9], N2y, BOUNDARYLAYER0, meshsize, hgrowth, N2y-1, 0, 0, 0);
+LineEdge Cedge1415(pts[5], pts[9], N2y, BOUNDARYLAYER0, meshsize, hgrowth, N2y-1, 0, 0, 0);
+std::vector<double> edge311(double s) {
+    return Cedge311.Evaluate(s);
+}
+std::vector<double> edge115(double s) {
+    return Cedge115.Evaluate(s);
+}
+std::vector<double> edge59(double s) {
+    return Cedge59.Evaluate(s);
+}
+std::vector<double> edge39(double s) {
+    return Cedge39.Evaluate(s);
+}
+
 int InitPts(){
     pts[0][0] = p0x;
     pts[0][1] = p0y;
@@ -132,6 +150,8 @@ int InitPts(){
     Cedge39.addEdge(Cedge311, (void*) edge311);
     Cedge39.addEdge(Cedge115, (void*) edge115);
     Cedge39.addEdge(Cedge59, (void*) edge59);
+
+    Cedgewall.addEdge(Cedge1213, (void*) edge1213);
     return 0;
 }
 
