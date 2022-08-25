@@ -58,7 +58,8 @@ int main(int argc, char* argv[])
     combinedReg.defineBoundary((void*)edge69 , Cedge69.m_N, 2);
     combinedReg.defineBoundary((void*)edge06,  Cedge06.m_N, 3);
     combinedReg.defineBoundary((void*)edge39,  Cedge39.m_N, 4);
-    combinedReg.defineBoundary((void*)edgewall,  Cedgewall.m_N, 5);
+    combinedReg.defineBoundary((void*)edgewall0,  Cedgewall0.m_N, 5);
+    combinedReg.defineBoundary((void*)edgewall1,  Cedgewall1.m_N, 6);
     //output
     combinedReg.outXml("square.xml");
     combinedReg.outCOMPO("square.xml", comp2);

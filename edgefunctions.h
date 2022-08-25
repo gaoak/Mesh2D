@@ -22,10 +22,11 @@ CompositEdge Cedge06;
 CompositEdge Cedge39;
 CompositEdge Cedge45;
 CompositEdge Cedge1011;
-CompositEdge Cedgewall;
+CompositEdge Cedgewall0;
+CompositEdge Cedgewall1;
 
 LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0x-1);
-LineEdge Cedge12(pts[1], pts[2], N1x, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
+LineEdge Cedge12(pts[1], pts[2], N1x, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
 LineEdge Cedge23(pts[2], pts[3], N2x, BOUNDARYLAYER0, hfirstlayer, hgrowth, N2x-1, 0, 0, 0);
 std::vector<double> edge01(double s) {
     return Cedge01.Evaluate(s);
@@ -58,7 +59,7 @@ std::vector<double> edge155(double s) {
 }
 
 LineEdge Cedge67(pts[6], pts[7], N0x, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0x-1);
-LineEdge Cedge78(pts[7], pts[8], N1x, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
+LineEdge Cedge78(pts[7], pts[8], N1x, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
 LineEdge Cedge89(pts[8], pts[9], N2x, BOUNDARYLAYER0, hfirstlayer, hgrowth, N2x-1, 0, 0, 0);
 std::vector<double> edge67(double s) {
     return Cedge67.Evaluate(s);
@@ -74,7 +75,7 @@ std::vector<double> edge69(double s) {
 }
 
 LineEdge Cedge010(pts[0], pts[10], N0y, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0y-1);
-LineEdge Cedge104(pts[10], pts[4], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
+LineEdge Cedge104(pts[10], pts[4], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
 LineEdge Cedge46(pts[4], pts[6], N2y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N2y-1, 0, 0, 0);
 std::vector<double> edge010(double s) {
     return Cedge010.Evaluate(s);
@@ -90,7 +91,7 @@ std::vector<double> edge06(double s) {
 }
 
 LineEdge Cedge311(pts[3], pts[11], N0y, BOUNDARYLAYER1, 0, 0, 0, hfirstlayer, hgrowth, N0y-1);
-LineEdge Cedge115(pts[11], pts[5], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
+LineEdge Cedge115(pts[11], pts[5], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
 LineEdge Cedge59(pts[5], pts[9], N2y, BOUNDARYLAYER0, hfirstlayer, hgrowth, N2y-1, 0, 0, 0);
 std::vector<double> edge311(double s) {
     return Cedge311.Evaluate(s);
@@ -105,14 +106,10 @@ std::vector<double> edge39(double s) {
     return Cedge39.Evaluate(s);
 }
 
-//LineEdge Cedge1213(pts[12], pts[13], N0y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
-//LineEdge Cedge1315(pts[13], pts[15], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
-//LineEdge Cedge1214(pts[12], pts[14], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
-//LineEdge Cedge1415(pts[14], pts[15], N2y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 4, hfirstlayer, hgrowth, 4);
-LineEdge Cedge1213(pts[12], pts[13], N0y, SINREFINE2, hfirstlayer, hfirstlayer);
-LineEdge Cedge1315(pts[13], pts[15], N1y, SINREFINE2, hfirstlayer, hfirstlayer);
-LineEdge Cedge1214(pts[12], pts[14], N1y, SINREFINE2, hfirstlayer, hfirstlayer);
-LineEdge Cedge1415(pts[14], pts[15], N2y, SINREFINE2, hfirstlayer, hfirstlayer);
+LineEdge Cedge1213(pts[12], pts[13], N0y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
+LineEdge Cedge1315(pts[13], pts[15], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
+LineEdge Cedge1214(pts[12], pts[14], N1y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
+LineEdge Cedge1415(pts[14], pts[15], N2y, BOUNDARYLAYER2, hfirstlayer, hgrowth, 1, hfirstlayer, hgrowth, 1);
 std::vector<double> edge1213(double s) {
     return Cedge1213.Evaluate(s);
 }
@@ -132,8 +129,11 @@ std::vector<double> edge45(double s) {
 std::vector<double> edge1011(double s) {
     return Cedge1011.Evaluate(s);
 }
-std::vector<double> edgewall(double s) {
-    return Cedgewall.Evaluate(s);
+std::vector<double> edgewall0(double s) {
+    return Cedgewall0.Evaluate(s);
+}
+std::vector<double> edgewall1(double s) {
+    return Cedgewall1.Evaluate(s);
 }
 
 int InitPts(){
@@ -198,10 +198,10 @@ int InitPts(){
     Cedge1011.addEdge(Cedge1213, (void*) edge1213);
     Cedge1011.addEdge(Cedge1311, (void*) edge1311);
 
-    Cedgewall.addEdge(Cedge1213, (void*) edge1213);
-    Cedgewall.addEdge(Cedge1315, (void*) edge1315);
-    Cedgewall.addEdge(Cedge1214, (void*) edge1214);
-    Cedgewall.addEdge(Cedge1415, (void*) edge1415);
+    Cedgewall0.addEdge(Cedge1213, (void*) edge1213);
+    Cedgewall0.addEdge(Cedge1315, (void*) edge1315);
+    Cedgewall1.addEdge(Cedge1214, (void*) edge1214);
+    Cedgewall1.addEdge(Cedge1415, (void*) edge1415);
     return 0;
 }
 
