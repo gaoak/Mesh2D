@@ -12,12 +12,12 @@ double p2x = 1.;
 double p3x = 30.;
 
 double p0y = -5.;
-double p1y = -0.01;
-double p2y =  0.01;
+double p1y = -0.02;
+double p2y =  0.02;
 double p3y = 5.;
 
 int N0y = 20;
-int N1y = 2;
+int N1y = 4;
 int N2y = 20;
 int N0x = 20;
 int N1x = 20;

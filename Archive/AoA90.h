@@ -7,7 +7,7 @@ double hgrowth = 1.5;
 double hgrowth1 = 1.2;
 
 double p0x = -10.;
-double p1x = 0.;
+double p1x =-0.02;
 double p2x = 0.02;
 double p3x = 30.;
 
@@ -20,7 +20,7 @@ int N0y = 20;
 int N1y = 20;
 int N2y = 20;
 int N0x = 20;
-int N1x = 2;
+int N1x = 4;
 int N2x = 50;
 
 #endif
