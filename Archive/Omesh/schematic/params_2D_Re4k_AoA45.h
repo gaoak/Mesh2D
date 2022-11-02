@@ -4,7 +4,7 @@
 #define PARAMS_H
 #define NUMPTS 20
 
-#define FOILAOA 8
+#define FOILAOA 45
 #define FOILM 0
 #define FOILP 0
 #define FOILT 12
@@ -22,15 +22,15 @@ double maxLayerhInFoil = 0.03;
 double infoilRatio = 0.03;
 
 double hFirstLayer = 0.003;
-double progress = 1.6;
-double rBoundaryLayer = 0.2;
-double rBoundaryLayer1 = 0.2;
-double rBoundaryLayer2 = 0.2;
-double rBoundaryLayer3 = 0.2;
-double rBoundaryLayer4 = 0.2;
-double rBoundaryLayer5 = 0.2;
-double rBoundaryLayer6 = 0.55;
-double rBoundaryLayer7 = 0.55;
+double progress = 1.3;
+double rBoundaryLayer = 0.5;
+double rBoundaryLayer1 = 0.3;
+double rBoundaryLayer2 = 0.3;
+double rBoundaryLayer3 = 0.3;
+double rBoundaryLayer4 = 0.3;
+double rBoundaryLayer5 = 0.8;
+double rBoundaryLayer6 = 1.6;
+double rBoundaryLayer7 = 1.6;
 double maxLayerh = 0.025;
 
 double chordLen= 1.;
@@ -46,10 +46,10 @@ int nUp1 = 27;
 int nUp2 = 21;
 int nFront = 19;
 
-double wakeLen = 0.1;
+double wakeLen = 0.6;
 double wakeyUp  = 0.06*Thickness;
 double wakeDown =-0.06*Thickness;
-int nWake = 6;
+int nWake = 22;
 double nearWakeDiffuseAngle = 0./180.*M_PI;
 
 double xBoxLeft = -20.;
@@ -61,13 +61,13 @@ int nBoxRight = 4;
 int nBoxUp = 5;
 int nBoxDown = 5;
 
-int nFarWakex = 42;
-int nFarWakey = 16;
+int nFarWakex = 30;
+int nFarWakey = 40;
 double farWakeAoA = 0./180.*M_PI;
 double wakeDiffuseAngle = 15./180.*M_PI;
-double farWakeRight = 3.5;
-double farWakeUp = 0.2;
-double farWakeDown = -0.4;
+double farWakeRight = 4;
+double farWakeUp = 0.5;
+double farWakeDown = -1.1;
 
 int curvedpts = 6;
 // also need by extrude.sh
