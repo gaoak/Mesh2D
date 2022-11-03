@@ -1,23 +1,23 @@
 #ifndef EDGEFUNCTIONS_H
 #define EDGEFUNCTIONS_H
 #define NUMPTS 20
-double hfirstlayer = 0.001;
+double hfirstlayer = 0.01;
 double hgrowth = 1.5;
 double meshsize = 0.1;
 
 double p0x = 0.00;
-double p1x = 0.25*4;
-double p2x = 0.75*4;
-double p3x = 1.00*4;
+double p1x = 0.25*2;
+double p2x = 0.75*2;
+double p3x = 1.00*2;
 
 double p0y = 0.;
 double p1y = 0.1;
 double p2y = 0.9;
 double p3y = 1.;
 
-int N0x = 10;
-int N1x = 20;
-int N2x = 10;
+int N0x = 5;
+int N1x = 10;
+int N2x = 5;
 
 double pts[NUMPTS][2];
 int findNlayers(double h, double q, double R, double m){
