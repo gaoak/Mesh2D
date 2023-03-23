@@ -17,60 +17,10 @@ int findNlayers(double h, double q, double R, double m){
     return n;
 }
 int nLayers  = findNlayers(hFirstLayer, progress, rBoundaryLayer,  maxLayerh);
-int nLayers1 = findNlayers(hFirstLayer, progress, rBoundaryLayer1, maxLayerh);
-int nLayers2 = findNlayers(hFirstLayer, progress, rBoundaryLayer2, maxLayerh);
-int nLayers3 = findNlayers(hFirstLayer, progress, rBoundaryLayer3, maxLayerh);
-int nLayers4 = findNlayers(hFirstLayer, progress, rBoundaryLayer4, maxLayerh);
-int nLayers5 = findNlayers(hFirstLayer, progress, rBoundaryLayer5, maxLayerh);
-int nLayers6 = findNlayers(hFirstLayer, progress, rBoundaryLayer6, maxLayerh);
-int nLayers7 = findNlayers(hFirstLayer, progress, rBoundaryLayer7, maxLayerh);
 
-SplineEdge upper("data/uppersurface");
-SplineEdge lower("data/lowersurface");
-int nTrailingEdge = std::max(2, (int)ceil( (upper.Evaluate(chordLen)[1] - lower.Evaluate(chordLen)[1])/hFirstLayer) );
+SplineEdge bottomline("data/curvededge");
+
 double pts[NUMPTS][2];
-double virtualpts[NUMPTS][2];
-
-LineEdge CradiusEdge(pts[0], pts[1], nLayers, UNIFORM, 0., 0.);
-void setRadiusLayers(int n) {
-    nLayers = n;
-}
-std::vector<double> radiusEdge(double s) {
-    int n = round(0.5*(1.+s)*nLayers);
-    static vector<vector<double> > reses;
-    if(reses.size()<nLayers+1) {
-        reses.clear();
-        vector<double> p0(2, 0.); reses.push_back(p0);
-        double delta = hFirstLayer;
-        for(int n=1; n<=nLayers; ++n) {
-            vector<double> p1(2, 0.);
-            if(delta>=maxLayerh) delta = maxLayerh;
-            p1[0] = reses[reses.size()-1][0] + delta;
-            delta *= progress;
-            reses.push_back(p1);
-        }
-    }
-    return reses[n];
-}
-
-int nLayersInFoil = findNlayers(hFirstLayerInFoil, progressInFoil, rBoundaryLayerInFoil, maxLayerhInFoil);
-
-std::vector<double> radiusEdgeInFoil(double s) {
-    int n = round(0.5*(1.+s)*nLayersInFoil);
-    static vector<vector<double> > reses;
-    if(reses.size()<nLayersInFoil+1) {
-        vector<double> p0(2, 0.); reses.push_back(p0);
-        double delta = hFirstLayerInFoil;
-        for(int n=1; n<=nLayersInFoil; ++n) {
-            vector<double> p1(2, 0.);
-            if(delta>=maxLayerhInFoil) delta = maxLayerhInFoil;
-            p1[0] = reses[reses.size()-1][0] + delta;
-            delta *= progressInFoil;
-            reses.push_back(p1);
-        }
-    }
-    return reses[n];
-}
 
 static void transform(std::vector<double> &p, double AoA) {
     double x = p[0], y = p[1];
