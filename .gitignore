@@ -20,3 +20,4 @@ test*
 .vscode
 .~lock.meshdivision.pptx#
 *.log
+!data/*
