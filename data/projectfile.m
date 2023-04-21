@@ -48,7 +48,8 @@ for kk=1:1:NP
         if kk>1 && ii==1
             continue
         end
-        fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, data(ii,1) + wavelength*(kk-1), data(ii,2), data(ii,3), 2*ds);
+        pts = [data(ii,1) + wavelength*(kk-1), data(ii,2), data(ii,3)];
+        fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, pts(1), pts(2), pts(3), meshsize(pts, 2*ds));
         lines1 = [lines1; count-1 count];
         count = count + 1;
     end
@@ -78,36 +79,38 @@ end
 lines1(1,1) = count - 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %tool parameters
+dstool = 3.000e-04;
 tx = wavelength*NP*0.455;
 ty = 0.03;
 lines2=[];
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.004, ty, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.004, ty, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.004, ty-0.03, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.004, ty-0.03, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.008, ty-0.03, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.008, ty-0.03, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.0025, ty-0.04, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx+0.0025, ty-0.04, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.0025, ty-0.04, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.0025, ty-0.04, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.008, ty-0.03, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.008, ty-0.03, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.004, ty-0.03, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.004, ty-0.03, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.004, ty, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, tx-0.004, ty, 0., dstool);
 lines2 = [lines2; count-1 count];
 count = count + 1;
 lines2(1,1) = count - 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %nozzle
+dsnozzle = 3.000e-04;
 tx = wavelength*NP*0.5;
 ty = 0.03;
 vect1 = 0.005*[cos(-40/180*pi), sin(-40/180*pi)];
@@ -115,16 +118,16 @@ vect2 = 0.006*[cos(50/180*pi),  sin(50/180*pi)];
 lines3=[];
 nozzlex = tx+0.01;
 nozzley = ty;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex, nozzley, 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex, nozzley, 0., dsnozzle);
 lines3 = [lines3; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect2(1), nozzley+vect2(2), 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect2(1), nozzley+vect2(2), 0., dsnozzle);
 lines3 = [lines3; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect1(1)+vect2(1), nozzley+vect1(2)+vect2(2), 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect1(1)+vect2(1), nozzley+vect1(2)+vect2(2), 0., dsnozzle);
 lines3 = [lines3; count-1 count];
 count = count + 1;
-fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect1(1), nozzley+vect1(2), 0., 2*ds);
+fprintf(file, 'Point(%d) = { %f, %f, %f, %f};\n', count, nozzlex+vect1(1), nozzley+vect1(2), 0., dsnozzle);
 lines3 = [lines3; count-1 count];
 count = count + 1;
 lines3(1,1) = count - 1;
