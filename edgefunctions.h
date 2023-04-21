@@ -104,30 +104,36 @@ LineEdge Cedge7(pts[7], pts[4], NyNozzel, UNIFORM, 0., 0.);
 std::vector<double> edge7(double s) { return Cedge7.Evaluate(s); }
 
 bool bottomwall(vector<double> p) {
-  return p[1]<=1E-10;
+  return p[1]<=-0.014;
 }
 
 bool leftside(vector<double> p) {
-  return p[0]<= xBoxLeft + 1E-10;
+  return p[0]<= xBoxLeft + 1E-10 && (p[1]>0.04) && (p[1]<0.06);
 }
 
 bool rightside(vector<double> p) {
-  return p[0]>=xBoxRight-1E-10;
+  return p[0]>=xBoxRight-1E-10 && (p[1]>0.04) && (p[1]<0.06);
 }
 
 bool upperside(vector<double> p) {
-  return p[1]>= yBoxUp2 - 1E-10;
+  return p[1]>= 0.1;
 }
 
 bool nozzleoutlet(vector<double> p) {
-  double x0 = p[0] - pts[4][0];
-  double y0 = p[1] - pts[4][1];
-  double x1 = p[0] - pts[5][0];
-  double y1 = p[1] - pts[5][1];
-  return abs(x0*y1-x1*y0) < 1E-10;
+  double x0 = 0.142214;
+  double y0 = 0.0284089;
+  double r = 0.002;
+  return fabs(p[0]-x0)+fabs(p[1]-y0) <= r;
 }
 
 bool nozzlewall(vector<double> p) {
+  double x0 = 0.1423;
+  double y0 = 0.0323;
+  double r = 0.01;
+  return fabs(p[0]-x0)+fabs(p[1]-y0) <= r;
+}
+
+bool tool(vector<double> p) {
   return true;
 }
 #endif

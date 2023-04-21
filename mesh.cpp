@@ -63,6 +63,7 @@ int outputXML(MeshRegions &combinedReg)
     conditions.push_back((void*)rightside);
     conditions.push_back((void*)upperside);
     conditions.push_back((void*)nozzlewall);
+    conditions.push_back((void*)tool);
     combinedReg.defineBoundary(conditions, 80./180*M_PI);
     //output outer region
     vector<int> comp3;
@@ -79,58 +80,19 @@ int main(int argc, char *argv[]) {
   vector<string> mshfilenames;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "merge") == 0) {
-      for (int j=j+1; j<argc; ++j) {
+      for (int j=i+1; j<argc; ++j) {
         mshfilenames.push_back(string(argv[j]));
       }
       merge = true;
       break;
     }
   }
-  InitPts();
-  // bottom region
-  std::vector<void *> edges0;
-  edges0.push_back((void *)edge0);
-  edges0.push_back((void *)radiusEdge);
-  edges0.push_back((void *)edge0);
-  edges0.push_back((void *)edge0);
-  RectRegion Rect(edges0, "Rwall2", false);
-  Rect.MeshGen(Cedge0.m_N, nLayers, eBoundaryLayer1, false, 0., 0.);
-  Rect.Tec360Pts("test1.dat");
-
-  std::vector<double> p2 =  Rect.getVertex(2);
-  std::vector<double> p3 =  Rect.getVertex(3);
-
-  vpts[0][0] = p3[0];
-  vpts[0][1] = p3[1];
-  vpts[1][0] = p2[0];
-  vpts[1][1] = p2[1];
-
-  outputGeo();
-
   if(merge) {
-    MeshRegions combine("Combine", 3E-5);
-    combine.AddRegion(Rect);
-
-    for(auto name : mshfilenames) {
     MeshRegions gmshReg("R_gmsh_", 3.E-5);
-    gmshReg.loadFromMsh(name, 135./180.*3.14159);
-        cout << "load " << name << endl;
+    gmshReg.loadFromMsh(mshfilenames[0], 135./180.*3.14159);
+    cout << "load " << mshfilenames[0] << endl;
     gmshReg.CheckMesh();
-        vector<int> comp1;
-        comp1.push_back(0); comp1.push_back(gmshReg.getCellsNumber());
-        if(!combine.consistancyCheck(gmshReg)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        if(!gmshReg.consistancyCheck(combine)) {
-            cout << "Error: node mismatch, exit" << endl;
-            return -1;
-        }
-        combine.AddRegion(gmshReg);
-    }
-        outputXML(combine);
-        cout << "------------------------------------" << endl;
-        cout << "------------------------------------" << endl;
-    }
+    outputXML(gmshReg);
+  }
   return 0;
 }
