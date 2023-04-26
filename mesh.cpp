@@ -283,17 +283,17 @@ int outputXML(MeshRegions &combinedReg)
     vector<int> comp3;
     comp3.push_back(0);
     //wall
-    combinedReg.defineBoundary((void*)edge2, Ncyl2, 0, curvedpts);
     combinedReg.defineBoundary((void*)edge3, Ncyl3, 0, curvedpts);
-    combinedReg.defineBoundary((void*)edge4, Ncyl4, 0, curvedpts);
     combinedReg.defineBoundary((void*)edge5, Ncyl5, 0, curvedpts);
+    combinedReg.defineBoundary((void*)edge2, Ncyl2, 1, curvedpts);
+    combinedReg.defineBoundary((void*)edge4, Ncyl4, 1, curvedpts);
    //inlet
-    combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 1);
+    combinedReg.defineBoundary((void*)edge11,  Cedge11.m_N, 2);
     //outlet
-    combinedReg.defineBoundary((void*)edge9 ,   Cedge9.m_N, 2);
+    combinedReg.defineBoundary((void*)edge9 ,   Cedge9.m_N, 3);
     //side
-    combinedReg.defineBoundary((void*)edge10,  Cedge10.m_N, 3);
-    combinedReg.defineBoundary((void*)edge12,  Cedge12.m_N, 4, 2, 0., -1);
+    combinedReg.defineBoundary((void*)edge10,  Cedge10.m_N, 4);
+    combinedReg.defineBoundary((void*)edge12,  Cedge12.m_N, 5, 2, 0., -1);
     //output
     combinedReg.outXml("outerRegion.xml");
     combinedReg.outCOMPO("outerRegion.xml", comp3);
