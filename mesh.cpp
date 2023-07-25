@@ -298,16 +298,44 @@ int meshingOuterBoundary(MeshRegions &combinedReg, vector<double> &p) {
 }
 
 int meshingWake(MeshRegions &combinedReg) {
-  virtualpts[0][0] = farWakeLeft;
-  virtualpts[3][0] = farWakeLeft;
-  virtualpts[0][1] = farWakeDown;
-  virtualpts[3][1] = farWakeUp;
-  virtualpts[1][0] = farWakeRight;
-  virtualpts[2][0] = farWakeRight;
-  virtualpts[1][1] = virtualpts[0][1] - (virtualpts[1][0] - virtualpts[0][0]) *
-                                            tan(wakeDiffuseAngle);
-  virtualpts[2][1] = virtualpts[3][1] + (virtualpts[2][0] - virtualpts[3][0]) *
-                                            tan(wakeDiffuseAngle);
+  pts[16][0] = farWakeLeft;
+  pts[19][0] = farWakeLeft;
+  pts[16][1] = farWakeDown;
+  pts[19][1] = farWakeUp;
+  pts[17][0] = farWakeRight;
+  pts[18][0] = farWakeRight;
+  pts[17][1] = pts[16][1] - (pts[17][0] - pts[16][0]) * tan(wakeDiffuseAngle);
+  pts[18][1] = pts[19][1] + (pts[18][0] - pts[19][0]) * tan(wakeDiffuseAngle);
+  std::vector<void *> edges4;
+  edges4.push_back((void *)edge19);
+  edges4.push_back((void *)edge20);
+  edges4.push_back((void *)edge21);
+  edges4.push_back((void *)edge22);
+  RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
+  farwakeRegion.MeshGen(Cedge19.m_N, Cedge20.m_N);
+  farwakeRegion.transformation(farWakeAoA);
+  farwakeRegion.Tec360Pts("testfarwake.dat");
+
+  //////////////combine region//////////
+  combinedReg.AddRegion(farwakeRegion);
+  vector<int> comp2;
+  comp2.push_back(0);
+  combinedReg.outXml("testmeshwake.xml");
+  combinedReg.outCOMPO("testmeshwake.xml", comp2);
+  return 0;
+}
+
+int meshingVortexPassway(MeshRegions &combinedReg) {
+  squarePts[0][0] = SquareLeft;
+  squarePts[3][0] = SquareLeft;
+  squarePts[0][1] = SquareDown;
+  squarePts[3][1] = SquareUp;
+  squarePts[1][0] = SquareRight;
+  squarePts[2][0] = SquareRight;
+  squarePts[1][1] = squarePts[0][1] -
+                    (squarePts[1][0] - squarePts[0][0]) * tan(wakeDiffuseAngle);
+  squarePts[2][1] = squarePts[3][1] +
+                    (squarePts[2][0] - squarePts[3][0]) * tan(wakeDiffuseAngle);
   std::vector<void *> edges4;
   edges4.push_back((void *)edgeA);
   edges4.push_back((void *)edgeB);
@@ -318,43 +346,15 @@ int meshingWake(MeshRegions &combinedReg) {
   farwakeRegion.transformation(farWakeAoA);
   farwakeRegion.Tec360Pts("testfarwake.dat");
 
-  //////////////combine region//////////
-  combinedReg.AddRegion(farwakeRegion);
-  vector<int> comp2;
-  comp2.push_back(0);
-  combinedReg.outXml("testmesh1.xml");
-  combinedReg.outCOMPO("testmesh1.xml", comp2);
-  return 0;
-}
-
-int meshingVortexPassway(MeshRegions &combinedReg) {
-  pts[16][0] = SquareLeft;
-  pts[19][0] = SquareLeft;
-  pts[16][1] = SquareDown;
-  pts[19][1] = SquareUp;
-  pts[17][0] = SquareRight;
-  pts[18][0] = SquareRight;
-  pts[17][1] = pts[16][1] - (pts[17][0] - pts[16][0]) * tan(SquareDiffuseAngle);
-  pts[18][1] = pts[19][1] + (pts[18][0] - pts[19][0]) * tan(SquareDiffuseAngle);
-  std::vector<void *> edges4;
-  edges4.push_back((void *)edge19);
-  edges4.push_back((void *)edge20);
-  edges4.push_back((void *)edge21);
-  edges4.push_back((void *)edge22);
-  RectRegion farwakeRegion = RectRegion(edges4, "R_Square");
-  farwakeRegion.MeshGen(Cedge19.m_N, Cedge20.m_N);
-  farwakeRegion.transformation(SquareAoA);
-  farwakeRegion.Tec360Pts("testsquare.dat");
-
   combinedReg.GetBoundBox(boundingbox);
-  boundingbox.push_back((SquareRight - SquareLeft) / Cedge19.m_N);
+  boundingbox.push_back((SquareRight - SquareLeft) / CedgeA.m_N);
   farwakeRegion.RemoveElements((void *)toremove);
   //////////////combine region//////////
   combinedReg.AddRegion(farwakeRegion);
   vector<int> comp2;
   comp2.push_back(0);
-  combinedReg.outXml("testmesh0.xml");
-  combinedReg.outCOMPO("testmesh0.xml", comp2);
+  combinedReg.outXml("testmesh.xml");
+  combinedReg.outCOMPO("testmesh.xml", comp2);
   return 0;
 }
 
@@ -439,6 +439,5 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion,
   tmparray.clear();
   tmparray.push_back(innbox[2]);
   OutGeo("FarField2.geo", innbox[1], tmparray);
-  vector<vector<double>> nobox;
   return 0;
 }

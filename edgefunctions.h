@@ -22,6 +22,7 @@ int findNlayers(double h, double q, double R, double m) {
 int nLayers = findNlayers(hFirstLayer, progress, rBoundaryLayer, maxLayerh);
 
 double pts[NUMPTS][2];
+double squarePts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
 LineEdge CradiusEdge(pts[0], pts[1], nLayers, UNIFORM, 0., 0.);
@@ -133,13 +134,13 @@ std::vector<double> edge20(double s) { return Cedge20.Evaluate(s); }
 std::vector<double> edge21(double s) { return Cedge21.Evaluate(s); }
 std::vector<double> edge22(double s) { return Cedge22.Evaluate(s); }
 
-// straight edges in the far wake
-LineEdge CedgeA(virtualpts[0], virtualpts[1], nFarWakex, QUDREFINE0,
+// straight edges in the square region
+LineEdge CedgeA(squarePts[0], squarePts[1], nFarWakex, QUDREFINE0,
                 (farWakeUp - farWakeDown) / nFarWakey, 0.);
-LineEdge CedgeB(virtualpts[1], virtualpts[2], nFarWakey, UNIFORM, 0., 0.);
-LineEdge CedgeC(virtualpts[2], virtualpts[3], nFarWakex, QUDREFINE1, 0.,
+LineEdge CedgeB(squarePts[1], squarePts[2], nFarWakey, UNIFORM, 0., 0.);
+LineEdge CedgeC(squarePts[2], squarePts[3], nFarWakex, QUDREFINE1, 0.,
                 (farWakeUp - farWakeDown) / nFarWakey);
-LineEdge CedgeD(virtualpts[3], virtualpts[0], nFarWakey, UNIFORM, 0., 0.);
+LineEdge CedgeD(squarePts[3], squarePts[0], nFarWakey, UNIFORM, 0., 0.);
 std::vector<double> edgeA(double s) { return CedgeA.Evaluate(s); }
 std::vector<double> edgeB(double s) { return CedgeB.Evaluate(s); }
 std::vector<double> edgeC(double s) { return CedgeC.Evaluate(s); }
