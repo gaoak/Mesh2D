@@ -12,9 +12,8 @@ using namespace std;
 
 #include "edgefunctions.h"
 int meshingNearBody(MeshRegions &combinedReg);
+int meshingVortexPassway(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
-int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion,
-                  vector<vector<double>> &breakpts);
 int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion);
 int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion,
               MeshRegions &FarFieldReg, vector<double> pC);
@@ -52,6 +51,7 @@ int main(int argc, char *argv[]) {
   MeshRegions FarFieldReg("RFar", 1.E-6);
   vector<double> pC;
   meshingOuterBoundary(FarFieldReg, pC);
+  meshingVortexPassway(combinedReg);
   meshingWake(combinedReg);
   vector<vector<double>> breakpts;
   meshingInFoil_v2(nearWallRegion, inFoilRegion, breakpts);
@@ -394,8 +394,38 @@ int meshingWake(MeshRegions &combinedReg) {
   farwakeRegion.transformation(farWakeAoA);
   farwakeRegion.Tec360Pts("testfarwake.dat");
 
+  //////////////combine region//////////
+  combinedReg.AddRegion(farwakeRegion);
+  vector<int> comp2;
+  comp2.push_back(0);
+  combinedReg.outXml("testmeshwake.xml");
+  combinedReg.outCOMPO("testmeshwake.xml", comp2);
+  return 0;
+}
+
+int meshingVortexPassway(MeshRegions &combinedReg) {
+  squarePts[0][0] = SquareLeft;
+  squarePts[3][0] = SquareLeft;
+  squarePts[0][1] = SquareDown;
+  squarePts[3][1] = SquareUp;
+  squarePts[1][0] = SquareRight;
+  squarePts[2][0] = SquareRight;
+  squarePts[1][1] = squarePts[0][1] -
+                    (squarePts[1][0] - squarePts[0][0]) * tan(wakeDiffuseAngle);
+  squarePts[2][1] = squarePts[3][1] +
+                    (squarePts[2][0] - squarePts[3][0]) * tan(wakeDiffuseAngle);
+  std::vector<void *> edges4;
+  edges4.push_back((void *)edgeA);
+  edges4.push_back((void *)edgeB);
+  edges4.push_back((void *)edgeC);
+  edges4.push_back((void *)edgeD);
+  RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
+  farwakeRegion.MeshGen(CedgeA.m_N, CedgeB.m_N);
+  farwakeRegion.transformation(farWakeAoA);
+  farwakeRegion.Tec360Pts("testfarwake.dat");
+
   combinedReg.GetBoundBox(boundingbox);
-  boundingbox.push_back((farWakeRight - farWakeLeft) / Cedge19.m_N);
+  boundingbox.push_back((SquareRight - SquareLeft) / CedgeA.m_N);
   farwakeRegion.RemoveElements((void *)toremove);
   //////////////combine region//////////
   combinedReg.AddRegion(farwakeRegion);
@@ -403,91 +433,6 @@ int meshingWake(MeshRegions &combinedReg) {
   comp2.push_back(0);
   combinedReg.outXml("testmesh.xml");
   combinedReg.outCOMPO("testmesh.xml", comp2);
-  return 0;
-}
-
-int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion,
-                  vector<vector<double>> &breakpts) {
-  std::vector<std::vector<int>> boundary =
-      nearWallRegion.extractBoundaryPoints();
-  int wallID = -1;
-  for (int i = 0; i < boundary.size(); ++i) {
-    for (int j = 0; j < boundary[i].size(); ++j) {
-      if (fabs(nearWallRegion.m_pts[boundary[i][j]][0]) +
-              fabs(nearWallRegion.m_pts[boundary[i][j]][1]) <
-          0.1) {
-        wallID = i;
-        break;
-      }
-    }
-    if (wallID != -1)
-      break;
-  }
-  int nWallPts = boundary[wallID].size();
-  vector<int> layersInFoil(nWallPts, 0);
-
-  for (int i = 1; i < nWallPts - 1; ++i) {
-    if (nearWallRegion.m_pts[boundary[wallID][i]][0] < xInFoil)
-      continue;
-    double length =
-        fabs(nearWallRegion.m_pts[boundary[wallID][i]][1]) -
-        infoilRatio * fabs(nearWallRegion.m_pts[boundary[wallID][i + 1]][0] -
-                           nearWallRegion.m_pts[boundary[wallID][i]][0]);
-    if (length < hFirstLayerInFoil)
-      continue;
-    layersInFoil[i] = findNlayers(hFirstLayerInFoil, progressInFoil, length,
-                                  maxLayerhInFoil) -
-                      1;
-  }
-  for (int i = 0; i < 2; ++i) {
-    vector<double> p0(2, 100.);
-    breakpts.push_back(p0);
-  }
-  for (int i = 0; i < nWallPts - 1; ++i) {
-    int nl = min(layersInFoil[i], layersInFoil[i + 1]);
-    if (nl <= 0)
-      continue;
-    vector<vector<double>> side0;
-    vector<vector<double>> side1;
-    vector<vector<double>> bottom0;
-    vector<vector<double>> bottom1;
-    double sig = -1.;
-    if (nearWallRegion.m_pts[boundary[wallID][i]][1] < 0.)
-      sig = 1.;
-    for (int k = 0; k <= nl; ++k) {
-      vector<double> p0(2, nearWallRegion.m_pts[boundary[wallID][i]][0]);
-      vector<double> p1(2, nearWallRegion.m_pts[boundary[wallID][i + 1]][0]);
-      p0[1] = nearWallRegion.m_pts[boundary[wallID][i]][1] +
-              sig * radiusEdgeInFoil(k * 2. / nLayersInFoil - 1.)[0];
-      p1[1] = nearWallRegion.m_pts[boundary[wallID][i + 1]][1] +
-              sig * radiusEdgeInFoil(k * 2. / nLayersInFoil - 1.)[0];
-      side0.push_back(p0);
-      side1.push_back(p1);
-    }
-    bottom0.push_back(side0[0]);
-    bottom0.push_back(side1[0]);
-    bottom1.push_back(side0[nl]);
-    bottom1.push_back(side1[nl]);
-    int upperflap = 0;
-    if (side0[nl][1] < 0.) {
-      upperflap = 1;
-    }
-    if (side0[nl][0] < breakpts[upperflap][0])
-      breakpts[upperflap] = side0[nl];
-    if (side1[nl][0] < breakpts[upperflap][0])
-      breakpts[upperflap] = side1[nl];
-    std::vector<std::vector<std::vector<double>>> edges;
-    edges.push_back(bottom0);
-    edges.push_back(side0);
-    edges.push_back(bottom1);
-    edges.push_back(side1);
-    RectRegion pic = RectRegion(edges, "pic");
-    pic.MeshGen(1, nl);
-    nearWallRegion.AddRegion(pic);
-    inFoilRegion.AddRegion(pic);
-  }
-  transform(breakpts[0], AoA);
-  transform(breakpts[1], AoA);
   return 0;
 }
 
@@ -738,8 +683,8 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion,
     }
   }
   // box outer layer
-  vector<vector<vector<double>>> innbox(3);
-  for (int b = 0; b < 3; ++b) {
+  vector<vector<vector<double>>> innbox(minx.size());
+  for (size_t b = 0; b < innbox.size(); ++b) {
     double minvalue = minx[0];
     wallID = 0;
     for (size_t i = 1; i < minx.size(); ++i) {
@@ -759,10 +704,10 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion,
 
   std::vector<std::vector<std::vector<double>>> tmparray;
   tmparray.push_back(innbox[0]);
+  tmparray.push_back(innbox[4]);
   OutGeo("FarField1.geo", box, tmparray);
   tmparray.clear();
   tmparray.push_back(innbox[2]);
   OutGeo("FarField2.geo", innbox[1], tmparray);
-  vector<vector<double>> nobox;
   return 0;
 }

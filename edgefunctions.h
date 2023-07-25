@@ -32,6 +32,7 @@ int nTrailingEdge =
     std::max(2, (int)ceil((naca.up(chordLen)[1] - naca.down(chordLen)[1]) /
                           hFirstLayer));
 double pts[NUMPTS][2];
+double squarePts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
 LineEdge CradiusEdge(pts[0], pts[1], nLayers, UNIFORM, 0., 0.);
@@ -284,6 +285,18 @@ LineEdge Cedgeb2_b7(virtualpts[7], virtualpts[2], nTrailingEdge, UNIFORM, 0.,
 std::vector<double> edgeb2_2(double s) { return Cedgeb2_2.Evaluate(s); }
 std::vector<double> edgeb7_7(double s) { return Cedgeb7_7.Evaluate(s); }
 std::vector<double> edgeb2_b7(double s) { return Cedgeb2_b7.Evaluate(s); }
+
+// straight edges in the square region
+LineEdge CedgeA(squarePts[0], squarePts[1], nFarWakex, QUDREFINE0,
+                (farWakeUp - farWakeDown) / nFarWakey, 0.);
+LineEdge CedgeB(squarePts[1], squarePts[2], nFarWakey, UNIFORM, 0., 0.);
+LineEdge CedgeC(squarePts[2], squarePts[3], nFarWakex, QUDREFINE1, 0.,
+                (farWakeUp - farWakeDown) / nFarWakey);
+LineEdge CedgeD(squarePts[3], squarePts[0], nFarWakey, UNIFORM, 0., 0.);
+std::vector<double> edgeA(double s) { return CedgeA.Evaluate(s); }
+std::vector<double> edgeB(double s) { return CedgeB.Evaluate(s); }
+std::vector<double> edgeC(double s) { return CedgeC.Evaluate(s); }
+std::vector<double> edgeD(double s) { return CedgeD.Evaluate(s); }
 
 std::vector<double> boundingbox;
 bool toremove(std::vector<double> p) {
