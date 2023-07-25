@@ -135,12 +135,12 @@ std::vector<double> edge21(double s) { return Cedge21.Evaluate(s); }
 std::vector<double> edge22(double s) { return Cedge22.Evaluate(s); }
 
 // straight edges in the square region
-LineEdge CedgeA(squarePts[0], squarePts[1], nFarWakex, QUDREFINE0,
-                (farWakeUp - farWakeDown) / nFarWakey, 0.);
-LineEdge CedgeB(squarePts[1], squarePts[2], nFarWakey, UNIFORM, 0., 0.);
-LineEdge CedgeC(squarePts[2], squarePts[3], nFarWakex, QUDREFINE1, 0.,
-                (farWakeUp - farWakeDown) / nFarWakey);
-LineEdge CedgeD(squarePts[3], squarePts[0], nFarWakey, UNIFORM, 0., 0.);
+LineEdge CedgeA(squarePts[0], squarePts[1], nSquarex, QUDREFINE0,
+                (SquareUp - SquareDown) / nSquarey, 0.);
+LineEdge CedgeB(squarePts[1], squarePts[2], nSquarey, UNIFORM, 0., 0.);
+LineEdge CedgeC(squarePts[2], squarePts[3], nSquarex, QUDREFINE1, 0.,
+                (SquareUp - SquareDown) / nSquarey);
+LineEdge CedgeD(squarePts[3], squarePts[0], nSquarey, UNIFORM, 0., 0.);
 std::vector<double> edgeA(double s) { return CedgeA.Evaluate(s); }
 std::vector<double> edgeB(double s) { return CedgeB.Evaluate(s); }
 std::vector<double> edgeC(double s) { return CedgeC.Evaluate(s); }

@@ -58,23 +58,23 @@ int nBoxRight = 10;
 int nBoxUp = 10;
 int nBoxDown = 10;
 
-int nSquarex = 100;
-int nSquarey = 40;
+int nSquarex = 120;
+int nSquarey = 80;
 double SquareAoA = 0. / 180. * M_PI;
 double SquareDiffuseAngle = 0. / 180. * M_PI;
-double SquareLeft = -5.;
-double SquareRight = 5.;
-double SquareUp = 3.;
-double SquareDown = -1.;
+double SquareLeft = -6.;
+double SquareRight = 6.;
+double SquareUp = 4.;
+double SquareDown = -4.;
 
-int nFarWakex = 100;
+int nFarWakex = 2;
 int nFarWakey = 40;
 double farWakeAoA = 0. / 180. * M_PI;
 double wakeDiffuseAngle = 0. / 180. * M_PI;
-double farWakeLeft = 6.;
-double farWakeRight = 20.;
-double farWakeUp = 3.;
-double farWakeDown = -1.;
+double farWakeLeft = 6.4;
+double farWakeRight = 6.6;
+double farWakeUp = 2.;
+double farWakeDown = -2.;
 
 int curvedpts = 6;
 #endif

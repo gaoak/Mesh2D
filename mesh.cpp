@@ -344,7 +344,7 @@ int meshingVortexPassway(MeshRegions &combinedReg) {
   RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
   farwakeRegion.MeshGen(CedgeA.m_N, CedgeB.m_N);
   farwakeRegion.transformation(farWakeAoA);
-  farwakeRegion.Tec360Pts("testfarwake.dat");
+  farwakeRegion.Tec360Pts("testsquare.dat");
 
   combinedReg.GetBoundBox(boundingbox);
   boundingbox.push_back((SquareRight - SquareLeft) / CedgeA.m_N);
@@ -353,8 +353,8 @@ int meshingVortexPassway(MeshRegions &combinedReg) {
   combinedReg.AddRegion(farwakeRegion);
   vector<int> comp2;
   comp2.push_back(0);
-  combinedReg.outXml("testmesh.xml");
-  combinedReg.outCOMPO("testmesh.xml", comp2);
+  combinedReg.outXml("testsquare.xml");
+  combinedReg.outCOMPO("testsquare.xml", comp2);
   return 0;
 }
 
