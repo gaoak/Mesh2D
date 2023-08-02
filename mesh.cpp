@@ -485,32 +485,37 @@ int meshingInFoil(MeshRegions &nearWallRegion, MeshRegions &inFoilRegion,
   transform(breakpts[1], AoA);
   return 0;
 }
-int meshingBoundayLayer(MeshRegions &region, std::vector<void *> edges,
+int meshingBoundayLayer(MeshRegions &region, void* thickFunc, std::vector<void *> edges,
                         std::string name, bool connectivityCheck,
                         double tolerance, int edgeAttractMesh,
                         double attractEps) {
-  
-  bottom0.push_back(side0[0]);
-  bottom0.push_back(side1[0]);
-  bottom1.push_back(side0[nl]);
-  bottom1.push_back(side1[nl]);
-  int upperflap = 0;
-  if (side0[nl][1] < 0.) {
-    upperflap = 1;
+  RectRegion firstlayer(edges, "firstlayer", connectivityCheck, tolerance, edgeAttractMesh, attractEps);
+  firstlayer.MeshGen(10., 1);
+  for() {
+    int Nl = findNlayers(hFirstLayerInFoil, progressInFoil, length, maxLayerhInFoil) -1;
+    //extend the first layer
+    bottom0.push_back(side0[0]);
+    bottom0.push_back(side1[0]);
+    bottom1.push_back(side0[nl]);
+    bottom1.push_back(side1[nl]);
+    int upperflap = 0;
+    if (side0[nl][1] < 0.) {
+      upperflap = 1;
+    }
+    if (side0[nl][0] < breakpts[upperflap][0])
+      breakpts[upperflap] = side0[nl];
+    if (side1[nl][0] < breakpts[upperflap][0])
+      breakpts[upperflap] = side1[nl];
+    std::vector<std::vector<std::vector<double>>> edges;
+    edges.push_back(bottom0);
+    edges.push_back(side0);
+    edges.push_back(bottom1);
+    edges.push_back(side1);
+    RectRegion pic = RectRegion(edges, "pic");
+    pic.MeshGen(1, nl);
+    nearWallRegion.AddRegion(pic);
+    inFoilRegion.AddRegion(pic);
   }
-  if (side0[nl][0] < breakpts[upperflap][0])
-    breakpts[upperflap] = side0[nl];
-  if (side1[nl][0] < breakpts[upperflap][0])
-    breakpts[upperflap] = side1[nl];
-  std::vector<std::vector<std::vector<double>>> edges;
-  edges.push_back(bottom0);
-  edges.push_back(side0);
-  edges.push_back(bottom1);
-  edges.push_back(side1);
-  RectRegion pic = RectRegion(edges, "pic");
-  pic.MeshGen(1, nl);
-  nearWallRegion.AddRegion(pic);
-  inFoilRegion.AddRegion(pic);
 
   return 0;
 }
