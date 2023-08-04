@@ -15,7 +15,7 @@ using namespace std;
 
 int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
                     MeshRegion &lowerDomain) {
-  double angle = 80. / 180. * M_PI;
+  double angle = 45. / 180. * M_PI;
   std::vector<std::vector<int>> bndupper = upperDomain.splitBoundaryPts(angle);
   int idUpper = -1;
   for (size_t i = 0; i < bndupper.size(); ++i) {
@@ -84,10 +84,6 @@ int meshCentreDomain(std::string gmshfilename, MeshRegion &upperDomain,
 }
 int main(int argc, char *argv[]) {
   bool merge = false;
-  bool withwake = false;
-  string mshfilename;
-  string mshinfoilfilename1;
-  string mshinfoilfilename2;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "merge") == 0) {
       merge = true;
@@ -97,39 +93,39 @@ int main(int argc, char *argv[]) {
   cout << "start meshing --------" << endl;
   // meshing bottom boundary layer
   MeshRegions lowerdomain("Boundarylayer", 1E-5);
-  setRadiusMesh(hFirstLayer, progress, maxLayerh);
-  meshingBoundayLayer(lowerdomain, (void *)thickFunc01, (void *)edge01,
-                      "Bottom", std::vector<std::vector<double>>());
+  setRadiusMesh(hFirstLayerBottom, progressBottom, maxLayerhBottom);
+  std::vector<std::vector<double>> trimNorms;
+  std::vector<double> tmpnorm = {0., 1., 0.};
+  trimNorms.push_back(tmpnorm);
+  trimNorms.push_back(tmpnorm);
+  meshingBoundayLayer(lowerdomain, Cedge01.m_N, (void *)thickFunc01,
+                      (void *)edge01, "Bottom", trimNorms);
   // meshingBoundayLayer(lowerdomain, (void *)thickFuncOval, (void *)edgeinner,
   // "Oval", std::vector<std::vector<double>>()); meshing upper domain
   std::vector<double> box;
   lowerdomain.GetBoundBox(box);
-  double height = 5, gap = 0.1;
   G_ptsA[0][0] = box[0];
   G_ptsA[0][1] = box[3];
   G_ptsA[1][0] = box[1];
   G_ptsA[1][1] = box[3];
+
   G_pts[5][0] = G_ptsA[0][0];
-  G_pts[5][1] = G_ptsA[0][1] + gap;
+  G_pts[5][1] = G_ptsA[0][1] + centralGap;
+  G_pts[4][0] = G_pts[5][0];
+  G_pts[4][1] = upperHeight;
+
   G_pts[2][0] = G_ptsA[1][0];
-  G_pts[2][1] = G_ptsA[1][1] + gap;
-  double hFirstLayerup = 1. / Cedge52.m_N, progressup = 1.2, maxLayerhup = 1.;
-  setRadiusMesh(hFirstLayerup, progressup, maxLayerhup);
-  int nLayers = findNlayers(hFirstLayerup, progressup, height, maxLayerhup);
-  setRadiusLayers(nLayers);
+  G_pts[2][1] = G_ptsA[1][1] + centralGap;
+  G_pts[3][0] = G_pts[2][0];
+  G_pts[3][1] = upperHeight;
   std::vector<void *> edges;
   edges.push_back((void *)edge52);
-  edges.push_back((void *)radiusEdge);
-  edges.push_back(nullptr);
-  edges.push_back(nullptr);
-  RectRegion upperdomain(edges, "upperdomain.dat", false);
-  upperdomain.MeshGen(Cedge52.m_N, nLayers, eBoundaryLayer1);
+  edges.push_back((void *)edge23);
+  edges.push_back((void *)edge43);
+  edges.push_back((void *)edge54);
+  RectRegion upperdomain(edges, "upperdomain");
+  upperdomain.MeshGen(Cedge52.m_N, Cedge23.m_N);
   upperdomain.Tec360Pts("upperdomain.dat");
-  upperdomain.GetBoundBox(box);
-  G_pts[4][0] = box[0];
-  G_pts[4][1] = box[3];
-  G_pts[3][0] = box[1];
-  G_pts[3][1] = box[3];
   // meshing centre domain
   geoCentreDomain("Centre.geo", upperdomain, lowerdomain);
   if (!merge)
@@ -142,7 +138,7 @@ int main(int argc, char *argv[]) {
   vector<int> comp3;
   comp3.push_back(0);
   // wall
-  combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 0, curvedpts, AoA, 1);
+  combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 0, curvedpts, 0., 1);
   // left
   conditions[0] = (void *)leftBnd;
   combinedReg.defineBoundary(conditions, 45. / 180. * M_PI);

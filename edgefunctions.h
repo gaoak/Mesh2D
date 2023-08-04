@@ -4,32 +4,25 @@
 
 /////////////////////////////// do not modify
 // the boundary edge should be continuous for real number s
-
 double G_pts[NUMPTS][2];
 double G_ptsA[NUMPTS][2];
-
-static void transform(std::vector<double> &p, double AoA) {
-  double x = p[0], y = p[1];
-  p[0] = x * cos(AoA) + y * sin(AoA);
-  p[1] = -x * sin(AoA) + y * cos(AoA);
-}
 
 int InitPts() {
   G_pts[0][0] = 0.;
   G_pts[0][1] = 0.;
 
-  G_pts[1][0] = 1.;
+  G_pts[1][0] = waveLength * numWaves;
   G_pts[1][1] = 0.;
   return 0;
 }
 
 // bottom wavy wall
-LineEdge Cedge01(G_pts[0], G_pts[1], 200, UNIFORM, 0., 0.);
+LineEdge Cedge01(G_pts[0], G_pts[1], bottomNx, UNIFORM, 0., 0.);
 std::vector<double> edge01(double s) {
   double x = Cedge01.Evaluate(s)[0];
   std::vector<double> p(3, 0.);
   p[0] = x;
-  p[1] = 0.2 * (cos(x * 2 * M_PI) - 1.);
+  p[1] = 0.2 * (cos(x * 2. * M_PI / waveLength) - 1.);
   return p;
 }
 
@@ -49,14 +42,24 @@ std::vector<double> edgeinner(double s) {
 
 double thickFuncOval(std::vector<double> p) { return 0.1; }
 
-LineEdge Cedge52(G_pts[5], G_pts[2], 20, UNIFORM, 0., 0.);
+LineEdge Cedge52(G_pts[5], G_pts[2], upperNx, UNIFORM, 0., 0.);
 std::vector<double> edge52(double s) { return Cedge52.Evaluate(s); }
 
-LineEdge CedgeA5(G_ptsA[0], G_pts[5], 10, BOUNDARYLAYER0, maxLayerh, 1.2, 5, 0.,
-                 0., 0);
-LineEdge CedgeB2(G_ptsA[1], G_pts[2], 10, BOUNDARYLAYER0, maxLayerh, 1.2, 5, 0.,
-                 0., 0);
+LineEdge Cedge43(G_pts[4], G_pts[3], upperNx, UNIFORM, 0., 0.);
+std::vector<double> edge43(double s) { return Cedge43.Evaluate(s); }
+
+LineEdge Cedge54(G_pts[5], G_pts[4], upperNy, BOUNDARYLAYER0,
+                 waveLength *numWaves / upperNx, upperProgress, 5, 0., 0., 0);
+std::vector<double> edge54(double s) { return Cedge54.Evaluate(s); }
+LineEdge Cedge23(G_pts[2], G_pts[3], upperNy, BOUNDARYLAYER0,
+                 waveLength *numWaves / upperNx, upperProgress, 5, 0., 0., 0);
+std::vector<double> edge23(double s) { return Cedge23.Evaluate(s); }
+
+LineEdge CedgeA5(G_ptsA[0], G_pts[5], centralNy, BOUNDARYLAYER0,
+                 maxLayerhBottom, centralProgress, 3, 0., 0., 0);
 std::vector<double> edgeA5(double s) { return CedgeA5.Evaluate(s); }
+LineEdge CedgeB2(G_ptsA[1], G_pts[2], centralNy, BOUNDARYLAYER0,
+                 maxLayerhBottom, centralProgress, 3, 0., 0., 0);
 std::vector<double> edgeB2(double s) { return CedgeB2.Evaluate(s); }
 
 bool leftBnd(std::vector<double> p) { return fabs(p[0] - G_pts[0][0]) < 1E-6; }

@@ -1,7 +1,7 @@
 #!/bin/bash
 rm ./mesh-g
-c++ -std=c++11 -DOUTPUTEXP   *.cpp CAD2D/*.cpp -c -Og -g
-c++ -std=c++11 *.o -Og -o mesh-g -g
+c++ -std=c++11 -DOUTPUTEXP   *.cpp CAD2D/*.cpp -c -O0 -g
+c++ -std=c++11 *.o -O0 -o mesh-g -g
 ./mesh-g
 echo "gmsh Centre.geo"
 echo "Mesh.RecombinationAlgorithm = 1;" >> Centre.geo
