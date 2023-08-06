@@ -13,6 +13,28 @@
 #include <vector>
 using namespace std;
 
+int geoFarDomain(std::string filename) {
+  std::vector<std::vector<double>> pts;
+  double ds;
+  ds = 2. / Cedge43.m_N;
+  for (int i = 0; i <= Cedge43.m_N; ++i) {
+    pts.push_back(edge43(-1. + i * ds));
+  }
+  ds = 2. / Cedge36.m_N;
+  for (int i = 1; i < Cedge36.m_N; ++i) {
+    pts.push_back(edge36(-1. + i * ds));
+  }
+  ds = 2. / Cedge76.m_N;
+  for (int i = 0; i <= Cedge76.m_N; ++i) {
+    pts.push_back(edge76(1. - i * ds));
+  }
+  ds = 2. / Cedge47.m_N;
+  for (int i = 1; i < Cedge47.m_N; ++i) {
+    pts.push_back(edge47(1. - i * ds));
+  }
+  OutGeo(filename, pts, std::vector<std::vector<std::vector<double>>>());
+  return 0;
+}
 int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
                     MeshRegion &lowerDomain) {
   double angle = 45. / 180. * M_PI;
@@ -64,10 +86,7 @@ int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
   OutGeo(filename, pts, std::vector<std::vector<std::vector<double>>>());
   return 0;
 }
-int meshCentreDomain(std::string gmshfilename, MeshRegion &upperDomain,
-                     MeshRegion &lowerDomain, MeshRegions &combined) {
-  combined.AddRegion(upperDomain);
-  combined.AddRegion(lowerDomain);
+int mergeGmshDomain(std::string gmshfilename, MeshRegions &combined) {
   MeshRegions gmshReg("gmsh", 1.E-8);
   gmshReg.loadFromMsh(gmshfilename, 125. / 180. * M_PI);
   cout << "load " << gmshfilename << endl;
@@ -104,20 +123,10 @@ int main(int argc, char *argv[]) {
   // "Oval", std::vector<std::vector<double>>()); meshing upper domain
   std::vector<double> box;
   lowerdomain.GetBoundBox(box);
-  G_ptsA[0][0] = box[0];
   G_ptsA[0][1] = box[3];
-  G_ptsA[1][0] = box[1];
   G_ptsA[1][1] = box[3];
-
-  G_pts[5][0] = G_ptsA[0][0];
   G_pts[5][1] = G_ptsA[0][1] + centralGap;
-  G_pts[4][0] = G_pts[5][0];
-  G_pts[4][1] = upperHeight;
-
-  G_pts[2][0] = G_ptsA[1][0];
   G_pts[2][1] = G_ptsA[1][1] + centralGap;
-  G_pts[3][0] = G_pts[2][0];
-  G_pts[3][1] = upperHeight;
   std::vector<void *> edges;
   edges.push_back((void *)edge52);
   edges.push_back((void *)edge23);
@@ -125,28 +134,28 @@ int main(int argc, char *argv[]) {
   edges.push_back((void *)edge54);
   RectRegion upperdomain(edges, "upperdomain");
   upperdomain.MeshGen(Cedge52.m_N, Cedge23.m_N);
-  upperdomain.Tec360Pts("upperdomain.dat");
+  // upperdomain.Tec360Pts("upperdomain.dat");
   // meshing centre domain
   geoCentreDomain("Centre.geo", upperdomain, lowerdomain);
+  geoFarDomain("UpperFar.geo");
   if (!merge)
     return 0;
 
   MeshRegions combinedReg("globle", 1E-6);
-  meshCentreDomain("Centre.msh", upperdomain, lowerdomain, combinedReg);
+  combinedReg.AddRegion(upperdomain);
+  combinedReg.AddRegion(lowerdomain);
+  mergeGmshDomain("Centre.msh", combinedReg);
+  mergeGmshDomain("UpperFar.msh", combinedReg);
   // define boundary conditions
-  std::vector<void *> conditions(1);
+  std::map<int, void *> conditions;
   vector<int> comp3;
   comp3.push_back(0);
   // wall
   combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 0, curvedpts, 0., 1);
   // left
-  conditions[0] = (void *)leftBnd;
-  combinedReg.defineBoundary(conditions, 45. / 180. * M_PI);
-  // right
-  conditions[0] = (void *)rightBnd;
-  combinedReg.defineBoundary(conditions, 45. / 180. * M_PI);
-  // upper
-  conditions[0] = (void *)upperBnd;
+  conditions[1] = (void *)leftBnd;
+  conditions[2] = (void *)rightBnd;
+  conditions[3] = (void *)upperBnd;
   combinedReg.defineBoundary(conditions, 45. / 180. * M_PI);
   // output
   combinedReg.outXml("outerRegion.xml");
