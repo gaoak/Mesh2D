@@ -80,10 +80,10 @@ LineEdge Cedge23(G_pts[2], G_pts[3], upperNy, BOUNDARYLAYER0,
 std::vector<double> edge23(double s) { return Cedge23.Evaluate(s); }
 
 // far field
-LineEdge Cedge47(G_pts[4], G_pts[7], farNx, BOUNDARYLAYER0,
+LineEdge Cedge47(G_pts[4], G_pts[7], farNy, BOUNDARYLAYER0,
                  waveLength *numWaves / upperNx, farProgress, 4, 0., 0., 0);
 std::vector<double> edge47(double s) { return Cedge47.Evaluate(s); }
-LineEdge Cedge36(G_pts[3], G_pts[6], farNx, BOUNDARYLAYER0,
+LineEdge Cedge36(G_pts[3], G_pts[6], farNy, BOUNDARYLAYER0,
                  waveLength *numWaves / upperNx, farProgress, 4, 0., 0., 0);
 std::vector<double> edge36(double s) { return Cedge36.Evaluate(s); }
 LineEdge Cedge76(G_pts[7], G_pts[6], farNx, UNIFORM, 0., 0);

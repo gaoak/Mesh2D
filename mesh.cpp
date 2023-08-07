@@ -13,8 +13,8 @@
 #include <vector>
 using namespace std;
 
-int geoFarDomain(std::string filename) {
-  std::vector<std::vector<double>> pts;
+int geoFarDomain(std::string filename, std::vector<std::vector<double>> &pts) {
+  pts.clear();
   double ds;
   ds = 2. / Cedge43.m_N;
   for (int i = 0; i <= Cedge43.m_N; ++i) {
@@ -36,7 +36,8 @@ int geoFarDomain(std::string filename) {
   return 0;
 }
 int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
-                    MeshRegion &lowerDomain) {
+                    MeshRegion &lowerDomain,
+                    std::vector<std::vector<double>> &pts) {
   double angle = 45. / 180. * M_PI;
   std::vector<std::vector<int>> bndupper = upperDomain.splitBoundaryPts(angle);
   int idUpper = -1;
@@ -69,7 +70,7 @@ int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
   if (fabs(lowerDomain.m_pts[bndlower[idLower][0]][0] - G_ptsA[0][0]) > 1E-6) {
     std::reverse(bndlower[idLower].begin(), bndlower[idLower].end());
   }
-  std::vector<std::vector<double>> pts;
+  pts.clear();
   for (auto p : bndlower[idLower]) {
     pts.push_back(lowerDomain.m_pts[p]);
   }
@@ -86,15 +87,12 @@ int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
   OutGeo(filename, pts, std::vector<std::vector<std::vector<double>>>());
   return 0;
 }
-int mergeGmshDomain(std::string gmshfilename, MeshRegions &combined) {
-  MeshRegions gmshReg("gmsh", 1.E-8);
+int mergeGmshDomain(std::string gmshfilename, MeshRegions &combined,
+                    std::vector<std::vector<double>> pts) {
+  MeshRegions gmshReg(gmshfilename, 1.E-6);
   gmshReg.loadFromMsh(gmshfilename, 125. / 180. * M_PI);
   cout << "load " << gmshfilename << endl;
-  if (!combined.consistancyCheck(gmshReg)) {
-    cout << "Error: node mismatch, exit" << endl;
-    return -1;
-  }
-  if (!gmshReg.consistancyCheck(combined)) {
+  if (!gmshReg.consistancyCheck(pts)) {
     cout << "Error: node mismatch, exit" << endl;
     return -1;
   }
@@ -136,16 +134,17 @@ int main(int argc, char *argv[]) {
   upperdomain.MeshGen(Cedge52.m_N, Cedge23.m_N);
   // upperdomain.Tec360Pts("upperdomain.dat");
   // meshing centre domain
-  geoCentreDomain("Centre.geo", upperdomain, lowerdomain);
-  geoFarDomain("UpperFar.geo");
+  std::vector<std::vector<double>> centerpts, uppfarpts;
+  geoCentreDomain("Centre.geo", upperdomain, lowerdomain, centerpts);
+  geoFarDomain("UpperFar.geo", uppfarpts);
   if (!merge)
     return 0;
 
   MeshRegions combinedReg("globle", 1E-6);
   combinedReg.AddRegion(upperdomain);
   combinedReg.AddRegion(lowerdomain);
-  mergeGmshDomain("Centre.msh", combinedReg);
-  mergeGmshDomain("UpperFar.msh", combinedReg);
+  mergeGmshDomain("Centre.msh", combinedReg, centerpts);
+  mergeGmshDomain("UpperFar.msh", combinedReg, uppfarpts);
   // define boundary conditions
   std::map<int, void *> conditions;
   vector<int> comp3;

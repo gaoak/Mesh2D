@@ -6,7 +6,7 @@
 // wave parameters
 double waveLength = 1.;
 double waveAmplitude = 0.5;
-int numWaves = 6;
+int numWaves = 1;
 // bottom boundary layer
 double hFirstLayerBottom = 0.003;
 double progressBottom = 1.3;
@@ -25,7 +25,7 @@ int upperNy = 10;
 double farHeight = 5.;
 double farProgress = 2;
 int farNy = 12;
-int farNx = 8;
+int farNx = 2 * numWaves;
 //
 int curvedpts = 6;
 #endif
