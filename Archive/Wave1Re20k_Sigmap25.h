@@ -8,19 +8,19 @@ double waveLength = 1.;
 double waveAmplitude = 0.039788735772974;
 int numWaves = 1;
 // bottom boundary layer
-double hFirstLayerBottom = 0.01;
-double progressBottom = 1.1;
-double rBoundaryLayerBottom = 0.06;
+double hFirstLayerBottom = 0.003;
+double progressBottom = 1.3;
+double rBoundaryLayerBottom = 0.03;
 double maxLayerhBottom = 0.025;
-int bottomNx = 30 * numWaves;
+int bottomNx = 100 * numWaves;
 // central mesh, filled by Gmsh
-double centralGap = 0.04;
-int centralNy = 2;
+double centralGap = 0.05;
+int centralNy = 4;
 // upper structured layer
-double upperHeight = 1.;
-double upperProgress = 1.1;
+double upperHeight = 0.6;
+double upperProgress = 1.3;
 int upperNx = 20 * numWaves;
-int upperNy = 18;
+int upperNy = 10;
 // far field
 double farHeight = 5.;
 double farProgress = 2;

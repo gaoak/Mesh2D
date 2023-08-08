@@ -41,12 +41,12 @@ std::vector<double> edge01(double s) {
   double x = Cedge01.Evaluate(s)[0];
   std::vector<double> p(3, 0.);
   p[0] = x;
-  p[1] = 0.2 * (cos(x * 2. * M_PI / waveLength) - 1.);
+  p[1] = waveAmplitude * (cos(x * 2. * M_PI / waveLength) - 1.);
   return p;
 }
 
 double thickFunc01(std::vector<double> p) {
-  return 0.0 * (p[0] - 0.5) * (p[0] - 0.5) * 4 + 0.1;
+  return 0.0 * (p[0] - 0.5) * (p[0] - 0.5) * 4 + rBoundaryLayerBottom;
 }
 
 // oval shap
