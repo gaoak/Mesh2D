@@ -35,51 +35,52 @@ int geoFarDomain(std::string filename, std::vector<std::vector<double>> &pts) {
   OutGeo(filename, pts, std::vector<std::vector<std::vector<double>>>());
   return 0;
 }
-int geoCentreDomain(std::string filename, MeshRegion &upperDomain,
-                    MeshRegion &lowerDomain,
-                    std::vector<std::vector<double>> &pts) {
+int geoBottomGapDomain(std::string filename, MeshRegion &centraldomain,
+                       MeshRegion &bottomdomain,
+                       std::vector<std::vector<double>> &pts) {
   double angle = 45. / 180. * M_PI;
-  std::vector<std::vector<int>> bndupper = upperDomain.splitBoundaryPts(angle);
+  std::vector<std::vector<int>> bndupper =
+      centraldomain.splitBoundaryPts(angle);
   int idUpper = -1;
   for (size_t i = 0; i < bndupper.size(); ++i) {
-    if (fabs(upperDomain.m_pts[bndupper[i][0]][1] -
-             upperDomain.m_pts[bndupper[i][1]][1]) < 1E-6 &&
-        fabs(upperDomain.m_pts[bndupper[i][0]][1] - G_pts[5][1]) < 1E-6) {
+    if (fabs(centraldomain.m_pts[bndupper[i][0]][1] -
+             centraldomain.m_pts[bndupper[i][1]][1]) < 1E-6 &&
+        fabs(centraldomain.m_pts[bndupper[i][0]][1] - G_pts[5][1]) < 1E-6) {
       idUpper = i;
       break;
     } else {
       continue;
     }
   }
-  if (fabs(upperDomain.m_pts[bndupper[idUpper][0]][0] - G_pts[5][0]) < 1E-6) {
+  if (fabs(centraldomain.m_pts[bndupper[idUpper][0]][0] - G_pts[5][0]) < 1E-6) {
     std::reverse(bndupper[idUpper].begin(), bndupper[idUpper].end());
   }
-  std::vector<std::vector<int>> bndlower = lowerDomain.splitBoundaryPts(angle);
+  std::vector<std::vector<int>> bndlower = bottomdomain.splitBoundaryPts(angle);
   int idLower = -1;
   for (size_t i = 0; i < bndlower.size(); ++i) {
-    if (fabs(lowerDomain.m_pts[bndlower[i][0]][0] -
-             lowerDomain.m_pts[bndlower[i][1]][0]) < 1E-6)
+    if (fabs(bottomdomain.m_pts[bndlower[i][0]][0] -
+             bottomdomain.m_pts[bndlower[i][1]][0]) < 1E-6)
       continue;
-    if (fabs(lowerDomain.m_pts[bndlower[i][0]][1] - G_ptsA[0][1]) < 1E-6) {
+    if (fabs(bottomdomain.m_pts[bndlower[i][0]][1] - G_ptsA[0][1]) < 1E-6) {
       idLower = i;
       break;
     } else {
       continue;
     }
   }
-  if (fabs(lowerDomain.m_pts[bndlower[idLower][0]][0] - G_ptsA[0][0]) > 1E-6) {
+  if (fabs(bottomdomain.m_pts[bndlower[idLower][0]][0] - G_ptsA[0][0]) > 1E-6) {
     std::reverse(bndlower[idLower].begin(), bndlower[idLower].end());
   }
   pts.clear();
   for (auto p : bndlower[idLower]) {
-    pts.push_back(lowerDomain.m_pts[p]);
+    pts.push_back(bottomdomain.m_pts[p]);
   }
   double ds = 2. / CedgeA5.m_N;
   for (int i = 1; i < CedgeB2.m_N; ++i) {
     pts.push_back(edgeB2(-1. + i * ds));
   }
   for (auto p : bndupper[idUpper]) {
-    pts.push_back(upperDomain.m_pts[p]);
+    pts.push_back(centraldomain.m_pts[p]);
   }
   for (int i = 1; i < CedgeA5.m_N; ++i) {
     pts.push_back(edgeA5(1. - i * ds));
@@ -109,42 +110,50 @@ int main(int argc, char *argv[]) {
   InitPts();
   cout << "start meshing --------" << endl;
   // meshing bottom boundary layer
-  MeshRegions lowerdomain("Boundarylayer", 1E-5);
+  MeshRegions bottomdomain("Boundarylayer", 1E-5);
   setRadiusMesh(hFirstLayerBottom, progressBottom, maxLayerhBottom);
   std::vector<std::vector<double>> trimNorms;
   std::vector<double> tmpnorm = {0., 1., 0.};
   trimNorms.push_back(tmpnorm);
   trimNorms.push_back(tmpnorm);
-  meshingBoundayLayer(lowerdomain, Cedge01.m_N, (void *)thickFunc01,
+  meshingBoundayLayer(bottomdomain, Cedge01.m_N, (void *)thickFunc01,
                       (void *)edge01, "Bottom", trimNorms);
-  // meshingBoundayLayer(lowerdomain, (void *)thickFuncOval, (void *)edgeinner,
+  // meshingBoundayLayer(bottomdomain, (void *)thickFuncOval, (void *)edgeinner,
   // "Oval", std::vector<std::vector<double>>()); meshing upper domain
   std::vector<double> box;
-  lowerdomain.GetBoundBox(box);
+  bottomdomain.GetBoundBox(box);
   G_ptsA[0][1] = box[3];
   G_ptsA[1][1] = box[3];
-  G_pts[5][1] = G_ptsA[0][1] + centralGap;
-  G_pts[2][1] = G_ptsA[1][1] + centralGap;
+  G_pts[5][1] = G_ptsA[0][1] + bottomGap;
+  G_pts[2][1] = G_ptsA[1][1] + bottomGap;
   std::vector<void *> edges;
   edges.push_back((void *)edge52);
   edges.push_back((void *)edge23);
   edges.push_back((void *)edge43);
   edges.push_back((void *)edge54);
-  RectRegion upperdomain(edges, "upperdomain");
-  upperdomain.MeshGen(Cedge52.m_N, Cedge23.m_N);
-  // upperdomain.Tec360Pts("upperdomain.dat");
-  // meshing centre domain
-  std::vector<std::vector<double>> centerpts, uppfarpts;
-  geoCentreDomain("Centre.geo", upperdomain, lowerdomain, centerpts);
-  geoFarDomain("UpperFar.geo", uppfarpts);
+  RectRegion centraldomain(edges, "centraldomain");
+  centraldomain.MeshGen(Cedge52.m_N, Cedge23.m_N);
+  // centraldomain.Tec360Pts("centraldomain.dat");
+  // meshing bottom gap domain
+  std::vector<std::vector<double>> gappts;
+  geoBottomGapDomain("BottomGap.geo", centraldomain, bottomdomain, gappts);
   if (!merge)
     return 0;
 
+  // meshing uppder domain
+  edges.clear();
+  edges.push_back((void *)edge43);
+  edges.push_back((void *)edge36);
+  edges.push_back((void *)edge76);
+  edges.push_back((void *)edge47);
+  RectRegion upperdomain(edges, "upperdomain");
+  upperdomain.MeshGen(Cedge43.m_N, Cedge36.m_N);
+  // merge all domains
   MeshRegions combinedReg("globle", 1E-6);
+  combinedReg.AddRegion(centraldomain);
+  combinedReg.AddRegion(bottomdomain);
   combinedReg.AddRegion(upperdomain);
-  combinedReg.AddRegion(lowerdomain);
-  mergeGmshDomain("Centre.msh", combinedReg, centerpts);
-  mergeGmshDomain("UpperFar.msh", combinedReg, uppfarpts);
+  mergeGmshDomain("BottomGap.msh", combinedReg, gappts);
   // define boundary conditions
   std::map<int, void *> conditions;
   vector<int> comp3;

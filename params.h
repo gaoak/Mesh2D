@@ -3,29 +3,32 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
-// wave parameters
+// gemoetry parameters
 double waveLength = 1.;
 double waveAmplitude = 0.039788735772974;
 int numWaves = 1;
+// basic mesh parameters
+double centralSize = waveLength / 10.;
+double upperHeight = 4.;
 // bottom boundary layer
 double hFirstLayerBottom = 0.01;
 double progressBottom = 1.1;
 double rBoundaryLayerBottom = 0.06;
 double maxLayerhBottom = 0.025;
 int bottomNx = 30 * numWaves;
-// central mesh, filled by Gmsh
-double centralGap = 0.04;
-int centralNy = 2;
-// upper structured layer
-double upperHeight = 1.;
-double upperProgress = 1.1;
-int upperNx = 20 * numWaves;
-int upperNy = 18;
-// far field
-double farHeight = 5.;
-double farProgress = 2;
-int farNy = 12;
-int farNx = 2 * numWaves;
-//
+// upper boundary layer
+double upperGap = centralSize;
+double hFirstLayerUpper = hFirstLayerBottom;
+double upperProgress = 1.3;
+int upperNy = 4;
+// bottom gap mesh, filled by Gmsh
+double bottomGap = centralSize;
+int bottomGapNy = std::ceil(bottomGap / maxLayerhBottom);
+// central layer
+double centralHeight = upperHeight - upperGap;
+int centralNx = std::round(waveLength / centralSize);
+int centralNy =
+    std::round((centralHeight - waveAmplitude - bottomGap) / centralSize);
+// curved edges
 int curvedpts = 6;
 #endif
