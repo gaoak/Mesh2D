@@ -4,9 +4,11 @@
 #include<cstring>
 #include"CAD2D/CompositEdge.h"
 #include"CAD2D/MeshRegions.h"
+#include "CAD2D/MeshTool.h"
 #include"CAD2D/RectRegion.h"
 #include"CAD2D/LineEdge.h"
 #include"CAD2D/airfoil.h"
+#include"CAD2D/util.h"
 using namespace std;
 
 #include"edgefunctions.h"
