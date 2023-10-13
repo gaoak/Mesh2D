@@ -2,6 +2,10 @@
 #define EDGEFUNCTIONS_H
 #include "params.h"
 
+#ifndef FOILTYPE
+#define FOILTYPE NACAmpxx
+#endif
+
 /////////////////////////////// do not modify
 //the boundary edge should be continuous for real number s
 int nLayers  = findNlayers(hFirstLayer, progress, rBoundaryLayer,  maxLayerh);
