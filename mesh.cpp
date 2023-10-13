@@ -4,9 +4,10 @@
 #include<cstring>
 #include"CAD2D/CompositEdge.h"
 #include"CAD2D/MeshRegions.h"
+#include "CAD2D/MeshTool.h"
 #include"CAD2D/RectRegion.h"
 #include"CAD2D/LineEdge.h"
-#include"CAD2D/airfoil.h"
+#include"CAD2D/util.h"
 #include"CAD2D/SplineEdge.h"
 #include<fstream>
 using namespace std;
@@ -386,7 +387,7 @@ int meshingWake(MeshRegions &combinedReg)
 
 int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts)
 {
-    std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundary();
+    std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundaryPoints();
     int wallID = -1;
     for(int i=0; i<boundary.size(); ++i) {
         for(int j=0; j<boundary[i].size(); ++j) {
@@ -454,7 +455,7 @@ int meshingInFoil(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vecto
 
 int meshingInFoil_v2(MeshRegions & nearWallRegion, MeshRegions &inFoilRegion, vector<vector<double> > &breakpts)
 {
-    std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundary();
+    std::vector<std::vector<int>> boundary = nearWallRegion.extractBoundaryPoints();
     int wallID = -1;
     for(int i=0; i<boundary.size(); ++i) {
         for(int j=0; j<boundary[i].size(); ++j) {
@@ -566,7 +567,7 @@ int outputXML(MeshRegions &combinedReg, MeshRegions &inFoilRegion)
 {
     //output outer region without wall for Omesh
     MeshRegions oRegion("Oreg", 1E-6);
-    std::vector<std::vector<int>> boundary = combinedReg.extractBoundary();
+    std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
     int wallID = -1;
     for(int i=0; i<boundary.size(); ++i) {
         for(int j=0; j<boundary[i].size(); ++j) {
@@ -636,7 +637,7 @@ int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion, vector<vect
 {
     //generate gmsh geo file
     vector<vector<double>> box;
-    std::vector<std::vector<int>> boundary = FarFieldReg.extractBoundary();
+    std::vector<std::vector<int>> boundary = FarFieldReg.extractBoundaryPoints();
     int wallID = -1;
     for(int i=0; i<boundary.size(); ++i) {
         for(int j=0; j<boundary[i].size(); ++j) {
