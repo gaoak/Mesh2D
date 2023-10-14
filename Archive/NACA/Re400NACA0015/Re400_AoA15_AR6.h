@@ -1,5 +1,5 @@
-//for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
-//flexible boundary thickness, with 1500 elements
+// for 3D simulation of Re400, k2, A=0.5, mesh is reduced to extreme,
+// flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
@@ -9,10 +9,10 @@
 #define FOILP 0
 #define FOILT 15
 
-double AoA = FOILAOA/180.*M_PI;
-double chamber = FOILM*0.01;
-double chamberp = FOILP*0.1;
-double Thickness = FOILT*0.01;
+double AoA = FOILAOA / 180. * M_PI;
+double chamber = FOILM * 0.01;
+double chamberp = FOILP * 0.1;
+double Thickness = FOILT * 0.01;
 
 double xInFoil = 0.01;
 double hFirstLayerInFoil = 0.01;
@@ -33,7 +33,7 @@ double rBoundaryLayer6 = 0.8;
 double rBoundaryLayer7 = 0.8;
 double maxLayerh = 0.1;
 
-double chordLen= 1.;
+double chordLen = 1.;
 double xmidLow1 = 0.5;
 double xmidUp1 = 0.5;
 double xmidLow2 = 0.006;
@@ -47,10 +47,10 @@ int nUp2 = 11;
 int nFront = 6;
 
 double wakeLen = 0.1;
-double wakeyUp  = 0.1*Thickness;
-double wakeDown =-0.1*Thickness;
+double wakeyUp = 0.1 * Thickness;
+double wakeDown = -0.1 * Thickness;
 int nWake = 3;
-double nearWakeDiffuseAngle = 0./180.*M_PI;
+double nearWakeDiffuseAngle = 0. / 180. * M_PI;
 
 double xBoxLeft = -20.;
 double xBoxRight = 30.;
@@ -63,21 +63,21 @@ int nBoxDown = 6;
 
 int nFarWakex = 41;
 int nFarWakey = 20;
-double farWakeAoA = 13./180.*M_PI;
-double wakeDiffuseAngle = 18./180.*M_PI;
+double farWakeAoA = 13. / 180. * M_PI;
+double wakeDiffuseAngle = 18. / 180. * M_PI;
 double farWakeRight = 12.;
 double farWakeUp = 0.8;
 double farWakeDown = -1.2;
 
 int curvedpts = 6;
 // 3D geometry infomation
-int wingn = 44 ;//elements over wing span
-int wingnrefine = 20;//elements over wing refined region
-int tipn  =  10 ;//elements over the tip
-int tipnrefine = 8;//elements over tip refined region
-double wingrefinelength = 2.5 ;//length of refined region
-double tiprefinelength = 2 ;//length of refined region
-double spanlength = 6.;//wing span
-double domainz = 16.;//domain size
-#define  SWEPTANGLE 0
+int wingn = 44;                // elements over wing span
+int wingnrefine = 20;          // elements over wing refined region
+int tipn = 10;                 // elements over the tip
+int tipnrefine = 8;            // elements over tip refined region
+double wingrefinelength = 2.5; // length of refined region
+double tiprefinelength = 2;    // length of refined region
+double spanlength = 6.;        // wing span
+double domainz = 16.;          // domain size
+#define SWEPTANGLE 0
 #endif

@@ -1,5 +1,5 @@
-//for 3D simulation of Re20k, k2, A=0.2, mesh is reduced to extreme,
-//flexible boundary thickness, with 1500 elements
+// for 3D simulation of Re20k, k2, A=0.2, mesh is reduced to extreme,
+// flexible boundary thickness, with 1500 elements
 #ifndef PARAMS_H
 #define PARAMS_H
 #define NUMPTS 20
@@ -9,10 +9,10 @@
 #define FOILP 0
 #define FOILT 12
 
-double AoA = FOILAOA/180.*M_PI;
-double chamber = FOILM*0.01;
-double chamberp = FOILP*0.1;
-double Thickness = FOILT*0.01;
+double AoA = FOILAOA / 180. * M_PI;
+double chamber = FOILM * 0.01;
+double chamberp = FOILP * 0.1;
+double Thickness = FOILT * 0.01;
 
 double xInFoil = 0.01;
 double hFirstLayerInFoil = 0.002;
@@ -33,7 +33,7 @@ double rBoundaryLayer6 = 0.55;
 double rBoundaryLayer7 = 0.55;
 double maxLayerh = 0.025;
 
-double chordLen= 1.;
+double chordLen = 1.;
 double xmidLow1 = 0.5;
 double xmidUp1 = 0.4;
 double xmidLow2 = 0.02;
@@ -47,10 +47,10 @@ int nUp2 = 21;
 int nFront = 19;
 
 double wakeLen = 0.1;
-double wakeyUp  = 2.*hFirstLayer;
-double wakeDown =-2.*hFirstLayer;
+double wakeyUp = 2. * hFirstLayer;
+double wakeDown = -2. * hFirstLayer;
 int nWake = 6;
-double nearWakeDiffuseAngle = 0./180.*M_PI;
+double nearWakeDiffuseAngle = 0. / 180. * M_PI;
 
 double xBoxLeft = -20.;
 double xBoxRight = 30.;
@@ -63,16 +63,16 @@ int nBoxDown = 5;
 
 int nFarWakex = 28;
 int nFarWakey = 16;
-double farWakeAoA = 0./180.*M_PI;
-double wakeDiffuseAngle = 15./180.*M_PI;
+double farWakeAoA = 0. / 180. * M_PI;
+double wakeDiffuseAngle = 15. / 180. * M_PI;
 double farWakeRight = 4.;
 double farWakeUp = 0.2;
 double farWakeDown = -0.6;
 
 int curvedpts = 6;
 // also need by extrude.sh
-int wingn = 71 ;
-int tipn  =  10 ;
-double tiprefinelength1 = 1.0 ;
-double tiprefinelength2 = 2.5 ;
+int wingn = 71;
+int tipn = 10;
+double tiprefinelength1 = 1.0;
+double tiprefinelength2 = 2.5;
 #endif
