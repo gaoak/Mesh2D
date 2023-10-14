@@ -134,7 +134,7 @@ std::vector<double> innerEdge(double s) { return CinnerEdge.Evaluate(s); }
 double hTrailingEdge = foil.roundTrailingSize();
 LineEdge Cedge2(virtualpts[2], virtualpts[3], nLow1, BOUNDARYLAYER2,
                 hTrailingEdge, (hTrailingEdge + hFirstLayer) / hTrailingEdge, 5,
-                sMidLow/nLow2, 2, 3);
+                sMidLow / nLow2, 2, 3);
 LineEdge Cedge3(virtualpts[3], virtualpts[4], nLow2, BOUNDARYLAYER1, 0., 0., 0,
                 (sFrontUp + sFrontLow) / nFront, growthrateLow2,
                 std::min(10, nLow2 - 1));
@@ -142,9 +142,9 @@ LineEdge Cedge4(virtualpts[4], virtualpts[5], nFront, UNIFORM, 0., 0.);
 LineEdge Cedge5(virtualpts[5], virtualpts[6], nUp2, BOUNDARYLAYER0,
                 (sFrontUp + sFrontLow) / nFront, growthrateUp2,
                 std::min(10, nUp2 - 1), 0., 0., 1);
-LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1, BOUNDARYLAYER2, sMidUp/nUp2, 2, 3,
-                hTrailingEdge, (hTrailingEdge + hFirstLayer) / hTrailingEdge,
-                5);
+LineEdge Cedge6(virtualpts[6], virtualpts[7], nUp1, BOUNDARYLAYER2,
+                sMidUp / nUp2, 2, 3, hTrailingEdge,
+                (hTrailingEdge + hFirstLayer) / hTrailingEdge, 5);
 std::vector<double> edge2(double s) {
   std::vector<double> res = Cedge2.Evaluate(s);
   return foil.down(res[0]);

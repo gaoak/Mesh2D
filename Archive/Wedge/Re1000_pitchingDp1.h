@@ -30,13 +30,13 @@ double rBoundaryLayer6 = 0.8;
 double rBoundaryLayer7 = 0.8;
 double maxLayerh = 0.05;
 
-//number starts from right to left
+// number starts from right to left
 double chordLen = 1.;
-double xmidLow1 = chamber*0.5 / (1 - chamber*0.5);
-double xmidUp1 = chamber*0.5 / (1 - chamber*0.5);
-double xmidLow2 = chamber*0.15;
+double xmidLow1 = chamber * 0.5 / (1 - chamber * 0.5);
+double xmidUp1 = chamber * 0.5 / (1 - chamber * 0.5);
+double xmidLow2 = chamber * 0.15;
 double growthrateLow2 = 1.3;
-double xmidUp2 = chamber*0.15;
+double xmidUp2 = chamber * 0.15;
 double growthrateUp2 = 1.3;
 int nLow1 = 28;
 int nLow2 = 6;
