@@ -6,4 +6,4 @@
     echo "Mesh.RecombinationAlgorithm = 1;" >> FarField.geo
     gmsh FarField.geo  -2 -algo del2d  -clscale 10 -smooth 5  > logmesh.dat
     ./mesh-g merge FarField.msh
-    FieldConvert outerRegion.xml outerRegion.plt
+    FieldConvert outerRegion.xml outerRegion.plt -f
