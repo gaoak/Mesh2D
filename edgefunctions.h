@@ -97,10 +97,10 @@ int InitPts() {
   return 0;
 }
 
-LineEdge Cedge1011(g_thetaA[10], g_thetaA[11], nUp0, UNIFORM, 0., 0.);
-LineEdge Cedge110(g_thetaA[11], g_thetaA[0], nLow0, UNIFORM, 0., 0.);
-LineEdge Cedge45(g_thetaA[4], g_thetaA[5], nLow5, UNIFORM, 0., 0.);
-LineEdge Cedge56(g_thetaA[5], g_thetaA[6], nUp5, UNIFORM, 0., 0.);
+LineEdge Cedge1011(g_thetaA[10], g_thetaA[11], nLow0, UNIFORM, 0., 0.);
+LineEdge Cedge110(g_thetaA[11], g_thetaA[0], nUp0, UNIFORM, 0., 0.);
+LineEdge Cedge45(g_thetaA[4], g_thetaA[5], nUp5, UNIFORM, 0., 0.);
+LineEdge Cedge56(g_thetaA[5], g_thetaA[6], nLow5, UNIFORM, 0., 0.);
 std::vector<double> edge1011(double s) {
   double x0 = 0.5 * Thickness, radius = 0.5 * Thickness;
   double t = Cedge1011.Evaluate(s)[0];
@@ -134,19 +134,19 @@ std::vector<double> edge56(double s) {
   return res;
 }
 
-LineEdge Cedge01(g_ptsA[0], g_ptsA[1], nLow1, UNIFORM, 0., 0.);
-LineEdge Cedge12(g_ptsA[1], g_ptsA[2], nLow2, UNIFORM, 0., 0.);
-LineEdge Cedge23(g_ptsA[2], g_ptsA[3], nLow3, UNIFORM, 0., 0.);
-LineEdge Cedge34(g_ptsA[3], g_ptsA[4], nLow4, UNIFORM, 0., 0.);
+LineEdge Cedge01(g_ptsA[0], g_ptsA[1], nUp1, BOUNDARYLAYER0, hFirstLayer, 1.6, 5, 0., 0., 0);
+LineEdge Cedge12(g_ptsA[1], g_ptsA[2], nUp2, UNIFORM, 0., 0.);
+LineEdge Cedge23(g_ptsA[2], g_ptsA[3], nUp3, UNIFORM, 0., 0.);
+LineEdge Cedge34(g_ptsA[3], g_ptsA[4], nUp4, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer, 1.6, 5);
 std::vector<double> edge01(double s) { return Cedge01.Evaluate(s); }
 std::vector<double> edge12(double s) { return Cedge12.Evaluate(s); }
 std::vector<double> edge23(double s) { return Cedge23.Evaluate(s); }
 std::vector<double> edge34(double s) { return Cedge34.Evaluate(s); }
 
-LineEdge Cedge67(g_ptsA[6], g_ptsA[7], nLow1, UNIFORM, 0., 0.);
-LineEdge Cedge78(g_ptsA[7], g_ptsA[8], nLow2, UNIFORM, 0., 0.);
-LineEdge Cedge89(g_ptsA[8], g_ptsA[9], nLow3, UNIFORM, 0., 0.);
-LineEdge Cedge910(g_ptsA[9], g_ptsA[10], nLow4, UNIFORM, 0., 0.);
+LineEdge Cedge67(g_ptsA[6], g_ptsA[7], nLow4, BOUNDARYLAYER0, hFirstLayer, 1.6, 5, 0., 0., 0);
+LineEdge Cedge78(g_ptsA[7], g_ptsA[8], nLow3, UNIFORM, 0., 0.);
+LineEdge Cedge89(g_ptsA[8], g_ptsA[9], nLow2, UNIFORM, 0., 0.);
+LineEdge Cedge910(g_ptsA[9], g_ptsA[10], nLow1, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer, 1.6, 5);
 std::vector<double> edge67(double s) { return Cedge67.Evaluate(s); }
 std::vector<double> edge78(double s) { return Cedge78.Evaluate(s); }
 std::vector<double> edge89(double s) { return Cedge89.Evaluate(s); }
