@@ -134,19 +134,23 @@ std::vector<double> edge56(double s) {
   return res;
 }
 
-LineEdge Cedge01(g_ptsA[0], g_ptsA[1], nUp1, BOUNDARYLAYER0, hFirstLayer, 1.6, 5, 0., 0., 0);
+LineEdge Cedge01(g_ptsA[0], g_ptsA[1], nUp1, BOUNDARYLAYER0, hFirstLayer, 1.6,
+                 5, 0., 0., 0);
 LineEdge Cedge12(g_ptsA[1], g_ptsA[2], nUp2, UNIFORM, 0., 0.);
 LineEdge Cedge23(g_ptsA[2], g_ptsA[3], nUp3, UNIFORM, 0., 0.);
-LineEdge Cedge34(g_ptsA[3], g_ptsA[4], nUp4, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer, 1.6, 5);
+LineEdge Cedge34(g_ptsA[3], g_ptsA[4], nUp4, BOUNDARYLAYER1, 0., 0., 0,
+                 hFirstLayer, 1.6, 5);
 std::vector<double> edge01(double s) { return Cedge01.Evaluate(s); }
 std::vector<double> edge12(double s) { return Cedge12.Evaluate(s); }
 std::vector<double> edge23(double s) { return Cedge23.Evaluate(s); }
 std::vector<double> edge34(double s) { return Cedge34.Evaluate(s); }
 
-LineEdge Cedge67(g_ptsA[6], g_ptsA[7], nLow4, BOUNDARYLAYER0, hFirstLayer, 1.6, 5, 0., 0., 0);
+LineEdge Cedge67(g_ptsA[6], g_ptsA[7], nLow4, BOUNDARYLAYER0, hFirstLayer, 1.6,
+                 5, 0., 0., 0);
 LineEdge Cedge78(g_ptsA[7], g_ptsA[8], nLow3, UNIFORM, 0., 0.);
 LineEdge Cedge89(g_ptsA[8], g_ptsA[9], nLow2, UNIFORM, 0., 0.);
-LineEdge Cedge910(g_ptsA[9], g_ptsA[10], nLow1, BOUNDARYLAYER1, 0., 0., 0, hFirstLayer, 1.6, 5);
+LineEdge Cedge910(g_ptsA[9], g_ptsA[10], nLow1, BOUNDARYLAYER1, 0., 0., 0,
+                  hFirstLayer, 1.6, 5);
 std::vector<double> edge67(double s) { return Cedge67.Evaluate(s); }
 std::vector<double> edge78(double s) { return Cedge78.Evaluate(s); }
 std::vector<double> edge89(double s) { return Cedge89.Evaluate(s); }
@@ -170,4 +174,15 @@ std::vector<double> far811(double s) { return Cfar811.Evaluate(s); }
 std::vector<double> far08(double s) { return Cfar08.Evaluate(s); }
 std::vector<double> far311(double s) { return Cfar311.Evaluate(s); }
 
+std::vector<double> g_boundingbox;
+bool toremove(std::vector<double> p) {
+  double eps = g_boundingbox[g_boundingbox.size() - 1];
+  for (int i = 0; i < 2; ++i) {
+    if (p[i] < g_boundingbox[2 * i] - eps ||
+        p[i] > g_boundingbox[2 * i + 1] + eps) {
+      return false;
+    }
+  }
+  return true;
+}
 #endif

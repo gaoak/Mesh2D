@@ -16,16 +16,17 @@ int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
-int outputGeo(MeshRegions &combinedReg, MeshRegions &FarFieldReg,
-              vector<double> pC);
+int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
-  string mshfilename;
+  string mshfilename, mshfilename2;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "merge") == 0) {
       if (argc > i + 1)
         mshfilename = string(argv[i + 1]);
+      if (argc > i + 2)
+        mshfilename2 = string(argv[i + 2]);
       merge = true;
     }
   }
@@ -33,25 +34,20 @@ int main(int argc, char *argv[]) {
   InitPts();
   cout << "start meshing --------" << endl;
   MeshRegions combinedReg("RComb_", 1.E-6);
-  MeshRegions FarFieldReg("RFar_", 1.E-6);
+  meshingBoundaryLayer(combinedReg);
   meshingNearBody(combinedReg);
-  //meshingWake(combinedReg);
-  meshingOuterBoundary(FarFieldReg);
+  meshingWake(combinedReg);
+  meshingOuterBoundary(combinedReg);
   if (!merge) {
-    vector<double> pC = {g_ptsF[7][0], g_ptsF[7][1]};
-    outputGeo(combinedReg, FarFieldReg, pC);
+    std::set<int> OutLevels = {1, 3};
+    outputGeo(combinedReg, OutLevels);
     cout << "output CAD file" << endl;
     cout << "=======================================" << endl;
   } else {
-    combinedReg.AddRegion(FarFieldReg);
+    // load gmsh1
     MeshRegions gmshReg("R_gmsh_", 1.E-8);
     gmshReg.loadFromMsh(mshfilename, 135. / 180. * 3.14159);
     cout << "load " << mshfilename << endl;
-    vector<int> comp1;
-    comp1.push_back(0);
-    comp1.push_back(gmshReg.getCellsNumber());
-    gmshReg.outXml("FarField.xml");
-    gmshReg.outCOMPO("FarField.xml", comp1);
     if (!combinedReg.consistancyCheck(gmshReg)) {
       cout << "Error: node mismatch, exit" << endl;
       return -1;
@@ -61,6 +57,19 @@ int main(int argc, char *argv[]) {
       return -1;
     }
     combinedReg.AddRegion(gmshReg);
+    // load gmsh2
+    MeshRegions gmshReg2("R_gmsh_", 1.E-8);
+    gmshReg2.loadFromMsh(mshfilename2, 135. / 180. * 3.14159);
+    cout << "load " << mshfilename2 << endl;
+    if (!combinedReg.consistancyCheck(gmshReg2)) {
+      cout << "Error: node mismatch, exit" << endl;
+      return -1;
+    }
+    if (!gmshReg2.consistancyCheck(combinedReg)) {
+      cout << "Error: node mismatch, exit" << endl;
+      return -1;
+    }
+    combinedReg.AddRegion(gmshReg2);
     outputXML(combinedReg);
     cout << "------------------------------------" << endl;
     cout << "------------------------------------" << endl;
@@ -159,92 +168,32 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
 }
 
 int meshingNearBody(MeshRegions &combinedReg) {
-  MeshRegions BLmesh("RBL_", 1.E-8);
-  meshingBoundaryLayer(BLmesh)
-  // boundary layer region 0
-  std::vector<void *> edges0;
-  void *edge0;
-  // edge 11-0
-  edges0.push_back((void *)edge110);
-  edges0.push_back((void *)radiusEdge);
-  edges0.push_back(edge0);
-  edges0.push_back(edge0);
-  Rects.push_back(RectRegion(edges0, "up0", false));
-  setRadiusLayers(nLayersU0);
-  Rects[Rects.size() - 1].MeshGen(Cedge110.m_N, nLayersU0, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up0.dat");
-  // edge 01
-  edges0[0] = (void *)edge01;
-  Rects.push_back(RectRegion(edges0, "up1", false));
-  setRadiusLayers(nLayersU1);
-  Rects[Rects.size() - 1].MeshGen(Cedge01.m_N, nLayersU1, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up1.dat");
-  // edge 12
-  edges0[0] = (void *)edge12;
-  Rects.push_back(RectRegion(edges0, "up2", false));
-  setRadiusLayers(nLayersU2);
-  Rects[Rects.size() - 1].MeshGen(Cedge12.m_N, nLayersU2, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up2.dat");
-  // edge 23
-  edges0[0] = (void *)edge23;
-  Rects.push_back(RectRegion(edges0, "up3", false));
-  setRadiusLayers(nLayersU3);
-  Rects[Rects.size() - 1].MeshGen(Cedge23.m_N, nLayersU3, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up3.dat");
-  // edge 34
-  edges0[0] = (void *)edge34;
-  Rects.push_back(RectRegion(edges0, "up4", false));
-  setRadiusLayers(nLayersU4);
-  Rects[Rects.size() - 1].MeshGen(Cedge34.m_N, nLayersU4, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up4.dat");
-  // edge 45
-  edges0[0] = (void *)edge45;
-  Rects.push_back(RectRegion(edges0, "up5", false));
-  setRadiusLayers(nLayersU5);
-  Rects[Rects.size() - 1].MeshGen(Cedge45.m_N, nLayersU5, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up5.dat");
-
-  // edge 5-6
-  edges0[0] = (void *)edge56;
-  Rects.push_back(RectRegion(edges0, "low5", false));
-  setRadiusLayers(nLayersL5);
-  Rects[Rects.size() - 1].MeshGen(Cedge56.m_N, nLayersL5, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low5.dat");
-  // edge 6-7
-  edges0[0] = (void *)edge67;
-  Rects.push_back(RectRegion(edges0, "low4", false));
-  setRadiusLayers(nLayersL4);
-  Rects[Rects.size() - 1].MeshGen(Cedge67.m_N, nLayersL4, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low4.dat");
-  // edge 7-8
-  edges0[0] = (void *)edge78;
-  Rects.push_back(RectRegion(edges0, "low3", false));
-  setRadiusLayers(nLayersL3);
-  Rects[Rects.size() - 1].MeshGen(Cedge78.m_N, nLayersL3, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low3.dat");
-  // edge 8-9
-  edges0[0] = (void *)edge89;
-  Rects.push_back(RectRegion(edges0, "low2", false));
-  setRadiusLayers(nLayersL2);
-  Rects[Rects.size() - 1].MeshGen(Cedge89.m_N, nLayersL2, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low2.dat");
-  // edge 9-10
-  edges0[0] = (void *)edge910;
-  Rects.push_back(RectRegion(edges0, "low1", false));
-  setRadiusLayers(nLayersL1);
-  Rects[Rects.size() - 1].MeshGen(Cedge910.m_N, nLayersL1, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low1.dat");
-  // edge 10-11
-  edges0[0] = (void *)edge1011;
-  Rects.push_back(RectRegion(edges0, "low0", false));
-  setRadiusLayers(nLayersL0);
-  Rects[Rects.size() - 1].MeshGen(Cedge1011.m_N, nLayersL0, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low0.dat");
-
-  ///////////// combine the near field mesh
-  for (unsigned int i = 0; i < Rects.size(); ++i) {
-    combinedReg.AddRegion(Rects[i]);
+  MeshRegions nearBodyRegion("Rnear_", 1e-8);
+  vector<vector<double>> p = {{nearBoxLeft, nearBoxDown},
+                              {nearBoxRight, nearBoxDown},
+                              {nearBoxRight, nearBoxUp},
+                              {nearBoxLeft, nearBoxUp}};
+  vector<vector<vector<double>>> edges;
+  // left
+  vector<int> pi = {0, 1, 2, 3, 0};
+  edges.clear();
+  for (int i = 0; i < 4; ++i) {
+    vector<vector<double>> edge;
+    edge.push_back(p[pi[i]]);
+    edge.push_back(p[pi[i + 1]]);
+    edges.push_back(edge);
   }
+  RectRegion pic0 = RectRegion(edges, "pic");
+  pic0.MeshGen(int((nearBoxRight - nearBoxLeft) / maxLayerh + 0.5),
+               int((nearBoxUp - nearBoxDown) / maxLayerh + 0.5));
+  nearBodyRegion.AddRegion(pic0);
+  nearBodyRegion.transformation(nearAoA);
+
+  combinedReg.GetBoundBox(g_boundingbox);
+  g_boundingbox.push_back(maxLayerh * 2.);
+  nearBodyRegion.RemoveElements((void *)toremove);
+  //////////////combine region//////////
+  combinedReg.AddRegion(nearBodyRegion);
   return 0;
 }
 
@@ -328,70 +277,48 @@ int meshingOuterBoundary(MeshRegions &combinedReg) {
   return 0;
 }
 
-int outputGeo(MeshRegions &combinedReg, MeshRegions &FarFieldReg,
-              vector<double> pC) {
-  // generate gmsh geo file
-  vector<vector<double>> box;
-  std::vector<std::vector<int>> boundary = FarFieldReg.extractBoundaryPoints();
-  int wallID = -1;
+int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels) {
+  // outer layer
+  std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
+  vector<vector<vector<double>>> boxes(boundary.size());
   for (int i = 0; i < boundary.size(); ++i) {
     for (int j = 0; j < boundary[i].size(); ++j) {
-      if (fabs(FarFieldReg.m_pts[boundary[i][j]][0] - pC[0]) +
-              fabs(FarFieldReg.m_pts[boundary[i][j]][1] - pC[1]) <
-          1E-6) {
-        wallID = i;
-        break;
-      }
+      boxes[i].push_back(combinedReg.m_pts[boundary[i][j]]);
     }
-    if (wallID != -1)
-      break;
   }
-  for (int i = 0; i < boundary[wallID].size(); ++i) {
-    vector<double> p0 = FarFieldReg.m_pts[boundary[wallID][i]];
-    box.push_back(p0);
+  std::map<int, std::set<int>> trees;
+  std::set<int> roots;
+  BuildTopoTree(boxes, trees, roots);
+  std::vector<int> levels(boxes.size(), 0);
+  int r0 = *roots.begin();
+  FindTreesDepths(r0, 0, trees, levels);
+  cout << "Levels: ";
+  for (size_t i = 0; i < levels.size(); ++i) {
+    cout << "(" << i << ", " << levels[i] << "), ";
   }
-  vector<double> center;
-  center.push_back(0.);
-  center.push_back(0.);
-
-  // output outer inner region (no wall) for Omesh
-  combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
-  return 0;
-}
-
-int outputGeo(MeshRegions &combinedReg, MeshRegions &nearWallRegion,
-              vector<vector<double>> &breakpts, MeshRegions &FarFieldReg,
-              vector<double> pC) {
-  // generate gmsh geo file
-  vector<vector<double>> box;
-  std::vector<std::vector<int>> boundary = FarFieldReg.extractBoundaryPoints();
-  int wallID = -1;
-  for (int i = 0; i < boundary.size(); ++i) {
-    for (int j = 0; j < boundary[i].size(); ++j) {
-      if (fabs(FarFieldReg.m_pts[boundary[i][j]][0] - pC[0]) +
-              fabs(FarFieldReg.m_pts[boundary[i][j]][1] - pC[1]) <
-          1E-6) {
-        wallID = i;
-        break;
-      }
+  cout << "\nRoots: ";
+  for (auto p : roots) {
+    cout << p << ", ";
+  }
+  cout << "\n Tree: \n";
+  for (const auto &p : trees) {
+    cout << p.first << ": ";
+    for (auto q : p.second) {
+      cout << q << ", ";
     }
-    if (wallID != -1)
-      break;
+    cout << "\n";
   }
-  for (int i = 0; i < boundary[wallID].size(); ++i) {
-    vector<double> p0 = FarFieldReg.m_pts[boundary[wallID][i]];
-    box.push_back(p0);
+  int filen = 0;
+  for (size_t i = 0; i < levels.size(); ++i) {
+    if (OutLevels.find(levels[i]) != OutLevels.end()) {
+      std::vector<std::vector<std::vector<double>>> tmparray;
+      for (auto p : trees[i]) {
+        tmparray.push_back(boxes[p]);
+      }
+      OutGeo("FarField" + to_string(filen) + ".geo", boxes[i], tmparray);
+      ++filen;
+    }
   }
-  vector<double> center;
-  center.push_back(0.);
-  center.push_back(0.);
-
-  // output outer inner region (no wall) for Omesh
-  combinedReg.outOuterRegion("FarField.geo", box, center, .1, true);
-  combinedReg.omeshBoundaryMapping("wallmapping.dat", center, 0.1);
-  vector<vector<double>> nobox;
-  // nearWallRegion.outOuterRegion("airfoil.geo",nobox, center, .1, false);
-  // nearWallRegion.outOuterRegion("airfoil.geo", nobox, center, .1, false);
   return 0;
 }
 
