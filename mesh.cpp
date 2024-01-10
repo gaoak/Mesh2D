@@ -16,17 +16,17 @@ int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
-int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels);
+int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
-  string mshfilename, mshfilename2;
+  string mshfilename0, mshfilename1;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "merge") == 0) {
       if (argc > i + 1)
-        mshfilename = string(argv[i + 1]);
+        mshfilename0 = string(argv[i + 1]);
       if (argc > i + 2)
-        mshfilename2 = string(argv[i + 2]);
+        mshfilename1 = string(argv[i + 2]);
       merge = true;
     }
   }
@@ -39,15 +39,15 @@ int main(int argc, char *argv[]) {
   meshingWake(combinedReg);
   meshingOuterBoundary(combinedReg);
   if (!merge) {
-    std::set<int> OutLevels = {1, 3};
+    std::vector<int> OutLevels = {1, 3};
     outputGeo(combinedReg, OutLevels);
     cout << "output CAD file" << endl;
     cout << "=======================================" << endl;
   } else {
     // load gmsh1
     MeshRegions gmshReg("R_gmsh_", 1.E-8);
-    gmshReg.loadFromMsh(mshfilename, 135. / 180. * 3.14159);
-    cout << "load " << mshfilename << endl;
+    gmshReg.loadFromMsh(mshfilename0, 135. / 180. * 3.14159);
+    cout << "load " << mshfilename0 << endl;
     if (!combinedReg.consistancyCheck(gmshReg)) {
       cout << "Error: node mismatch, exit" << endl;
       return -1;
@@ -59,8 +59,8 @@ int main(int argc, char *argv[]) {
     combinedReg.AddRegion(gmshReg);
     // load gmsh2
     MeshRegions gmshReg2("R_gmsh_", 1.E-8);
-    gmshReg2.loadFromMsh(mshfilename2, 135. / 180. * 3.14159);
-    cout << "load " << mshfilename2 << endl;
+    gmshReg2.loadFromMsh(mshfilename1, 120. / 180. * 3.14159);
+    cout << "load " << mshfilename1 << endl;
     if (!combinedReg.consistancyCheck(gmshReg2)) {
       cout << "Error: node mismatch, exit" << endl;
       return -1;
@@ -277,7 +277,7 @@ int meshingOuterBoundary(MeshRegions &combinedReg) {
   return 0;
 }
 
-int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels) {
+int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels) {
   // outer layer
   std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
   vector<vector<vector<double>>> boxes(boundary.size());
@@ -293,14 +293,16 @@ int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels) {
   int r0 = *roots.begin();
   FindTreesDepths(r0, 0, trees, levels);
   int filen = 0;
-  for (size_t i = 0; i < levels.size(); ++i) {
-    if (OutLevels.find(levels[i]) != OutLevels.end()) {
-      std::vector<std::vector<std::vector<double>>> tmparray;
-      for (auto p : trees[i]) {
-        tmparray.push_back(boxes[p]);
+  for (auto l : OutLevels) {
+    for (size_t i = 0; i < levels.size(); ++i) {
+      if (l == levels[i]) {
+        std::vector<std::vector<std::vector<double>>> tmparray;
+        for (auto p : trees[i]) {
+          tmparray.push_back(boxes[p]);
+        }
+        OutGeo("FarField" + to_string(filen) + ".geo", boxes[i], tmparray);
+        ++filen;
       }
-      OutGeo("FarField" + to_string(filen) + ".geo", boxes[i], tmparray);
-      ++filen;
     }
   }
   return 0;
