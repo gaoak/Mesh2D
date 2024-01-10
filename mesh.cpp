@@ -292,22 +292,6 @@ int outputGeo(MeshRegions &combinedReg, std::set<int> OutLevels) {
   std::vector<int> levels(boxes.size(), 0);
   int r0 = *roots.begin();
   FindTreesDepths(r0, 0, trees, levels);
-  cout << "Levels: ";
-  for (size_t i = 0; i < levels.size(); ++i) {
-    cout << "(" << i << ", " << levels[i] << "), ";
-  }
-  cout << "\nRoots: ";
-  for (auto p : roots) {
-    cout << p << ", ";
-  }
-  cout << "\n Tree: \n";
-  for (const auto &p : trees) {
-    cout << p.first << ": ";
-    for (auto q : p.second) {
-      cout << q << ", ";
-    }
-    cout << "\n";
-  }
   int filen = 0;
   for (size_t i = 0; i < levels.size(); ++i) {
     if (OutLevels.find(levels[i]) != OutLevels.end()) {
