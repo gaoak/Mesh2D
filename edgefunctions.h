@@ -156,9 +156,11 @@ std::vector<double> edge78(double s) { return Cedge78.Evaluate(s); }
 std::vector<double> edge89(double s) { return Cedge89.Evaluate(s); }
 std::vector<double> edge910(double s) { return Cedge910.Evaluate(s); }
 
-LineEdge Cwake01(g_ptsW[0], g_ptsW[1], nFarWakex, UNIFORM, 0., 0.);
+LineEdge Cwake01(g_ptsW[0], g_ptsW[1], nFarWakex, QUDREFINE0,
+                 farWakeHeight / nFarWakey, 0.);
 LineEdge Cwake12(g_ptsW[1], g_ptsW[2], nFarWakey, UNIFORM, 0., 0.);
-LineEdge Cwake23(g_ptsW[2], g_ptsW[3], nFarWakex, UNIFORM, 0., 0.);
+LineEdge Cwake23(g_ptsW[2], g_ptsW[3], nFarWakex, QUDREFINE1, 0.,
+                 farWakeHeight / nFarWakey);
 LineEdge Cwake30(g_ptsW[3], g_ptsW[0], nFarWakey, UNIFORM, 0., 0.);
 std::vector<double> wake01(double s) { return Cwake01.Evaluate(s); }
 std::vector<double> wake12(double s) { return Cwake12.Evaluate(s); }

@@ -2,7 +2,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 double AoA = 0. / 180. * M_PI;
-double Thickness = 0.05;
+double Thickness = 0.1;
 // outside
 double hFirstLayer = 0.003;
 double progress = 1.1;
@@ -55,6 +55,8 @@ double nearBoxDown = -0.3;
 double nearBoxUp = 0.3;
 double nearAoA = 0.;
 
+int nFarWakex = 160;
+int nFarWakey = 30;
 double farWakeAoA = AoA;
 double wakeDiffuseAngle = 8. / 180. * M_PI;
 double wakedist = 0.1;
@@ -62,8 +64,6 @@ double farWakeCx = nearBoxRight + wakedist * cos(AoA);
 double farWakeCy = wakedist * sin(AoA);
 double farWakeHeight = 1.;
 double farWakeLength = 10.;
-int nFarWakey = farWakeHeight/maxLayerh + 0.5;
-int nFarWakex = farWakeLength/maxLayerh /2;
 
 double xBoxLeft = -40.;
 double xBoxRight = 60.;

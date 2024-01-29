@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   } else {
     // load gmsh1
     MeshRegions gmshReg("R_gmsh_", 1.E-8);
-    gmshReg.loadFromMsh(mshfilename0, 135. / 180. * 3.14159);
+    gmshReg.loadFromMsh(mshfilename0, 130. / 180. * 3.14159);
     cout << "load " << mshfilename0 << endl;
     if (!combinedReg.consistancyCheck(gmshReg)) {
       cout << "Error: node mismatch, exit" << endl;
@@ -313,18 +313,18 @@ int outputXML(MeshRegions &combinedReg) {
   vector<int> comp3;
   comp3.push_back(0);
   // wall
-  combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 0);
-  combinedReg.defineBoundary((void *)edge12, Cedge12.m_N, 0);
-  combinedReg.defineBoundary((void *)edge23, Cedge23.m_N, 0);
-  combinedReg.defineBoundary((void *)edge34, Cedge34.m_N, 0);
   combinedReg.defineBoundary((void *)edge45, Cedge45.m_N, 0, curvedpts);
   combinedReg.defineBoundary((void *)edge56, Cedge56.m_N, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge67, Cedge67.m_N, 0);
-  combinedReg.defineBoundary((void *)edge78, Cedge78.m_N, 0);
-  combinedReg.defineBoundary((void *)edge89, Cedge89.m_N, 0);
-  combinedReg.defineBoundary((void *)edge910, Cedge910.m_N, 0);
   combinedReg.defineBoundary((void *)edge1011, Cedge1011.m_N, 0, curvedpts);
   combinedReg.defineBoundary((void *)edge110, Cedge110.m_N, 0, curvedpts);
+  combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 5);
+  combinedReg.defineBoundary((void *)edge12, Cedge12.m_N, 5);
+  combinedReg.defineBoundary((void *)edge23, Cedge23.m_N, 5);
+  combinedReg.defineBoundary((void *)edge34, Cedge34.m_N, 5);
+  combinedReg.defineBoundary((void *)edge67, Cedge67.m_N, 5);
+  combinedReg.defineBoundary((void *)edge78, Cedge78.m_N, 5);
+  combinedReg.defineBoundary((void *)edge89, Cedge89.m_N, 5);
+  combinedReg.defineBoundary((void *)edge910, Cedge910.m_N, 5);
   // inlet
   combinedReg.defineBoundary((void *)far08, Cfar08.m_N, 1);
   // outlet
