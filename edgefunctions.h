@@ -5,20 +5,6 @@
 
 /////////////////////////////// do not modify
 // the boundary edge should be continuous for real number s
-int findNlayers(double h, double q, double R, double m) {
-  int n = 0;
-  double len = 0;
-  double delta = h;
-  for (n = 1; n <= 1000000; ++n) {
-    if (delta >= m)
-      delta = m;
-    len += delta;
-    if (len >= R)
-      return n;
-    delta *= q;
-  }
-  return n;
-}
 int nLayers = findNlayers(hFirstLayer, progress, rBoundaryLayer, maxLayerh);
 
 double pts[NUMPTS][2];
@@ -26,26 +12,6 @@ double squarePts[NUMPTS][2];
 double virtualpts[NUMPTS][2];
 
 LineEdge CradiusEdge(pts[0], pts[1], nLayers, UNIFORM, 0., 0.);
-void setRadiusLayers(int n) { nLayers = n; }
-std::vector<double> radiusEdge(double s) {
-  int n = round(0.5 * (1. + s) * nLayers);
-  static vector<vector<double>> reses;
-  if (reses.size() < nLayers + 1) {
-    reses.clear();
-    vector<double> p0(2, 0.);
-    reses.push_back(p0);
-    double delta = hFirstLayer;
-    for (int n = 1; n <= nLayers; ++n) {
-      vector<double> p1(2, 0.);
-      if (delta >= maxLayerh)
-        delta = maxLayerh;
-      p1[0] = reses[reses.size() - 1][0] + delta;
-      delta *= progress;
-      reses.push_back(p1);
-    }
-  }
-  return reses[n];
-}
 
 int nLayersInFoil = findNlayers(hFirstLayerInFoil, progressInFoil,
                                 rBoundaryLayerInFoil, maxLayerhInFoil);
@@ -76,6 +42,7 @@ static void transform(std::vector<double> &p, double AoA) {
 }
 
 int InitPts() {
+  setRadiusMesh(hFirstLayer, progress, maxLayerh);
 
   pts[8][0] = xBoxRight;
   pts[8][1] = yBoxDown;
