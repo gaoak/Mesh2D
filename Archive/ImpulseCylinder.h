@@ -8,10 +8,12 @@ static double FOILM = 0.;   // NACA 0
 static double FOILP = 0.;   // 0
 static double FOILT = 12.;  // 12
 
-double AoA = FOILAOA / 180. * M_PI;
-double chamber = FOILM * 0.01;
-double chamberp = FOILP * 0.1;
-double Thickness = FOILT * 0.01;
+// segments infomation
+double theta32 = -M_PI / 4.;
+double theta6 = M_PI / 4.;
+double theta5 = 0.75 * M_PI;
+double theta4 = 1.25 * M_PI;
+double theta33 = 1.75 * M_PI;
 
 double xInFoil = 0.01;
 double hFirstLayerInFoil = 0.01;
@@ -23,33 +25,18 @@ double infoilRatio = 0.03;
 double hFirstLayer = 0.01;
 double progress = 1.3;
 double rBoundaryLayer = 0.4;
-double rBoundaryLayer1 = 0.4;
-double rBoundaryLayer2 = 0.4;
-double rBoundaryLayer3 = 0.4;
-double rBoundaryLayer4 = 0.4;
-double rBoundaryLayer5 = 0.4;
-double rBoundaryLayer6 = 0.4;
-double rBoundaryLayer7 = 0.4;
+double rBoundaryLayer2 = 0.2;
+double rBoundaryLayer3 = 0.2;
+double rBoundaryLayer4 = 0.2;
+double rBoundaryLayer5 = 0.2;
 double maxLayerh = 0.07;
 
-double chordLen = 1.;
-double xmidLow1 = 0.2;
-double xmidUp1 = 0.2;
-double xmidLow2 = 0.006;
-double growthrateLow2 = 1.3;
-double xmidUp2 = 0.006;
-double growthrateUp2 = 1.3;
-int nLow1 = 20;
-int nLow2 = 13;
-int nUp1 = 20;
-int nUp2 = 13;
-int nFront = 12;
+int Ncyl2 = 24;
+int Ncyl3 = 24;
+int Ncyl4 = 20;
+int Ncyl5 = 24;
 
-double wakeLen = 0.5;
-double wakeyUp = 0.06 * Thickness;
-double wakeDown = -0.06 * Thickness;
-int nWake = 10;
-double nearWakeDiffuseAngle = 0. / 180. * M_PI;
+double chordLen = 1.;
 
 double xBoxLeft = -40.;
 double xBoxRight = 40.;
@@ -60,14 +47,23 @@ int nBoxRight = 10;
 int nBoxUp = 10;
 int nBoxDown = 10;
 
-int nFarWakex = 100;
+int nSquarex = 120;
+int nSquarey = 80;
+double SquareAoA = 0. / 180. * M_PI;
+double SquareDiffuseAngle = 0. / 180. * M_PI;
+double SquareLeft = -6.;
+double SquareRight = 6.;
+double SquareUp = 4.;
+double SquareDown = -4.;
+
+int nFarWakex = 2;
 int nFarWakey = 40;
 double farWakeAoA = 0. / 180. * M_PI;
 double wakeDiffuseAngle = 0. / 180. * M_PI;
-double farWakeLeft = -4.5;
-double farWakeRight = 5.5;
-double farWakeUp = 3.;
-double farWakeDown = -1.;
+double farWakeLeft = 6.4;
+double farWakeRight = 6.6;
+double farWakeUp = 2.;
+double farWakeDown = -2.;
 
 int curvedpts = 6;
 #endif

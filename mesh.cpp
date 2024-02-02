@@ -334,9 +334,9 @@ int meshingVortexPassway(MeshRegions &combinedReg) {
   squarePts[1][0] = SquareRight;
   squarePts[2][0] = SquareRight;
   squarePts[1][1] = squarePts[0][1] -
-                    (squarePts[1][0] - squarePts[0][0]) * tan(wakeDiffuseAngle);
+                    (squarePts[1][0] - squarePts[0][0]) * tan(SquareDiffuseAngle);
   squarePts[2][1] = squarePts[3][1] +
-                    (squarePts[2][0] - squarePts[3][0]) * tan(wakeDiffuseAngle);
+                    (squarePts[2][0] - squarePts[3][0]) * tan(SquareDiffuseAngle);
   std::vector<void *> edges4;
   edges4.push_back((void *)edgeA);
   edges4.push_back((void *)edgeB);
