@@ -321,10 +321,10 @@ int outputXML(MeshRegions &combinedReg) {
   combinedReg.defineBoundary((void *)edge12, Cedge12.m_N, 5);
   combinedReg.defineBoundary((void *)edge23, Cedge23.m_N, 5);
   combinedReg.defineBoundary((void *)edge34, Cedge34.m_N, 5);
-  combinedReg.defineBoundary((void *)edge67, Cedge67.m_N, 5);
-  combinedReg.defineBoundary((void *)edge78, Cedge78.m_N, 5);
-  combinedReg.defineBoundary((void *)edge89, Cedge89.m_N, 5);
-  combinedReg.defineBoundary((void *)edge910, Cedge910.m_N, 5);
+  combinedReg.defineBoundary((void *)edge67, Cedge67.m_N, 6);
+  combinedReg.defineBoundary((void *)edge78, Cedge78.m_N, 6);
+  combinedReg.defineBoundary((void *)edge89, Cedge89.m_N, 6);
+  combinedReg.defineBoundary((void *)edge910, Cedge910.m_N, 6);
   // inlet
   combinedReg.defineBoundary((void *)far08, Cfar08.m_N, 1);
   // outlet

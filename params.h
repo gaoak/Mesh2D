@@ -4,7 +4,7 @@
 double AoA = 0. / 180. * M_PI;
 double Thickness = 0.05;
 // outside
-double hFirstLayer = 0.003;
+double hFirstLayer = 0.005;
 double progress = 1.1;
 double upperBL0 = 0.05;
 double upperBL1 = 0.05;
