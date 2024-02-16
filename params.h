@@ -2,8 +2,10 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 // ellipse shape
-double AoA = 0. / 180. * M_PI;
-double Thickness = 1.;
+double AoA0 = 90. / 180. * M_PI;
+double AoA1 = -30. / 180. * M_PI;
+double AoA2 = 30. / 180. * M_PI;
+double Thickness = 0.125;
 double ChordLen = 1.;
 // wall boundary layer
 double hFirstLayer = 0.002;

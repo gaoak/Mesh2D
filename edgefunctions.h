@@ -4,6 +4,12 @@
 
 double g_ptsC[20][2];
 
+void transform(std::vector<double> &p, double AoA) {
+  double x = p[0], y = p[1];
+  p[0] = x * cos(AoA) + y * sin(AoA);
+  p[1] = -x * sin(AoA) + y * cos(AoA);
+}
+
 int InitPts() {
   // airfoil
   g_ptsC[0][0] = radiusL * cos(theta0);
@@ -22,26 +28,38 @@ int InitPts() {
 
 std::vector<double> edge0(double s) {
   double t = -M_PI * s;
-  double radius = ChordLen * 0.5;
+  double a = ChordLen * 0.5;
+  double b = Thickness * 0.5;
   std::vector<double> res(2, 0.);
-  res[0] = g_ptsC[0][0] + radius * cos(t);
-  res[1] = g_ptsC[0][1] + radius * sin(t);
+  res[0] = a * cos(t);
+  res[1] = b * sin(t);
+  transform(res, AoA0);
+  res[0] += g_ptsC[0][0];
+  res[1] += g_ptsC[0][1];
   return res;
 }
 std::vector<double> edge1(double s) {
   double t = -M_PI * s;
-  double radius = ChordLen * 0.5;
+  double a = ChordLen * 0.5;
+  double b = Thickness * 0.5;
   std::vector<double> res(2, 0.);
-  res[0] = g_ptsC[1][0] + radius * cos(t);
-  res[1] = g_ptsC[1][1] + radius * sin(t);
+  res[0] = a * cos(t);
+  res[1] = b * sin(t);
+  transform(res, AoA1);
+  res[0] += g_ptsC[1][0];
+  res[1] += g_ptsC[1][1];
   return res;
 }
 std::vector<double> edge2(double s) {
   double t = -M_PI * s;
-  double radius = ChordLen * 0.5;
+  double a = ChordLen * 0.5;
+  double b = Thickness * 0.5;
   std::vector<double> res(2, 0.);
-  res[0] = g_ptsC[2][0] + radius * cos(t);
-  res[1] = g_ptsC[2][1] + radius * sin(t);
+  res[0] = a * cos(t);
+  res[1] = b * sin(t);
+  transform(res, AoA2);
+  res[0] += g_ptsC[2][0];
+  res[1] += g_ptsC[2][1];
   return res;
 }
 
