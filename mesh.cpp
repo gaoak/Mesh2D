@@ -19,14 +19,14 @@ int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
-  string mshfilename0, mshfilename1;
+  std::vector<string> mshfilename;
   for (int i = 1; i < argc; ++i) {
     if (strcmp(argv[i], "merge") == 0) {
-      if (argc > i + 1)
-        mshfilename0 = string(argv[i + 1]);
-      if (argc > i + 2)
-        mshfilename1 = string(argv[i + 2]);
+      for (int j = i + 1; j < argc; ++j) {
+        mshfilename.push_back(argv[j]);
+      }
       merge = true;
+      break;
     }
   }
   /// initialise
@@ -43,31 +43,20 @@ int main(int argc, char *argv[]) {
     cout << "=======================================" << endl;
   } else {
     // load gmsh1
-    MeshRegions gmshReg("R_gmsh_", 1.E-8);
-    gmshReg.loadFromMsh(mshfilename0, 130. / 180. * 3.14159);
-    cout << "load " << mshfilename0 << endl;
-    if (!combinedReg.consistancyCheck(gmshReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
+    for (auto file : mshfilename) {
+      MeshRegions gmshReg("R_gmsh_", 1.E-8);
+      gmshReg.loadFromMsh(file, 130. / 180. * 3.14159);
+      cout << "load " << file << endl;
+      if (!combinedReg.consistancyCheck(gmshReg)) {
+        cout << "Error: node mismatch, exit" << endl;
+        return -1;
+      }
+      if (!gmshReg.consistancyCheck(combinedReg)) {
+        cout << "Error: node mismatch, exit" << endl;
+        return -1;
+      }
+      combinedReg.AddRegion(gmshReg);
     }
-    if (!gmshReg.consistancyCheck(combinedReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    combinedReg.AddRegion(gmshReg);
-    // load gmsh2
-    MeshRegions gmshReg2("R_gmsh_", 1.E-8);
-    gmshReg2.loadFromMsh(mshfilename1, 120. / 180. * 3.14159);
-    cout << "load " << mshfilename1 << endl;
-    if (!combinedReg.consistancyCheck(gmshReg2)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    if (!gmshReg2.consistancyCheck(combinedReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    combinedReg.AddRegion(gmshReg2);
     outputXML(combinedReg);
     cout << "------------------------------------" << endl;
     cout << "------------------------------------" << endl;
@@ -76,7 +65,11 @@ int main(int argc, char *argv[]) {
 }
 
 int meshingNearBody(MeshRegions &combinedReg) {
-  setRadiusMesh(2.*M_PI*radiusNeari/Nnear, 1.01, 2.*M_PI*radiusNeari/Nnear);
+  double h0 = 2. * M_PI * radiusNeari / Nnear;
+  double p = 1.01;
+  double h1 = 2. * M_PI * radiusNearo / Nnear;
+  setRadiusMesh(h0, p, h1);
+  int nBLayers = findNlayers(h0, p, radiusNearo - radiusNeari, h1);
   std::vector<void *> edges0;
   void *edgetmp;
   // edge 11-0
@@ -85,15 +78,19 @@ int meshingNearBody(MeshRegions &combinedReg) {
   edges0.push_back(edgetmp);
   edges0.push_back(edgetmp);
   RectRegion Rect(RectRegion(edges0, "cyl3", false));
-  setRadiusLayers(1);
-  Rect.MeshGen(Nnear, 1, eBoundaryLayer1);
+  setRadiusLayers(nBLayers);
+  Rect.MeshGen(Nnear, nBLayers, eBoundaryLayer1);
   Rect.Tec360Pts("cyl3.dat");
+  Rect.RemoveElements((void *)toremove);
   combinedReg.AddRegion(Rect);
   return 0;
 }
 
 int meshingBoundaryLayer(MeshRegions &combinedReg) {
+  int nBLayers =
+      findNlayers(hFirstLayer, progress, wallBLThickness0, maxBLSize);
   setRadiusMesh(hFirstLayer, progress, maxBLSize);
+  double eps = M_PI * ChordLen / Ncylinder;
   /////////near body region////////////////
   std::vector<RectRegion> Rects;
   // boundary layer region 0
@@ -108,18 +105,24 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl0.dat");
+  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox0);
+  g_boundingbox0.push_back(eps);
   // edge 01
   edges0[0] = (void *)edge1;
   Rects.push_back(RectRegion(edges0, "cyl1", false));
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl1.dat");
+  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox1);
+  g_boundingbox1.push_back(eps);
   // edge 12
   edges0[0] = (void *)edge2;
   Rects.push_back(RectRegion(edges0, "cyl2", false));
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl2.dat");
+  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox2);
+  g_boundingbox2.push_back(eps);
   ///////////// combine the near field mesh
   for (unsigned int i = 0; i < Rects.size(); ++i) {
     combinedReg.AddRegion(Rects[i]);
@@ -128,7 +131,8 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
 }
 
 int meshingOuterBoundary(MeshRegions &combinedReg) {
-  setRadiusMesh(2.*M_PI*radiusFar/Nfar, 1.1, 4.*M_PI*radiusFar/Nfar);
+  setRadiusMesh(2. * M_PI * radiusFar / Nfar, 1.1,
+                4. * M_PI * radiusFar / Nfar);
   std::vector<void *> edges0;
   void *edgetmp;
   // edge 11-0
