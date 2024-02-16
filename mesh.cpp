@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 
 int meshingNearBody(MeshRegions &combinedReg) {
   double h0 = 2. * M_PI * radiusNeari / Nnear;
-  double p = 1.01;
+  double p = 1.6;
   double h1 = 2. * M_PI * radiusNearo / Nnear;
   setRadiusMesh(h0, p, h1);
   int nBLayers = findNlayers(h0, p, radiusNearo - radiusNeari, h1);
