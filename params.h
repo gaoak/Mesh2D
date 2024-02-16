@@ -13,15 +13,17 @@ double progress = 1.6;
 double wallBLThickness0 = 0.05;
 double maxBLSize = 0.1;
 int Ncylinder = 160;
-//near field
+// near field
 double theta0 = 0.;
-double theta1 = 120./180.*M_PI;
-double theta2 = -120./180.*M_PI;
+double theta1 = 120. / 180. * M_PI;
+double theta2 = -120. / 180. * M_PI;
 double radiusL = 3.;
 double radiusNearo = 6.;
-double radiusNeari = 2.;
+double radiusNeari = 2.5;
 int Nnear = 128;
-//far field
+// gap
+double BLNearGap = 3.5 * M_PI * radiusL / Nnear;
+// far field
 double radiusFar = 40.;
 int Nfar = 32;
 

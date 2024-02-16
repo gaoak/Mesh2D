@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 int meshingNearBody(MeshRegions &combinedReg) {
   double h0 = 2. * M_PI * radiusNeari / Nnear;
   double p = 1.6;
-  double h1 = 2. * M_PI * radiusNearo / Nnear;
+  double h1 = 2. * M_PI * radiusNeari / Nnear;
   setRadiusMesh(h0, p, h1);
   int nBLayers = findNlayers(h0, p, radiusNearo - radiusNeari, h1);
   std::vector<void *> edges0;
@@ -90,7 +90,6 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
   int nBLayers =
       findNlayers(hFirstLayer, progress, wallBLThickness0, maxBLSize);
   setRadiusMesh(hFirstLayer, progress, maxBLSize);
-  double eps = M_PI * ChordLen / Ncylinder;
   /////////near body region////////////////
   std::vector<RectRegion> Rects;
   // boundary layer region 0
@@ -105,28 +104,38 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl0.dat");
-  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox0);
-  g_boundingbox0.push_back(eps);
   // edge 01
   edges0[0] = (void *)edge1;
   Rects.push_back(RectRegion(edges0, "cyl1", false));
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl1.dat");
-  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox1);
-  g_boundingbox1.push_back(eps);
   // edge 12
   edges0[0] = (void *)edge2;
   Rects.push_back(RectRegion(edges0, "cyl2", false));
   setRadiusLayers(nBLayers);
   Rects[Rects.size() - 1].MeshGen(Ncylinder, nBLayers, eBoundaryLayer1);
   Rects[Rects.size() - 1].Tec360Pts("cyl2.dat");
-  Rects[Rects.size() - 1].GetBoundBox(g_boundingbox2);
-  g_boundingbox2.push_back(eps);
   ///////////// combine the near field mesh
   for (unsigned int i = 0; i < Rects.size(); ++i) {
     combinedReg.AddRegion(Rects[i]);
   }
+  // setup bounding box
+  g_boundingbox0 = {-0.5 * ChordLen - wallBLThickness0,
+                    0.5 * ChordLen + wallBLThickness0,
+                    radiusL - 0.5 * Thickness - wallBLThickness0,
+                    radiusL + 0.5 * Thickness + wallBLThickness0};
+  g_boundingbox1 = g_boundingbox0;
+  g_boundingbox2 = g_boundingbox0;
+  g_boundingbox0[0] += theta0 * radiusL;
+  g_boundingbox0[1] += theta0 * radiusL;
+  g_boundingbox1[0] += theta1 * radiusL;
+  g_boundingbox1[1] += theta1 * radiusL;
+  g_boundingbox2[0] += theta2 * radiusL;
+  g_boundingbox2[1] += theta2 * radiusL;
+  g_boundingbox0.push_back(BLNearGap);
+  g_boundingbox1.push_back(BLNearGap);
+  g_boundingbox2.push_back(BLNearGap);
   return 0;
 }
 

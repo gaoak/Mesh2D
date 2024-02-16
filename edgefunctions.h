@@ -82,6 +82,11 @@ std::vector<double> g_boundingbox0;
 std::vector<double> g_boundingbox1;
 std::vector<double> g_boundingbox2;
 bool toremove(std::vector<double> p) {
+  double x = p[0], y = p[1];
+  p[1] = sqrt(x * x + y * y);
+  p[0] = acos(x / p[1]) * radiusL;
+  if (y < 0)
+    p[0] = -p[0];
   double eps = g_boundingbox0[g_boundingbox0.size() - 1];
   bool inside = true;
   for (int i = 0; i < 2; ++i) {
