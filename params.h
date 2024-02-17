@@ -1,6 +1,13 @@
 // for 3D simulation of isolated vortex with a hump
 #ifndef PARAMS_H
 #define PARAMS_H
+// hub
+bool withhub = true;
+double hubRada = 0.5;
+double hubRadb = 0.5;
+double wallHubBLThickness = 0.1;
+double maxHubBLSize = 0.1;
+int Nhub = 64;
 // ellipse shape
 double AoA0 = 90. / 180. * M_PI;
 double AoA1 = -30. / 180. * M_PI;
@@ -18,14 +25,14 @@ double theta0 = 0.;
 double theta1 = 120. / 180. * M_PI;
 double theta2 = -120. / 180. * M_PI;
 double radiusL = 3.;
-double radiusNearo = 6.;
+double radiusNearo = 3.5;
 double radiusNeari = 2.5;
 int Nnear = 128;
 // gap
 double BLNearGap = 3.5 * M_PI * radiusL / Nnear;
 // far field
-double radiusFar = 40.;
-int Nfar = 32;
+double radiusFar = 80.;
+int Nfar = 96;
 
 int curvedpts = 6;
 

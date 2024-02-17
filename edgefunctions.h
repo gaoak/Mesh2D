@@ -26,6 +26,14 @@ int InitPts() {
   return 0;
 }
 
+std::vector<double> edgehub(double s) {
+  double t = -M_PI * s;
+  std::vector<double> res(2, 0.);
+  res[0] = hubRada * cos(t);
+  res[1] = hubRadb * sin(t);
+  return res;
+}
+
 std::vector<double> edge0(double s) {
   double t = -M_PI * s;
   double a = ChordLen * 0.5;

@@ -13,6 +13,7 @@ using namespace std;
 
 #include "edgefunctions.h"
 int meshingNearBody(MeshRegions &combinedReg);
+int meshingHub(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
 int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels);
@@ -86,6 +87,29 @@ int meshingNearBody(MeshRegions &combinedReg) {
   return 0;
 }
 
+int meshingHub(MeshRegions &combinedReg) {
+  int nBLayers =
+      findNlayers(hFirstLayer, progress, wallHubBLThickness, maxHubBLSize);
+  setRadiusLayers(nBLayers);
+  setRadiusMesh(hFirstLayer, progress, maxHubBLSize);
+  /////////near body region////////////////
+  std::vector<RectRegion> Rects;
+  // boundary layer region 0
+  std::vector<void *> edges0;
+  void *edgetmp;
+  // edge 11-0
+  edges0.push_back((void *)edgehub);
+  edges0.push_back((void *)radiusEdge);
+  edges0.push_back(edgetmp);
+  edges0.push_back(edgetmp);
+  RectRegion Rect(edges0, "hub", false);
+  Rect.MeshGen(Nhub, nBLayers, eBoundaryLayer1);
+  Rect.Tec360Pts("hub.dat");
+  ///////////// combine the hub mesh
+  combinedReg.AddRegion(Rect);
+  return 0;
+}
+
 int meshingBoundaryLayer(MeshRegions &combinedReg) {
   int nBLayers =
       findNlayers(hFirstLayer, progress, wallBLThickness0, maxBLSize);
@@ -119,6 +143,9 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
   ///////////// combine the near field mesh
   for (unsigned int i = 0; i < Rects.size(); ++i) {
     combinedReg.AddRegion(Rects[i]);
+  }
+  if (withhub) {
+    meshingHub(combinedReg);
   }
   // setup bounding box
   g_boundingbox0 = {-0.5 * ChordLen - wallBLThickness0,
@@ -193,10 +220,11 @@ int outputXML(MeshRegions &combinedReg) {
   vector<int> comp3;
   comp3.push_back(0);
   // wall
-  combinedReg.defineBoundary((void *)edge0, Ncylinder, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge1, Ncylinder, 1, curvedpts);
-  combinedReg.defineBoundary((void *)edge2, Ncylinder, 2, curvedpts);
-  combinedReg.defineBoundary((void *)edge4, Nfar, 3);
+  combinedReg.defineBoundary((void *)edgehub, Nhub, 0, curvedpts);
+  combinedReg.defineBoundary((void *)edge0, Ncylinder, 1, curvedpts);
+  combinedReg.defineBoundary((void *)edge1, Ncylinder, 2, curvedpts);
+  combinedReg.defineBoundary((void *)edge2, Ncylinder, 3, curvedpts);
+  combinedReg.defineBoundary((void *)edge4, Nfar, 4);
   // output
   combinedReg.outXml("outerRegion.xml");
   combinedReg.outCOMPO("outerRegion.xml", comp3);
