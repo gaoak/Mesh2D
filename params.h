@@ -3,6 +3,7 @@
 #define PARAMS_H
 double AoA = 0. / 180. * M_PI;
 double Thickness = 0.05;
+double ChordLen = 0.6;
 // outside
 double hFirstLayer = 0.005;
 double progress = 1.1;
@@ -21,11 +22,11 @@ double lowerBL5 = 0.05;
 double maxLayerh = 0.03;
 
 double upperx1 = 0.1;
-double upperx2 = 0.4;
-double upperx3 = 0.7;
+double upperx2 = ChordLen * 0.5;
+double upperx3 = ChordLen - 0.1;
 double lowerx1 = 0.1;
-double lowerx2 = 0.4;
-double lowerx3 = 0.7;
+double lowerx2 = ChordLen * 0.5;
+double lowerx3 = ChordLen - 0.1;
 
 // number starts from leading to trailing
 int nUp0 =
