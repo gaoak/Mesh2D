@@ -62,8 +62,8 @@ double farWakeCx = nearBoxRight + wakedist * cos(AoA);
 double farWakeCy = wakedist * sin(AoA);
 double farWakeHeight = 1.;
 double farWakeLength = 10.;
-int nFarWakey = farWakeHeight/maxLayerh + 0.5;
-int nFarWakex = farWakeLength/maxLayerh /2;
+int nFarWakey = farWakeHeight / maxLayerh + 0.5;
+int nFarWakex = farWakeLength / maxLayerh / 2;
 
 double xBoxLeft = -40.;
 double xBoxRight = 60.;

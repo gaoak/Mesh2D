@@ -16,7 +16,6 @@ int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
-int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
@@ -274,37 +273,6 @@ int meshingOuterBoundary(MeshRegions &combinedReg) {
   pic3.MeshGen(nBoxDown - 2, 1);
   pic3.Tec360Pts("pic3.dat");
   combinedReg.AddRegion(pic3);
-  return 0;
-}
-
-int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels) {
-  // outer layer
-  std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
-  vector<vector<vector<double>>> boxes(boundary.size());
-  for (int i = 0; i < boundary.size(); ++i) {
-    for (int j = 0; j < boundary[i].size(); ++j) {
-      boxes[i].push_back(combinedReg.m_pts[boundary[i][j]]);
-    }
-  }
-  std::map<int, std::set<int>> trees;
-  std::set<int> roots;
-  BuildTopoTree(boxes, trees, roots);
-  std::vector<int> levels(boxes.size(), 0);
-  int r0 = *roots.begin();
-  FindTreesDepths(r0, 0, trees, levels);
-  int filen = 0;
-  for (auto l : OutLevels) {
-    for (size_t i = 0; i < levels.size(); ++i) {
-      if (l == levels[i]) {
-        std::vector<std::vector<std::vector<double>>> tmparray;
-        for (auto p : trees[i]) {
-          tmparray.push_back(boxes[p]);
-        }
-        OutGeo("FarField" + to_string(filen) + ".geo", boxes[i], tmparray);
-        ++filen;
-      }
-    }
-  }
   return 0;
 }
 
