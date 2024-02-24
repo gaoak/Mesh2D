@@ -34,14 +34,14 @@ int InitPts() {
   g_ptsA[1][0] = upperx1;
   g_ptsA[2][0] = upperx2;
   g_ptsA[3][0] = upperx3;
-  g_ptsA[4][0] = 1. - 0.5 * Thickness;
+  g_ptsA[4][0] = ChordLen - 0.5 * Thickness;
   g_ptsA[0][1] = 0.5 * Thickness;
   g_ptsA[1][1] = 0.5 * Thickness;
   g_ptsA[2][1] = 0.5 * Thickness;
   g_ptsA[3][1] = 0.5 * Thickness;
   g_ptsA[4][1] = 0.5 * Thickness;
 
-  g_ptsA[6][0] = 1. - 0.5 * Thickness;
+  g_ptsA[6][0] = ChordLen - 0.5 * Thickness;
   g_ptsA[7][0] = lowerx3;
   g_ptsA[8][0] = lowerx2;
   g_ptsA[9][0] = lowerx1;
@@ -118,7 +118,7 @@ std::vector<double> edge110(double s) {
   return res;
 }
 std::vector<double> edge45(double s) {
-  double x0 = 1. - 0.5 * Thickness, radius = 0.5 * Thickness;
+  double x0 = ChordLen - 0.5 * Thickness, radius = 0.5 * Thickness;
   double t = Cedge45.Evaluate(s)[0];
   std::vector<double> res(2, 0.);
   res[0] = x0 + radius * cos(t);
@@ -126,7 +126,7 @@ std::vector<double> edge45(double s) {
   return res;
 }
 std::vector<double> edge56(double s) {
-  double x0 = 1. - 0.5 * Thickness, radius = 0.5 * Thickness;
+  double x0 = ChordLen - 0.5 * Thickness, radius = 0.5 * Thickness;
   double t = Cedge56.Evaluate(s)[0];
   std::vector<double> res(2, 0.);
   res[0] = x0 + radius * cos(t);
