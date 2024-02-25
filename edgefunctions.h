@@ -1,56 +1,26 @@
 #ifndef EDGEFUNCTIONS_H
 #define EDGEFUNCTIONS_H
 #include "params.h"
-
-double g_ptsA[20][2];
+BLMeshModuleShPtr BLModel;
 double g_ptsW[20][2];
 double g_ptsF[20][2];
-double g_thetaA[20][2];
-int nLayersU0 = findNlayers(hFirstLayer, progress, upperBL0, maxLayerh);
-int nLayersU1 = findNlayers(hFirstLayer, progress, upperBL1, maxLayerh);
-int nLayersU2 = findNlayers(hFirstLayer, progress, upperBL2, maxLayerh);
-int nLayersU3 = findNlayers(hFirstLayer, progress, upperBL3, maxLayerh);
-int nLayersU4 = findNlayers(hFirstLayer, progress, upperBL4, maxLayerh);
-int nLayersU5 = findNlayers(hFirstLayer, progress, upperBL5, maxLayerh);
+std::vector<void *> BLedges;
 
-int nLayersL0 = findNlayers(hFirstLayer, progress, lowerBL0, maxLayerh);
-int nLayersL1 = findNlayers(hFirstLayer, progress, lowerBL1, maxLayerh);
-int nLayersL2 = findNlayers(hFirstLayer, progress, lowerBL2, maxLayerh);
-int nLayersL3 = findNlayers(hFirstLayer, progress, lowerBL3, maxLayerh);
-int nLayersL4 = findNlayers(hFirstLayer, progress, lowerBL4, maxLayerh);
-int nLayersL5 = findNlayers(hFirstLayer, progress, lowerBL5, maxLayerh);
+static std::vector<double> BLedge0(double s) { return BLModel->edge0(s); }
+static std::vector<double> BLedge1(double s) { return BLModel->edge1(s); }
+static std::vector<double> BLedge2(double s) { return BLModel->edge2(s); }
+static std::vector<double> BLedge3(double s) { return BLModel->edge3(s); }
+static std::vector<double> BLedge4(double s) { return BLModel->edge4(s); }
+static std::vector<double> BLedge5(double s) { return BLModel->edge5(s); }
+static std::vector<double> BLedge6(double s) { return BLModel->edge6(s); }
+static std::vector<double> BLedge7(double s) { return BLModel->edge7(s); }
+static std::vector<double> BLedge8(double s) { return BLModel->edge8(s); }
+static std::vector<double> BLedge9(double s) { return BLModel->edge9(s); }
+static std::vector<double> BLedge10(double s) { return BLModel->edge10(s); }
+static std::vector<double> BLedge11(double s) { return BLModel->edge11(s); }
+static std::vector<double> BLedge12(double s) { return BLModel->edge12(s); }
 
 int InitPts() {
-  setRadiusMesh(hFirstLayer, progress, maxLayerh);
-  // airfoil
-  g_thetaA[0][0] = 0.5 * M_PI;
-  g_thetaA[4][0] = 0.5 * M_PI;
-  g_thetaA[5][0] = 0.;
-  g_thetaA[6][0] = -0.5 * M_PI;
-  g_thetaA[10][0] = 1.5 * M_PI;
-  g_thetaA[11][0] = M_PI;
-
-  g_ptsA[0][0] = 0.5 * Thickness;
-  g_ptsA[1][0] = upperx1;
-  g_ptsA[2][0] = upperx2;
-  g_ptsA[3][0] = upperx3;
-  g_ptsA[4][0] = ChordLen - 0.5 * Thickness;
-  g_ptsA[0][1] = 0.5 * Thickness;
-  g_ptsA[1][1] = 0.5 * Thickness;
-  g_ptsA[2][1] = 0.5 * Thickness;
-  g_ptsA[3][1] = 0.5 * Thickness;
-  g_ptsA[4][1] = 0.5 * Thickness;
-
-  g_ptsA[6][0] = ChordLen - 0.5 * Thickness;
-  g_ptsA[7][0] = lowerx3;
-  g_ptsA[8][0] = lowerx2;
-  g_ptsA[9][0] = lowerx1;
-  g_ptsA[10][0] = 0.5 * Thickness;
-  g_ptsA[6][1] = -0.5 * Thickness;
-  g_ptsA[7][1] = -0.5 * Thickness;
-  g_ptsA[8][1] = -0.5 * Thickness;
-  g_ptsA[9][1] = -0.5 * Thickness;
-  g_ptsA[10][1] = -0.5 * Thickness;
   // far boundary
   double deltax = (xBoxRight - xBoxLeft) / nBoxDown;
   double deltay = (yBoxUp - yBoxDown) / nBoxLeft;
@@ -94,67 +64,21 @@ int InitPts() {
   g_ptsW[1][1] = cy - 0.5 * height * cos(farWakeAoA);
   g_ptsW[2][0] = cx - 0.5 * height * sin(farWakeAoA);
   g_ptsW[2][1] = cy + 0.5 * height * cos(farWakeAoA);
+
+  BLedges.push_back((void *)BLedge0);
+  BLedges.push_back((void *)BLedge1);
+  BLedges.push_back((void *)BLedge2);
+  BLedges.push_back((void *)BLedge3);
+  BLedges.push_back((void *)BLedge4);
+  BLedges.push_back((void *)BLedge5);
+  BLedges.push_back((void *)BLedge6);
+  BLedges.push_back((void *)BLedge7);
+  BLedges.push_back((void *)BLedge8);
+  BLedges.push_back((void *)BLedge9);
+  BLedges.push_back((void *)BLedge10);
+  BLedges.push_back((void *)BLedge11);
   return 0;
 }
-
-LineEdge Cedge1011(g_thetaA[10], g_thetaA[11], nLow0, UNIFORM, 0., 0.);
-LineEdge Cedge110(g_thetaA[11], g_thetaA[0], nUp0, UNIFORM, 0., 0.);
-LineEdge Cedge45(g_thetaA[4], g_thetaA[5], nUp5, UNIFORM, 0., 0.);
-LineEdge Cedge56(g_thetaA[5], g_thetaA[6], nLow5, UNIFORM, 0., 0.);
-std::vector<double> edge1011(double s) {
-  double x0 = 0.5 * Thickness, radius = 0.5 * Thickness;
-  double t = Cedge1011.Evaluate(s)[0];
-  std::vector<double> res(2, 0.);
-  res[0] = x0 + radius * cos(t);
-  res[1] = radius * sin(t);
-  return res;
-}
-std::vector<double> edge110(double s) {
-  double x0 = 0.5 * Thickness, radius = 0.5 * Thickness;
-  double t = Cedge110.Evaluate(s)[0];
-  std::vector<double> res(2, 0.);
-  res[0] = x0 + radius * cos(t);
-  res[1] = radius * sin(t);
-  return res;
-}
-std::vector<double> edge45(double s) {
-  double x0 = ChordLen - 0.5 * Thickness, radius = 0.5 * Thickness;
-  double t = Cedge45.Evaluate(s)[0];
-  std::vector<double> res(2, 0.);
-  res[0] = x0 + radius * cos(t);
-  res[1] = radius * sin(t);
-  return res;
-}
-std::vector<double> edge56(double s) {
-  double x0 = ChordLen - 0.5 * Thickness, radius = 0.5 * Thickness;
-  double t = Cedge56.Evaluate(s)[0];
-  std::vector<double> res(2, 0.);
-  res[0] = x0 + radius * cos(t);
-  res[1] = radius * sin(t);
-  return res;
-}
-
-LineEdge Cedge01(g_ptsA[0], g_ptsA[1], nUp1, BOUNDARYLAYER0, hFirstLayer, 1.6,
-                 5, 0., 0., 0);
-LineEdge Cedge12(g_ptsA[1], g_ptsA[2], nUp2, UNIFORM, 0., 0.);
-LineEdge Cedge23(g_ptsA[2], g_ptsA[3], nUp3, UNIFORM, 0., 0.);
-LineEdge Cedge34(g_ptsA[3], g_ptsA[4], nUp4, BOUNDARYLAYER1, 0., 0., 0,
-                 hFirstLayer, 1.6, 5);
-std::vector<double> edge01(double s) { return Cedge01.Evaluate(s); }
-std::vector<double> edge12(double s) { return Cedge12.Evaluate(s); }
-std::vector<double> edge23(double s) { return Cedge23.Evaluate(s); }
-std::vector<double> edge34(double s) { return Cedge34.Evaluate(s); }
-
-LineEdge Cedge67(g_ptsA[6], g_ptsA[7], nLow4, BOUNDARYLAYER0, hFirstLayer, 1.6,
-                 5, 0., 0., 0);
-LineEdge Cedge78(g_ptsA[7], g_ptsA[8], nLow3, UNIFORM, 0., 0.);
-LineEdge Cedge89(g_ptsA[8], g_ptsA[9], nLow2, UNIFORM, 0., 0.);
-LineEdge Cedge910(g_ptsA[9], g_ptsA[10], nLow1, BOUNDARYLAYER1, 0., 0., 0,
-                  hFirstLayer, 1.6, 5);
-std::vector<double> edge67(double s) { return Cedge67.Evaluate(s); }
-std::vector<double> edge78(double s) { return Cedge78.Evaluate(s); }
-std::vector<double> edge89(double s) { return Cedge89.Evaluate(s); }
-std::vector<double> edge910(double s) { return Cedge910.Evaluate(s); }
 
 LineEdge Cwake01(g_ptsW[0], g_ptsW[1], nFarWakex, QUDREFINE0,
                  farWakeHeight / nFarWakey, 0.);
@@ -187,4 +111,5 @@ bool toremove(std::vector<double> p) {
   }
   return true;
 }
+
 #endif

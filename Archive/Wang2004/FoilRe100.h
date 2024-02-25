@@ -57,13 +57,13 @@ double nearAoA = 0.;
 
 double farWakeAoA = AoA;
 double wakeDiffuseAngle = 50. / 180. * M_PI;
-double wakedist = maxLayerh*3;
+double wakedist = maxLayerh * 3;
 double farWakeCx = nearBoxRight + wakedist * cos(AoA);
 double farWakeCy = wakedist * sin(AoA);
 double farWakeHeight = 10.;
 double farWakeLength = 10.;
-int nFarWakey = farWakeHeight/maxLayerh / 2 + 0.5;
-int nFarWakex = farWakeLength/maxLayerh /4;
+int nFarWakey = farWakeHeight / maxLayerh / 2 + 0.5;
+int nFarWakex = farWakeLength / maxLayerh / 4;
 
 double xBoxLeft = -40.;
 double xBoxRight = 60.;

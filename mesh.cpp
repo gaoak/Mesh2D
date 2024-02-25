@@ -1,4 +1,6 @@
+#include "CAD2D/BLMeshModule.h"
 #include "CAD2D/CompositEdge.h"
+#include "CAD2D/FlatPlate.h"
 #include "CAD2D/LineEdge.h"
 #include "CAD2D/MeshRegions.h"
 #include "CAD2D/MeshTool.h"
@@ -16,7 +18,6 @@ int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
-int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
@@ -78,92 +79,11 @@ int main(int argc, char *argv[]) {
 }
 
 int meshingBoundaryLayer(MeshRegions &combinedReg) {
-  /////////near body region////////////////
-  std::vector<RectRegion> Rects;
-  // boundary layer region 0
-  std::vector<void *> edges0;
-  void *edge0;
-  // edge 11-0
-  edges0.push_back((void *)edge110);
-  edges0.push_back((void *)radiusEdge);
-  edges0.push_back(edge0);
-  edges0.push_back(edge0);
-  Rects.push_back(RectRegion(edges0, "up0", false));
-  setRadiusLayers(nLayersU0);
-  Rects[Rects.size() - 1].MeshGen(Cedge110.m_N, nLayersU0, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up0.dat");
-  // edge 01
-  edges0[0] = (void *)edge01;
-  Rects.push_back(RectRegion(edges0, "up1", false));
-  setRadiusLayers(nLayersU1);
-  Rects[Rects.size() - 1].MeshGen(Cedge01.m_N, nLayersU1, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up1.dat");
-  // edge 12
-  edges0[0] = (void *)edge12;
-  Rects.push_back(RectRegion(edges0, "up2", false));
-  setRadiusLayers(nLayersU2);
-  Rects[Rects.size() - 1].MeshGen(Cedge12.m_N, nLayersU2, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up2.dat");
-  // edge 23
-  edges0[0] = (void *)edge23;
-  Rects.push_back(RectRegion(edges0, "up3", false));
-  setRadiusLayers(nLayersU3);
-  Rects[Rects.size() - 1].MeshGen(Cedge23.m_N, nLayersU3, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up3.dat");
-  // edge 34
-  edges0[0] = (void *)edge34;
-  Rects.push_back(RectRegion(edges0, "up4", false));
-  setRadiusLayers(nLayersU4);
-  Rects[Rects.size() - 1].MeshGen(Cedge34.m_N, nLayersU4, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up4.dat");
-  // edge 45
-  edges0[0] = (void *)edge45;
-  Rects.push_back(RectRegion(edges0, "up5", false));
-  setRadiusLayers(nLayersU5);
-  Rects[Rects.size() - 1].MeshGen(Cedge45.m_N, nLayersU5, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("up5.dat");
-
-  // edge 5-6
-  edges0[0] = (void *)edge56;
-  Rects.push_back(RectRegion(edges0, "low5", false));
-  setRadiusLayers(nLayersL5);
-  Rects[Rects.size() - 1].MeshGen(Cedge56.m_N, nLayersL5, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low5.dat");
-  // edge 6-7
-  edges0[0] = (void *)edge67;
-  Rects.push_back(RectRegion(edges0, "low4", false));
-  setRadiusLayers(nLayersL4);
-  Rects[Rects.size() - 1].MeshGen(Cedge67.m_N, nLayersL4, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low4.dat");
-  // edge 7-8
-  edges0[0] = (void *)edge78;
-  Rects.push_back(RectRegion(edges0, "low3", false));
-  setRadiusLayers(nLayersL3);
-  Rects[Rects.size() - 1].MeshGen(Cedge78.m_N, nLayersL3, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low3.dat");
-  // edge 8-9
-  edges0[0] = (void *)edge89;
-  Rects.push_back(RectRegion(edges0, "low2", false));
-  setRadiusLayers(nLayersL2);
-  Rects[Rects.size() - 1].MeshGen(Cedge89.m_N, nLayersL2, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low2.dat");
-  // edge 9-10
-  edges0[0] = (void *)edge910;
-  Rects.push_back(RectRegion(edges0, "low1", false));
-  setRadiusLayers(nLayersL1);
-  Rects[Rects.size() - 1].MeshGen(Cedge910.m_N, nLayersL1, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low1.dat");
-  // edge 10-11
-  edges0[0] = (void *)edge1011;
-  Rects.push_back(RectRegion(edges0, "low0", false));
-  setRadiusLayers(nLayersL0);
-  Rects[Rects.size() - 1].MeshGen(Cedge1011.m_N, nLayersL0, eBoundaryLayer1);
-  Rects[Rects.size() - 1].Tec360Pts("low0.dat");
-
-  ///////////// combine the near field mesh
-  for (unsigned int i = 0; i < Rects.size(); ++i) {
-    combinedReg.AddRegion(Rects[i]);
-  }
+  std::map<std::string, double> p;
+  std::map<std::string, int> q;
+  DefineBLParams(p, q);
+  BLModel = std::make_shared<FlatPlate>(p, q);
+  BLModel->MeshGen(combinedReg, BLedges);
   return 0;
 }
 
@@ -277,61 +197,20 @@ int meshingOuterBoundary(MeshRegions &combinedReg) {
   return 0;
 }
 
-int outputGeo(MeshRegions &combinedReg, std::vector<int> OutLevels) {
-  // outer layer
-  std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
-  vector<vector<vector<double>>> boxes(boundary.size());
-  for (int i = 0; i < boundary.size(); ++i) {
-    for (int j = 0; j < boundary[i].size(); ++j) {
-      boxes[i].push_back(combinedReg.m_pts[boundary[i][j]]);
-    }
-  }
-  std::map<int, std::set<int>> trees;
-  std::set<int> roots;
-  BuildTopoTree(boxes, trees, roots);
-  std::vector<int> levels(boxes.size(), 0);
-  int r0 = *roots.begin();
-  FindTreesDepths(r0, 0, trees, levels);
-  int filen = 0;
-  for (auto l : OutLevels) {
-    for (size_t i = 0; i < levels.size(); ++i) {
-      if (l == levels[i]) {
-        std::vector<std::vector<std::vector<double>>> tmparray;
-        for (auto p : trees[i]) {
-          tmparray.push_back(boxes[p]);
-        }
-        OutGeo("FarField" + to_string(filen) + ".geo", boxes[i], tmparray);
-        ++filen;
-      }
-    }
-  }
-  return 0;
-}
-
 int outputXML(MeshRegions &combinedReg) {
   // output outer region
   vector<int> comp3;
   comp3.push_back(0);
   // wall
-  combinedReg.defineBoundary((void *)edge45, Cedge45.m_N, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge56, Cedge56.m_N, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge1011, Cedge1011.m_N, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge110, Cedge110.m_N, 0, curvedpts);
-  combinedReg.defineBoundary((void *)edge01, Cedge01.m_N, 5);
-  combinedReg.defineBoundary((void *)edge12, Cedge12.m_N, 5);
-  combinedReg.defineBoundary((void *)edge23, Cedge23.m_N, 5);
-  combinedReg.defineBoundary((void *)edge34, Cedge34.m_N, 5);
-  combinedReg.defineBoundary((void *)edge67, Cedge67.m_N, 6);
-  combinedReg.defineBoundary((void *)edge78, Cedge78.m_N, 6);
-  combinedReg.defineBoundary((void *)edge89, Cedge89.m_N, 6);
-  combinedReg.defineBoundary((void *)edge910, Cedge910.m_N, 6);
+
+  int offset = BLModel->DefineBCs(combinedReg, 0, BLedges);
   // inlet
-  combinedReg.defineBoundary((void *)far08, Cfar08.m_N, 1);
+  combinedReg.defineBoundary((void *)far08, Cfar08.m_N, offset);
   // outlet
-  combinedReg.defineBoundary((void *)far311, Cfar311.m_N, 2);
+  combinedReg.defineBoundary((void *)far311, Cfar311.m_N, 1 + offset);
   // side
-  combinedReg.defineBoundary((void *)far03, Cfar03.m_N, 3);
-  combinedReg.defineBoundary((void *)far811, Cfar811.m_N, 4);
+  combinedReg.defineBoundary((void *)far03, Cfar03.m_N, 2 + offset);
+  combinedReg.defineBoundary((void *)far811, Cfar811.m_N, 3 + offset);
   // output
   combinedReg.outXml("outerRegion.xml");
   combinedReg.outCOMPO("outerRegion.xml", comp3);
