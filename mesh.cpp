@@ -107,7 +107,7 @@ int meshingNearBody(MeshRegions &combinedReg) {
   pic0.MeshGen(int((nearBoxRight - nearBoxLeft) / maxLayerh + 0.5),
                int((nearBoxUp - nearBoxDown) / maxLayerh + 0.5));
   nearBodyRegion.AddRegion(pic0);
-  nearBodyRegion.transformation(nearAoA);
+  nearBodyRegion.transformation(nearAoA, 0., 0.);
 
   combinedReg.GetBoundBox(g_boundingbox);
   g_boundingbox.push_back(maxLayerh * 2.);
