@@ -92,6 +92,8 @@ void DefineBLParams(std::map<std::string, double> &p,
       std::max(int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5),
                std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
   q["nLow5"] = nLow5;
+  int curvedpts = 6;
+  q["curvedpts"] = curvedpts;
   BLModel = std::make_shared<FlatPlate>(p, q);
 }
 
