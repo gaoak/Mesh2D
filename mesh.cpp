@@ -82,7 +82,6 @@ int meshingBoundaryLayer(MeshRegions &combinedReg) {
   std::map<std::string, double> p;
   std::map<std::string, int> q;
   DefineBLParams(p, q);
-  BLModel = std::make_shared<FlatPlate>(p, q);
   BLModel->MeshGen(combinedReg, BLedges);
   return 0;
 }

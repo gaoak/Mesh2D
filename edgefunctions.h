@@ -1,7 +1,6 @@
 #ifndef EDGEFUNCTIONS_H
 #define EDGEFUNCTIONS_H
 #include "params.h"
-BLMeshModuleShPtr BLModel;
 double g_ptsW[20][2];
 double g_ptsF[20][2];
 std::vector<void *> BLedges;
