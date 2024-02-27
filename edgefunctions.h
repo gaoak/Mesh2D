@@ -18,6 +18,9 @@ static std::vector<double> BLedge9(double s) { return BLModel->edge9(s); }
 static std::vector<double> BLedge10(double s) { return BLModel->edge10(s); }
 static std::vector<double> BLedge11(double s) { return BLModel->edge11(s); }
 static std::vector<double> BLedge12(double s) { return BLModel->edge12(s); }
+static std::vector<double> BLMapFunc(std::vector<double> p) {
+  return BLModel->MapFunc(p);
+}
 
 int InitPts() {
   // far boundary
@@ -76,6 +79,7 @@ int InitPts() {
   BLedges.push_back((void *)BLedge9);
   BLedges.push_back((void *)BLedge10);
   BLedges.push_back((void *)BLedge11);
+  BLedges.push_back((void *)BLMapFunc);
   return 0;
 }
 

@@ -1,9 +1,9 @@
 // for 3D simulation of isolated vortex with a hump
 #ifndef PARAMS_H
 #define PARAMS_H
+#include "CAD2D/FlatPlate.h"
 #include <map>
 #include <string>
-#include "CAD2D/FlatPlate.h"
 
 BLMeshModuleShPtr BLModel;
 void DefineBLParams(std::map<std::string, double> &p,
