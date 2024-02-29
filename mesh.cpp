@@ -1,6 +1,5 @@
 #include "CAD2D/BLMeshModule.h"
 #include "CAD2D/CompositEdge.h"
-#include "CAD2D/FlatPlate.h"
 #include "CAD2D/LineEdge.h"
 #include "CAD2D/MeshRegions.h"
 #include "CAD2D/MeshTool.h"
