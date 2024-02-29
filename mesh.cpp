@@ -108,7 +108,7 @@ int meshingNearBody(MeshRegions &combinedReg) {
   nearBodyRegion.transformation(nearAoA, 0., 0.);
 
   combinedReg.GetBoundBox(g_boundingbox);
-  g_boundingbox.push_back(maxLayerh * 2.);
+  g_boundingbox.push_back(maxLayerh);
   nearBodyRegion.RemoveElements((void *)toremove);
   //////////////combine region//////////
   combinedReg.AddRegion(nearBodyRegion);

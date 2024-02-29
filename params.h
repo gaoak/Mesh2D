@@ -14,43 +14,105 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["AoA"] = AoA;
   double Thickness = 0.05;
   p["Thickness"] = Thickness;
-  double ChordLen = 0.6;
+  double ChordLen = 1.3;
   p["ChordLen"] = ChordLen;
-  double Tx0 = 0.5 * ChordLen;
-  p["Tx0"] = Tx0;
   // outside
-  double hFirstLayer = 0.005;
+  double hFirstLayer = 0.003;
   p["hFirstLayer"] = hFirstLayer;
   double progress = 1.1;
   p["progress"] = progress;
-  double maxLayerh = 0.1;
+  double upperBL0 = 0.05;
+  p["upperBL0"] = upperBL0;
+  double upperBL1 = 0.05;
+  p["upperBL1"] = upperBL1;
+  double upperBL2 = 0.05;
+  p["upperBL2"] = upperBL2;
+  double upperBL3 = 0.05;
+  p["upperBL3"] = upperBL3;
+  double upperBL4 = 0.05;
+  p["upperBL4"] = upperBL4;
+  double upperBL5 = 0.05;
+  p["upperBL5"] = upperBL5;
+  double lowerBL0 = 0.05;
+  p["lowerBL0"] = lowerBL0;
+  double lowerBL1 = 0.05;
+  p["lowerBL1"] = lowerBL1;
+  double lowerBL2 = 0.05;
+  p["lowerBL2"] = lowerBL2;
+  double lowerBL3 = 0.05;
+  p["lowerBL3"] = lowerBL3;
+  double lowerBL4 = 0.05;
+  p["lowerBL4"] = lowerBL4;
+  double lowerBL5 = 0.05;
+  p["lowerBL5"] = lowerBL5;
+  double maxLayerh = 0.02;
   p["maxLayerh"] = maxLayerh;
-  double wallBLThickness0 = 0.05;
-  p["wallBLThickness0"] = wallBLThickness0;
+
+  double upperx1 = 0.2;
+  p["upperx1"] = upperx1;
+  double upperx2 = ChordLen * 0.5;
+  p["upperx2"] = upperx2;
+  double upperx3 = ChordLen - 0.2;
+  p["upperx3"] = upperx3;
+  double lowerx1 = 0.2;
+  p["lowerx1"] = lowerx1;
+  double lowerx2 = ChordLen * 0.5;
+  p["lowerx2"] = lowerx2;
+  double lowerx3 = ChordLen - 0.2;
+  p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
-  int Ncylinder = 160;
-  q["Ncylinder"] = Ncylinder;
+  int nUp0 =
+      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
+               std::max(12, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  q["nUp0"] = nUp0;
+  int nUp1 = (upperx1) / maxLayerh + 4;
+  q["nUp1"] = nUp1;
+  int nUp2 = (upperx2 - upperx1) / maxLayerh + 0.5;
+  q["nUp2"] = nUp2;
+  int nUp3 = (upperx3 - upperx2) / maxLayerh + 0.5;
+  q["nUp3"] = nUp3;
+  int nUp4 = (ChordLen - upperx3) / maxLayerh + 4;
+  q["nUp4"] = nUp4;
+  int nUp5 =
+      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
+               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  q["nUp5"] = nUp5;
+  int nLow0 =
+      std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5),
+               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  q["nLow0"] = nLow0;
+  int nLow1 = (lowerx1) / maxLayerh + 4;
+  q["nLow1"] = nLow1;
+  int nLow2 = (lowerx2 - lowerx1) / maxLayerh + 0.5;
+  q["nLow2"] = nLow2;
+  int nLow3 = (lowerx3 - lowerx2) / maxLayerh + 0.5;
+  q["nLow3"] = nLow3;
+  int nLow4 = (ChordLen - lowerx3) / maxLayerh + 4;
+  q["nLow4"] = nLow4;
+  int nLow5 =
+      std::max(int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5),
+               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
-  BLModel = std::make_shared<BLEllipse>(p, q);
+  BLModel = std::make_shared<BLFlatPlate>(p, q);
   BLModel->Initialise();
 }
 
-double AoA = 0. / 180. * M_PI;
-double maxLayerh = 0.03;
-double nearBoxLeft = -0.3;
+double maxLayerh = 0.05;
+double nearBoxLeft = -0.5;
 double nearBoxRight = 1.5;
-double nearBoxDown = -0.3;
-double nearBoxUp = 0.3;
+double nearBoxDown = -0.6;
+double nearBoxUp = 0.6;
 double nearAoA = 0.;
 
-double farWakeAoA = AoA;
-double wakeDiffuseAngle = 8. / 180. * M_PI;
+double farWakeAoA = 0.;
+double wakeDiffuseAngle = 12. / 180. * M_PI;
 double wakedist = 0.1;
-double farWakeCx = nearBoxRight + wakedist * cos(AoA);
-double farWakeCy = wakedist * sin(AoA);
-double farWakeHeight = 1.;
+double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
+double farWakeCy = wakedist * sin(farWakeAoA);
+double farWakeHeight = 1.4;
 double farWakeLength = 10.;
 int nFarWakey = farWakeHeight / maxLayerh + 0.5;
 int nFarWakex = farWakeLength / maxLayerh / 2;
