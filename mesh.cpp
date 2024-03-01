@@ -27,10 +27,10 @@ int main(int argc, char *argv[]) {
       ++i;
     } else if (strcmp(argv[i], "merge") == 0) {
       merge = true;
-      for (++i; i < argc ; ++i) {
+      for (++i; i < argc; ++i) {
         std::string tmpname(argv[i]);
         int len = tmpname.length();
-        if(len>=4 && tmpname.substr(len-4, 4) == ".msh") {
+        if (len >= 4 && tmpname.substr(len - 4, 4) == ".msh") {
           mshfilename.push_back(argv[i]);
         } else {
           break;
@@ -44,7 +44,8 @@ int main(int argc, char *argv[]) {
   MeshRegions combinedReg("RComb_", 1.E-6);
   meshingBoundaryLayer(combinedReg);
   meshingNearBody(combinedReg);
-  if(withwake) meshingWake(combinedReg);
+  if (withwake)
+    meshingWake(combinedReg);
   meshingOuterBoundary(combinedReg);
   if (!merge) {
     std::vector<int> OutLevels = {1, 3};

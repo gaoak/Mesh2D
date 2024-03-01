@@ -8,7 +8,7 @@
 #include <string>
 
 BLMeshModuleShPtr BLModel;
-double ChordLen = 0.5;
+double ChordLen = 1.0;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 0. / 180. * M_PI;
@@ -16,6 +16,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   double Thickness = 0.05;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
+  p["TEThickness"] = 0.00252;
   // outside
   double hFirstLayer = 0.003;
   p["hFirstLayer"] = hFirstLayer;
@@ -96,7 +97,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
-  BLModel = std::make_shared<BLFlatPlate>(p, q);
+  q["WEDGEFOIL"] = 1;
+  q["CutFore"] = 1;
+  BLModel = std::make_shared<BLAirfoil>(p, q);
   BLModel->Initialise();
 }
 
