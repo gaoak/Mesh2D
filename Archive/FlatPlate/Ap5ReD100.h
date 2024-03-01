@@ -8,7 +8,7 @@
 #include <string>
 
 BLMeshModuleShPtr BLModel;
-double ChordLen = 0.5;
+double ChordLen = 1.;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 0. / 180. * M_PI;
@@ -100,12 +100,13 @@ void DefineBLParams(std::map<std::string, double> &p,
   BLModel->Initialise();
 }
 
-double maxLayerh = 0.04;
+double nearmaxLayerh = 0.04;
 double nearBoxLeft = -0.3;
 double nearBoxRight = ChordLen + 0.2;
 double nearBoxDown = -0.8;
 double nearBoxUp = 0.8;
 double nearAoA = 0.;
+double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.05;
 double farWakeAoA = 0.;

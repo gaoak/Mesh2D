@@ -19,15 +19,23 @@ int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
-  bool merge = false;
-  string mshfilename0, mshfilename1;
-  for (int i = 1; i < argc; ++i) {
-    if (strcmp(argv[i], "merge") == 0) {
-      if (argc > i + 1)
-        mshfilename0 = string(argv[i + 1]);
-      if (argc > i + 2)
-        mshfilename1 = string(argv[i + 2]);
+  bool merge = false, withwake = false;
+  std::vector<string> mshfilename;
+  for (int i = 1; i < argc;) {
+    if (strcmp(argv[i], "wake") == 0) {
+      withwake = true;
+      ++i;
+    } else if (strcmp(argv[i], "merge") == 0) {
       merge = true;
+      for (++i; i < argc ; ++i) {
+        std::string tmpname(argv[i]);
+        int len = tmpname.length();
+        if(len>=4 && tmpname.substr(len-4, 4) == ".msh") {
+          mshfilename.push_back(argv[i]);
+        } else {
+          break;
+        }
+      }
     }
   }
   /// initialise
@@ -36,7 +44,7 @@ int main(int argc, char *argv[]) {
   MeshRegions combinedReg("RComb_", 1.E-6);
   meshingBoundaryLayer(combinedReg);
   meshingNearBody(combinedReg);
-  meshingWake(combinedReg);
+  if(withwake) meshingWake(combinedReg);
   meshingOuterBoundary(combinedReg);
   if (!merge) {
     std::vector<int> OutLevels = {1, 3};
@@ -45,31 +53,20 @@ int main(int argc, char *argv[]) {
     cout << "=======================================" << endl;
   } else {
     // load gmsh1
-    MeshRegions gmshReg("R_gmsh_", 1.E-8);
-    gmshReg.loadFromMsh(mshfilename0, 130. / 180. * 3.14159);
-    cout << "load " << mshfilename0 << endl;
-    if (!combinedReg.consistancyCheck(gmshReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
+    for (auto file : mshfilename) {
+      MeshRegions gmshReg("R_gmsh_", 1.E-8);
+      gmshReg.loadFromMsh(file, 125. / 180. * 3.14159);
+      cout << "load " << file << endl;
+      if (!combinedReg.consistancyCheck(gmshReg)) {
+        cout << "Error: node mismatch, exit" << endl;
+        return -1;
+      }
+      if (!gmshReg.consistancyCheck(combinedReg)) {
+        cout << "Error: node mismatch, exit" << endl;
+        return -1;
+      }
+      combinedReg.AddRegion(gmshReg);
     }
-    if (!gmshReg.consistancyCheck(combinedReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    combinedReg.AddRegion(gmshReg);
-    // load gmsh2
-    MeshRegions gmshReg2("R_gmsh_", 1.E-8);
-    gmshReg2.loadFromMsh(mshfilename1, 120. / 180. * 3.14159);
-    cout << "load " << mshfilename1 << endl;
-    if (!combinedReg.consistancyCheck(gmshReg2)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    if (!gmshReg2.consistancyCheck(combinedReg)) {
-      cout << "Error: node mismatch, exit" << endl;
-      return -1;
-    }
-    combinedReg.AddRegion(gmshReg2);
     outputXML(combinedReg);
     cout << "------------------------------------" << endl;
     cout << "------------------------------------" << endl;
@@ -102,13 +99,13 @@ int meshingNearBody(MeshRegions &combinedReg) {
     edges.push_back(edge);
   }
   RectRegion pic0 = RectRegion(edges, "pic");
-  pic0.MeshGen(int((nearBoxRight - nearBoxLeft) / maxLayerh + 0.5),
-               int((nearBoxUp - nearBoxDown) / maxLayerh + 0.5));
+  pic0.MeshGen(int((nearBoxRight - nearBoxLeft) / nearmaxLayerh + 0.5),
+               int((nearBoxUp - nearBoxDown) / nearmaxLayerh + 0.5));
   nearBodyRegion.AddRegion(pic0);
   nearBodyRegion.transformation(nearAoA, 0., 0.);
 
   combinedReg.GetBoundBox(g_boundingbox);
-  g_boundingbox.push_back(maxLayerh);
+  g_boundingbox.push_back(neargap);
   nearBodyRegion.RemoveElements((void *)toremove);
   //////////////combine region//////////
   combinedReg.AddRegion(nearBodyRegion);
