@@ -13,9 +13,10 @@ void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 0. / 180. * M_PI;
   p["AoA"] = AoA;
-  double Thickness = 0.05;
+  double Thickness = 0.12;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
+  p["TEThickness"] = 0.00252;
   // outside
   double hFirstLayer = 0.003;
   p["hFirstLayer"] = hFirstLayer;
@@ -48,23 +49,21 @@ void DefineBLParams(std::map<std::string, double> &p,
   double maxLayerh = 0.02;
   p["maxLayerh"] = maxLayerh;
 
-  double upperx1 = 0.2;
+  double upperx1 = 0.1;
   p["upperx1"] = upperx1;
   double upperx2 = ChordLen * 0.5;
   p["upperx2"] = upperx2;
-  double upperx3 = ChordLen - 0.2;
+  double upperx3 = ChordLen - 0.1;
   p["upperx3"] = upperx3;
-  double lowerx1 = 0.2;
+  double lowerx1 = 0.1;
   p["lowerx1"] = lowerx1;
   double lowerx2 = ChordLen * 0.5;
   p["lowerx2"] = lowerx2;
-  double lowerx3 = ChordLen - 0.2;
+  double lowerx3 = ChordLen - 0.1;
   p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
-  int nUp0 =
-      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
-               std::max(12, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  int nUp0 = std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 12);
   q["nUp0"] = nUp0;
   int nUp1 = (upperx1) / maxLayerh + 4;
   q["nUp1"] = nUp1;
@@ -76,11 +75,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nUp4"] = nUp4;
   int nUp5 =
       std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
-               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+               std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
   q["nUp5"] = nUp5;
-  int nLow0 =
-      std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5),
-               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+  int nLow0 = std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 12);
   q["nLow0"] = nLow0;
   int nLow1 = (lowerx1) / maxLayerh + 4;
   q["nLow1"] = nLow1;
@@ -92,21 +89,23 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nLow4"] = nLow4;
   int nLow5 =
       std::max(int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5),
-               std::max(10, int(0.5 + 0.25 * M_PI * Thickness / hFirstLayer)));
+               std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
   q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
-  BLModel = std::make_shared<BLFlatPlate>(p, q);
+  q["NACAFOIL"] = 1;
+  q["CutFore"] = 1;
+  BLModel = std::make_shared<BLAirfoil>(p, q);
   BLModel->Initialise();
 }
 
-double nearmaxLayerh = 0.2;
-double nearBoxLeft = -6.;
-double nearBoxRight = ChordLen + 6.;
-double nearBoxDown = -6.;
-double nearBoxUp = 6.;
+double nearmaxLayerh = 0.04;
+double nearBoxLeft = -0.3;
+double nearBoxRight = ChordLen + 0.2;
+double nearBoxDown = -0.8;
+double nearBoxUp = 0.8;
 double nearAoA = 0.;
-double neargap = 1.;
+double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.05;
 double farWakeAoA = 0.;

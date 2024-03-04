@@ -8,16 +8,16 @@
 #include <string>
 
 BLMeshModuleShPtr BLModel;
-double ChordLen = 1.0;
+double ChordLen = 1.;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 0. / 180. * M_PI;
   p["AoA"] = AoA;
-  double Thickness = 0.05;
+  double Thickness = 0.12;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
   // outside
-  double hFirstLayer = 0.003;
+  double hFirstLayer = 0.01;
   p["hFirstLayer"] = hFirstLayer;
   double progress = 1.1;
   p["progress"] = progress;
@@ -45,7 +45,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["lowerBL4"] = lowerBL4;
   double lowerBL5 = 0.05;
   p["lowerBL5"] = lowerBL5;
-  double maxLayerh = 0.02;
+  double maxLayerh = 0.035;
   p["maxLayerh"] = maxLayerh;
 
   double upperx1 = 0.2;
@@ -100,21 +100,21 @@ void DefineBLParams(std::map<std::string, double> &p,
   BLModel->Initialise();
 }
 
-double nearmaxLayerh = 0.2;
-double nearBoxLeft = -6.;
-double nearBoxRight = ChordLen + 6.;
-double nearBoxDown = -6.;
-double nearBoxUp = 6.;
+double nearmaxLayerh = 0.05;
+double nearBoxLeft = -0.3;
+double nearBoxRight = ChordLen + 0.2;
+double nearBoxDown = -0.8;
+double nearBoxUp = 0.8;
 double nearAoA = 0.;
-double neargap = 1.;
+double neargap = nearmaxLayerh;
 
-double maxLayerhWake = 0.05;
+double maxLayerhWake = 0.1;
 double farWakeAoA = 0.;
-double wakeDiffuseAngle = 12. / 180. * M_PI;
+double wakeDiffuseAngle = 25. / 180. * M_PI;
 double wakedist = 0.1;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
 double farWakeCy = wakedist * sin(farWakeAoA);
-double farWakeHeight = 2.;
+double farWakeHeight = 4.6;
 double farWakeLength = 10.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
 int nFarWakex = farWakeLength / maxLayerhWake / 2;
