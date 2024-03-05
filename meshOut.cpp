@@ -44,8 +44,9 @@ int main(int argc, char *argv[]) {
   MeshRegions combinedReg("RComb_", 1.E-6);
   meshingBoundaryLayer(combinedReg);
   meshingNearBody(combinedReg);
-  if (withwake)
+  if (withwake) {
     meshingWake(combinedReg);
+  }
   meshingOuterBoundary(combinedReg);
   if (!merge) {
     std::vector<int> OutLevels = {1, 3};

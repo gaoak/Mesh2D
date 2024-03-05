@@ -32,7 +32,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["upperBL3"] = upperBL3;
   double upperBL4 = 0.05;
   p["upperBL4"] = upperBL4;
-  double upperBL5 = 0.05;
+  double upperBL5 = 0.01;
   p["upperBL5"] = upperBL5;
   double lowerBL0 = 0.05;
   p["lowerBL0"] = lowerBL0;
@@ -44,7 +44,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["lowerBL3"] = lowerBL3;
   double lowerBL4 = 0.05;
   p["lowerBL4"] = lowerBL4;
-  double lowerBL5 = 0.05;
+  double lowerBL5 = 0.01;
   p["lowerBL5"] = lowerBL5;
   double maxLayerh = 0.035;
   p["maxLayerh"] = maxLayerh;
@@ -63,8 +63,8 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
-  int nUp0 =std::min(30, 
-      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 10));
+  int nUp0 =
+      std::min(30, std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 10));
   q["nUp0"] = nUp0;
   int nUp1 = (upperx1) / maxLayerh + 4;
   q["nUp1"] = nUp1;
@@ -74,11 +74,14 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nUp3"] = nUp3;
   int nUp4 = (ChordLen - upperx3) / maxLayerh + 4;
   q["nUp4"] = nUp4;
-  int nUp5 =std::min(30, 
-      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 6));
+
+  double radiusTE = p["TEThickness"] * 0.5 + upperBL5;
+  int nUp5 =
+      std::min(10, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
+
   q["nUp5"] = nUp5;
-  int nLow0 =std::min(30, 
-      std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 10));
+  int nLow0 =
+      std::min(30, std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 10));
   q["nLow0"] = nLow0;
   int nLow1 = (lowerx1) / maxLayerh + 4;
   q["nLow1"] = nLow1;
@@ -88,8 +91,10 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nLow3"] = nLow3;
   int nLow4 = (ChordLen - lowerx3) / maxLayerh + 4;
   q["nLow4"] = nLow4;
-  int nLow5 =std::min(30, 
-      std::max(int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5), 6));
+
+  radiusTE = p["TEThickness"] * 0.5 + lowerBL5;
+  int nLow5 =
+      std::min(30, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
   q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;

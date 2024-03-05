@@ -73,9 +73,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nUp3"] = nUp3;
   int nUp4 = (ChordLen - upperx3) / maxLayerh + 4;
   q["nUp4"] = nUp4;
-  int nUp5 =
-      std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
-               std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
+  int nUp5 = std::max(
+      int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5),
+      std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
   q["nUp5"] = nUp5;
   int nLow0 = std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 12);
   q["nLow0"] = nLow0;
@@ -87,9 +87,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nLow3"] = nLow3;
   int nLow4 = (ChordLen - lowerx3) / maxLayerh + 4;
   q["nLow4"] = nLow4;
-  int nLow5 =
-      std::max(int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5),
-               std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
+  int nLow5 = std::max(
+      int(0.5 * lowerBL5 * M_PI / maxLayerh + 0.5),
+      std::max(10, int(0.5 + 0.25 * M_PI * p["TEThickness"] / hFirstLayer)));
   q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
