@@ -49,11 +49,11 @@ int main(int argc, char *argv[]) {
       MeshRegions gmshReg("R_gmsh_", 1.E-8);
       gmshReg.loadFromMsh(file, 115. / 180. * 3.14159);
       cout << "load " << file << endl;
-      if (!inFoilRegion.consistancyCheck(gmshReg)) {
+      if (!outFoilRegion.consistancyCheck(gmshReg)) {
         cout << "Error: node mismatch, exit" << endl;
         return -1;
       }
-      if (!gmshReg.consistancyCheck(inFoilRegion)) {
+      if (!gmshReg.consistancyCheck(outFoilRegion)) {
         cout << "Error: node mismatch, exit" << endl;
         return -1;
       }
@@ -69,6 +69,8 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
   std::map<std::string, double> p;
   std::map<std::string, int> q;
   DefineBLParams(p, q);
+  double AoA = p["AoA"];
+  p["AoA"] = 0.;
   BLModel->MeshGen(outFoilRegion, BLedges);
   // output wall mapping from wall to one layer offset
   std::map<int, int> wallmapping;
@@ -79,6 +81,8 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
   outFoilRegion.omeshBoundaryMapping(wallmapping, wallPts, "wallmapping.dat",
                                      center, 0.02);
   //
+  double TEx = 1. - 0.5 * p["TEThickness"];
+  std::set<int> TEpts;
   int npts = wallPts.size();
   for (int i = 0; i < npts; ++i) {
     int pid0 = wallPts[i], pid1 = wallPts[(1 + i) % npts];
@@ -91,6 +95,9 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
       pC[d] = 2. * pB[d] - pB1[d];
       pD[d] = 2. * pA[d] - pA1[d];
     }
+    if (pA[0] >= TEx) {
+      TEpts.insert(i);
+    }
     if (pA[1] * pD[1] < 0. || pB[1] * pC[1] < 0.)
       continue;
     else if (pA[1] * pB[1] >= 0.) {
@@ -99,29 +106,34 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
       if (d < 1.5 * p["hFirstLayer"])
         continue;
     }
-    vector<vector<double>> sidel;
-    vector<vector<double>> sider;
-    vector<vector<double>> bottom;
-    vector<vector<double>> ceil;
-    bottom.push_back(pD);
-    bottom.push_back(pC);
-    sider.push_back(pC);
-    sider.push_back(pB);
-    ceil.push_back(pB);
-    ceil.push_back(pA);
-    sidel.push_back(pA);
-    sidel.push_back(pD);
-
-    std::vector<std::vector<std::vector<double>>> edges;
-    edges.push_back(bottom);
-    edges.push_back(sider);
-    edges.push_back(ceil);
-    edges.push_back(sidel);
-    RectRegion pic = RectRegion(edges, "pic");
-    pic.MeshGen(1, 1);
-    outFoilRegion.AddRegion(pic);
-    inFoilRegion.AddRegion(pic);
+    std::vector<std::vector<double>> pts;
+    pts.push_back(pA);
+    pts.push_back(pB);
+    pts.push_back(pC);
+    pts.push_back(pD);
+    outFoilRegion.AddElement(pts);
+    inFoilRegion.AddElement(pts);
   }
+  if (p["TEThickness"] * 0.25 < p["hFirstLayer"] && TEpts.size() > 1) {
+    int i0 = *TEpts.begin(), np = TEpts.size() - 1;
+    vector<double> pC(2, 0.);
+    pC[0] = p["ChordLen"] - 0.5 * p["TEThickness"];
+    for (int i = 0; i < np; ++i) {
+      int pid0 = wallPts[i + i0], pid1 = wallPts[1 + i + i0];
+      vector<double> pA = outFoilRegion.m_pts[pid0];
+      vector<double> pB = outFoilRegion.m_pts[pid1];
+      std::vector<std::vector<double>> pts;
+      pts.push_back(pA);
+      pts.push_back(pB);
+      pts.push_back(pC);
+      outFoilRegion.AddElement(pts);
+      inFoilRegion.AddElement(pts);
+    }
+  }
+  outFoilRegion.ResetBndPts();
+  inFoilRegion.ResetBndPts();
+  outFoilRegion.FixMesh();
+  inFoilRegion.FixMesh();
   return 0;
 }
 
