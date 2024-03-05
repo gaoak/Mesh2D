@@ -14,4 +14,4 @@ echo "gmsh FarField0.geo"
 echo "Mesh.RecombinationAlgorithm = 1;" >> FarField0.geo
 gmsh FarField0.geo  -2 -algo meshadapt  -clscale 10  > logmesh.dat
 ./meshIn merge FarField0.msh
-FieldConvert inFoilRegion.xml inFoilRegion.plt -f
+FieldConvert inFoil.xml inFoil.plt -f

@@ -129,7 +129,7 @@ int outputXML(MeshRegions &combinedReg) {
   // output outer region
   vector<int> comp3;
   comp3.push_back(0);
-  combinedReg.outXml("inFoilRegion.xml");
-  combinedReg.outCOMPO("inFoilRegion.xml", comp3);
+  combinedReg.outXml("inFoil.xml");
+  combinedReg.outCOMPO("inFoil.xml", comp3);
   return 0;
 }

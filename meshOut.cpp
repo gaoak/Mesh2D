@@ -18,6 +18,7 @@ int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
 int meshingOuterBoundary(MeshRegions &combinedReg);
+int outputOuterXML(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false, withwake = false;
   std::vector<string> mshfilename;
@@ -69,8 +70,10 @@ int main(int argc, char *argv[]) {
       }
       combinedReg.AddRegion(gmshReg);
     }
-    outputXML(combinedReg);
     cout << "------------------------------------" << endl;
+    outputOuterXML(combinedReg);
+    cout << "------------------------------------" << endl;
+    outputXML(combinedReg);
     cout << "------------------------------------" << endl;
   }
   return 0;
@@ -211,5 +214,34 @@ int outputXML(MeshRegions &combinedReg) {
   // output
   combinedReg.outXml("outerRegion.xml");
   combinedReg.outCOMPO("outerRegion.xml", comp3);
+  return 0;
+}
+
+int outputOuterXML(MeshRegions &combinedReg) {
+  // output outer region without wall for Omesh
+  MeshRegions oRegion("Oreg", 1E-6);
+  std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
+  int wallID = -1;
+  for (int i = 0; i < boundary.size(); ++i) {
+    for (int j = 0; j < boundary[i].size(); ++j) {
+      if (fabs(combinedReg.m_pts[boundary[i][j]][0]) +
+              fabs(combinedReg.m_pts[boundary[i][j]][1]) <
+          0.1) {
+        wallID = i;
+        break;
+      }
+    }
+    if (wallID != -1)
+      break;
+  }
+  std::set<int> excludepts;
+  for (int i = 0; i < boundary[wallID].size(); ++i) {
+    excludepts.insert(boundary[wallID][i]);
+  }
+  oRegion.AddRegion(combinedReg, excludepts);
+  vector<int> comp2;
+  comp2.push_back(0);
+  oRegion.outXml("outerRegion_Otip.xml");
+  oRegion.outCOMPO("outerRegion_Otip.xml", comp2);
   return 0;
 }
