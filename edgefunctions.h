@@ -54,17 +54,17 @@ int InitPts() {
   g_ptsF[6][1] = yBoxUp - deltay;
   g_ptsF[7][1] = yBoxUp - deltay;
   // wake
-  g_ptsW[0][0] = farWakeCx + 0.5 * farWakeHeight * sin(farWakeAoA);
+  g_ptsW[0][0] = farWakeCx - 0.5 * farWakeHeight * sin(farWakeAoA);
   g_ptsW[0][1] = farWakeCy - 0.5 * farWakeHeight * cos(farWakeAoA);
-  g_ptsW[3][0] = farWakeCx - 0.5 * farWakeHeight * sin(farWakeAoA);
+  g_ptsW[3][0] = farWakeCx + 0.5 * farWakeHeight * sin(farWakeAoA);
   g_ptsW[3][1] = farWakeCy + 0.5 * farWakeHeight * cos(farWakeAoA);
   double cx = farWakeCx + farWakeLength * cos(farWakeAoA);
-  double cy = farWakeCy + farWakeLength * sin(farWakeAoA);
+  double cy = farWakeCy - farWakeLength * sin(farWakeAoA);
   double height =
       farWakeHeight + 2. * farWakeLength * tan(wakeDiffuseAngle * 0.5);
-  g_ptsW[1][0] = cx + 0.5 * height * sin(farWakeAoA);
+  g_ptsW[1][0] = cx - 0.5 * height * sin(farWakeAoA);
   g_ptsW[1][1] = cy - 0.5 * height * cos(farWakeAoA);
-  g_ptsW[2][0] = cx - 0.5 * height * sin(farWakeAoA);
+  g_ptsW[2][0] = cx + 0.5 * height * sin(farWakeAoA);
   g_ptsW[2][1] = cy + 0.5 * height * cos(farWakeAoA);
 
   BLedges.push_back((void *)BLedge0);
