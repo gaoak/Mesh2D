@@ -13,7 +13,8 @@
 using namespace std;
 
 #include "edgefunctions.h"
-int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion);
+int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
+                  std::map<std::string, double> &p);
 int outputXML(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
   bool merge = false;
@@ -37,7 +38,8 @@ int main(int argc, char *argv[]) {
   cout << "start meshing --------" << endl;
   MeshRegions inFoilRegion("RComb_", 1.E-6);
   MeshRegions outFoilRegion("RComb_", 1.E-6);
-  meshingInFoil(inFoilRegion, outFoilRegion);
+  std::map<std::string, double> dparams;
+  meshingInFoil(inFoilRegion, outFoilRegion, dparams);
   if (!merge) {
     std::vector<int> OutLevels = {1};
     outputGeo(outFoilRegion, OutLevels);
@@ -59,19 +61,19 @@ int main(int argc, char *argv[]) {
       }
       inFoilRegion.AddRegion(gmshReg);
     }
+    inFoilRegion.transformation(dparams["AoA"], 0., 0.);
+    outputXML(inFoilRegion);
   }
-  outputXML(inFoilRegion);
   return 0;
 }
 
-int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
+int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
+                  std::map<std::string, double> &p) {
   // generate outer boundary layer mesh
-  std::map<std::string, double> p;
   std::map<std::string, int> q;
   DefineBLParams(p, q);
-  double AoA = p["AoA"];
-  p["AoA"] = 0.;
   BLModel->MeshGen(outFoilRegion, BLedges);
+  outFoilRegion.transformation(-p["AoA"], 0., 0.);
   // output wall mapping from wall to one layer offset
   std::map<int, int> wallmapping;
   std::vector<int> wallPts;
@@ -130,10 +132,10 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion) {
       inFoilRegion.AddElement(pts);
     }
   }
-  outFoilRegion.ResetBndPts();
-  inFoilRegion.ResetBndPts();
   outFoilRegion.FixMesh();
   inFoilRegion.FixMesh();
+  outFoilRegion.ResetBndPts();
+  inFoilRegion.ResetBndPts();
   return 0;
 }
 
