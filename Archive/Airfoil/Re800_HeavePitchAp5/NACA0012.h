@@ -18,9 +18,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["ChordLen"] = ChordLen;
   p["TEThickness"] = 0.00252;
   // outside
-  double hFirstLayer = 0.01;
+  double hFirstLayer = 0.005;
   p["hFirstLayer"] = hFirstLayer;
-  double progress = 1.1;
+  double progress = 1.2;
   p["progress"] = progress;
   double upperBL0 = 0.05;
   p["upperBL0"] = upperBL0;
@@ -49,22 +49,21 @@ void DefineBLParams(std::map<std::string, double> &p,
   double maxLayerh = 0.035;
   p["maxLayerh"] = maxLayerh;
 
-  double upperx1 = 0.2;
+  double upperx1 = 0.1;
   p["upperx1"] = upperx1;
   double upperx2 = ChordLen * 0.5;
   p["upperx2"] = upperx2;
-  double upperx3 = ChordLen - 0.2;
+  double upperx3 = ChordLen - 0.1;
   p["upperx3"] = upperx3;
-  double lowerx1 = 0.2;
+  double lowerx1 = 0.1;
   p["lowerx1"] = lowerx1;
   double lowerx2 = ChordLen * 0.5;
   p["lowerx2"] = lowerx2;
-  double lowerx3 = ChordLen - 0.2;
+  double lowerx3 = ChordLen - 0.1;
   p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
-  int nUp0 =
-      std::min(30, std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 10));
+  int nUp0 = std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 6);
   q["nUp0"] = nUp0;
   int nUp1 = (upperx1) / maxLayerh + 4;
   q["nUp1"] = nUp1;
@@ -80,8 +79,7 @@ void DefineBLParams(std::map<std::string, double> &p,
       std::min(10, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
 
   q["nUp5"] = nUp5;
-  int nLow0 =
-      std::min(30, std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 10));
+  int nLow0 = std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 6);
   q["nLow0"] = nLow0;
   int nLow1 = (lowerx1) / maxLayerh + 4;
   q["nLow1"] = nLow1;
@@ -98,8 +96,8 @@ void DefineBLParams(std::map<std::string, double> &p,
   q["nLow5"] = nLow5;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
-  q["WEDGEFOIL"] = 1;
-  q["CutFore"] = 0;
+  q["NACAFOIL"] = 1;
+  q["CutFore"] = 1;
   BLModel = std::make_shared<BLAirfoil>(p, q);
   BLModel->Initialise();
 }
