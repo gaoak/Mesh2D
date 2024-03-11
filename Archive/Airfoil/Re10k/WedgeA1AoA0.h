@@ -132,4 +132,8 @@ int nBoxRight = 10;
 int nBoxUp = 10;
 int nBoxDown = 10;
 
+//3D mesh
+int wingn = 40 ;
+int tipn = 9 ;
+
 #endif

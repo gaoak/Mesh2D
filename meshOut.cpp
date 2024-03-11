@@ -241,6 +241,13 @@ int outputOuterXML(MeshRegions &combinedReg) {
   oRegion.AddRegion(combinedReg, excludepts);
   vector<int> comp2;
   comp2.push_back(0);
+  // inlet
+  oRegion.defineBoundary((void *)far08, Cfar08.m_N, 0);
+  // outlet
+  oRegion.defineBoundary((void *)far311, Cfar311.m_N, 1);
+  // side
+  oRegion.defineBoundary((void *)far03, Cfar03.m_N, 2);
+  oRegion.defineBoundary((void *)far811, Cfar811.m_N, 3);
   oRegion.outXml("outerRegion_Otip.xml");
   oRegion.outCOMPO("outerRegion_Otip.xml", comp2);
   return 0;

@@ -105,7 +105,7 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
     else if (pA[1] * pB[1] >= 0.) {
       double d = p["hFirstLayer"] *
                  fabs((pA[1] + pB[1]) / (pA1[1] - pA[1] + pB1[1] - pB[1]));
-      if (d < 1.5 * p["hFirstLayer"])
+      if (d < 2. * p["hFirstLayer"])
         continue;
     }
     std::vector<std::vector<double>> pts;
