@@ -71,9 +71,9 @@ int main(int argc, char *argv[]) {
       combinedReg.AddRegion(gmshReg);
     }
     cout << "------------------------------------" << endl;
-    outputOuterXML(combinedReg);
-    cout << "------------------------------------" << endl;
     outputXML(combinedReg);
+    cout << "------------------------------------" << endl;
+    outputOuterXML(combinedReg);
     cout << "------------------------------------" << endl;
   }
   return 0;
