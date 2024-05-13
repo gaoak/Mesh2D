@@ -73,7 +73,6 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
   std::map<std::string, int> q;
   DefineBLParams(p, q);
   BLModel->MeshGen(outFoilRegion, BLedges);
-  outFoilRegion.transformation(-p["AoA"], 0., 0.);
   // output wall mapping from wall to one layer offset
   std::map<int, int> wallmapping;
   std::vector<int> wallPts;
@@ -83,6 +82,7 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
   outFoilRegion.omeshBoundaryMapping(wallmapping, wallPts, "wallmapping.dat",
                                      center, 0.02);
   //
+  outFoilRegion.transformation(-p["AoA"], 0., 0.);
   double TEx = 1. - 0.5 * p["TEThickness"];
   std::set<int> TEpts;
   int npts = wallPts.size();
