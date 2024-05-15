@@ -111,11 +111,11 @@ double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.06;
-double farWakeAoA = 10. / 180. * M_PI;
-double wakeDiffuseAngle = 14. / 180. * M_PI;
-double wakedist = 0.2;
+double farWakeAoA = 16. / 180. * M_PI;
+double wakeDiffuseAngle = 32. / 180. * M_PI;
+double wakedist = 0.4;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
-double farWakeCy = wakedist * sin(farWakeAoA);
+double farWakeCy = -0.2 + wakedist * sin(farWakeAoA);
 double farWakeHeight = 3.;
 double farWakeLength = 10.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;

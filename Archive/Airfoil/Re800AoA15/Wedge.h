@@ -16,7 +16,8 @@ void DefineBLParams(std::map<std::string, double> &p,
   double Thickness = 0.12;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
-  p["TEThickness"] = 0.00252;
+  double TEThickness = 0.05;
+  p["TEThickness"] = TEThickness;
   // outside
   double hFirstLayer = 0.005;
   p["hFirstLayer"] = hFirstLayer;
@@ -63,9 +64,12 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
+  double curvedBLStr = 1.8;
+  double LEradius = 0.5 * Thickness + upperBL0;
   int nUp0 =
-      std::min(30, std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 10));
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 6)));
   q["nUp0"] = nUp0;
+
   int nUp1 = (upperx1) / maxLayerh + 4;
   q["nUp1"] = nUp1;
   int nUp2 = (upperx2 - upperx1) / maxLayerh + 0.5;
@@ -75,14 +79,16 @@ void DefineBLParams(std::map<std::string, double> &p,
   int nUp4 = (ChordLen - upperx3) / maxLayerh + 4;
   q["nUp4"] = nUp4;
 
-  double radiusTE = p["TEThickness"] * 0.5 + upperBL5;
+  LEradius = 0.5 * TEThickness + upperBL5;
   int nUp5 =
-      std::min(10, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
-
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * TEThickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
   q["nUp5"] = nUp5;
+
+  LEradius = 0.5 * Thickness + lowerBL0;
   int nLow0 =
-      std::min(30, std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 10));
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 6)));
   q["nLow0"] = nLow0;
+
   int nLow1 = (lowerx1) / maxLayerh + 4;
   q["nLow1"] = nLow1;
   int nLow2 = (lowerx2 - lowerx1) / maxLayerh + 0.5;
@@ -92,10 +98,11 @@ void DefineBLParams(std::map<std::string, double> &p,
   int nLow4 = (ChordLen - lowerx3) / maxLayerh + 4;
   q["nLow4"] = nLow4;
 
-  radiusTE = p["TEThickness"] * 0.5 + lowerBL5;
+  LEradius = 0.5 * TEThickness + lowerBL5;
   int nLow5 =
-      std::min(30, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * TEThickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
   q["nLow5"] = nLow5;
+
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
   q["WEDGEFOIL"] = 1;
@@ -113,11 +120,11 @@ double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.06;
-double farWakeAoA = 10. / 180. * M_PI;
-double wakeDiffuseAngle = 14. / 180. * M_PI;
-double wakedist = 0.2;
+double farWakeAoA = 16. / 180. * M_PI;
+double wakeDiffuseAngle = 32. / 180. * M_PI;
+double wakedist = 0.4;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
-double farWakeCy = wakedist * sin(farWakeAoA);
+double farWakeCy = -0.2 + wakedist * sin(farWakeAoA);
 double farWakeHeight = 3.;
 double farWakeLength = 10.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
