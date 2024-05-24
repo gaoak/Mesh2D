@@ -222,10 +222,11 @@ int outputOuterXML(MeshRegions &combinedReg) {
   MeshRegions oRegion("Oreg", 1E-6);
   std::vector<std::vector<int>> boundary = combinedReg.extractBoundaryPoints();
   int wallID = -1;
+  std::vector<double> wallpts = BLedge0(0.);
   for (int i = 0; i < boundary.size(); ++i) {
     for (int j = 0; j < boundary[i].size(); ++j) {
-      if (fabs(combinedReg.m_pts[boundary[i][j]][0]) +
-              fabs(combinedReg.m_pts[boundary[i][j]][1]) <
+      if (fabs(combinedReg.m_pts[boundary[i][j]][0] - wallpts[0]) +
+              fabs(combinedReg.m_pts[boundary[i][j]][1] - wallpts[1]) <
           0.1) {
         wallID = i;
         break;
@@ -233,6 +234,11 @@ int outputOuterXML(MeshRegions &combinedReg) {
     }
     if (wallID != -1)
       break;
+  }
+  if (wallID == -1) {
+    std::cout << "Error: wall boundary not found in outputOuterXML."
+              << std::endl;
+    return -1;
   }
   std::set<int> excludepts;
   for (int i = 0; i < boundary[wallID].size(); ++i) {
