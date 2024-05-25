@@ -64,22 +64,22 @@ double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.05;
 double farWakeAoA = 0.;
-double wakeDiffuseAngle = 16. / 180. * M_PI;
+double wakeDiffuseAngle = 22. / 180. * M_PI;
 double wakedist = 0.15;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
 double farWakeCy = wakedist * sin(farWakeAoA);
-double farWakeHeight = 3.;
+double farWakeHeight = 4.;
 double farWakeLength = 24.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
-int nFarWakex = farWakeLength / maxLayerhWake / 2;
+int nFarWakex = farWakeLength / maxLayerhWake / 2.5;
 
-double xBoxLeft = -40.;
-double xBoxRight = 60.;
-double yBoxUp = 40.;
-double yBoxDown = -40.;
+double xBoxLeft = -50.;
+double xBoxRight = 80.;
+double yBoxUp = 50.;
+double yBoxDown = -50.;
 int nBoxLeft = 10;
 int nBoxRight = 10;
-int nBoxUp = 10;
-int nBoxDown = 10;
+int nBoxUp = 13;
+int nBoxDown = 13;
 
 #endif
