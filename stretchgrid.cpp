@@ -6,8 +6,9 @@
 
 using namespace std;
 // griddefine.dat
-// U x0 x1 dx
-// N x0 x1 dx0 dx1 q
+// N -15 -1 0.05 0.01 1.1
+// U -1 6 0.01
+// N 6 20 0.01 0.05 1.05
 int main() {
   ifstream ifile("griddefine.dat");
   if (!ifile.is_open()) {
