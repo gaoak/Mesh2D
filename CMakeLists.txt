@@ -33,3 +33,7 @@ target_link_libraries(meshIn LIBPROCESSING)
 # process executable
 add_executable(meshOut meshOut.cpp)
 target_link_libraries(meshOut LIBPROCESSING)
+
+# process executable
+add_executable(stretchgrid stretchgrid.cpp)
+target_link_libraries(stretchgrid LIBPROCESSING)
