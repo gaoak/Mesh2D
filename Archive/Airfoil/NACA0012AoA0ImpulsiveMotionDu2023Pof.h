@@ -11,11 +11,12 @@ BLMeshModuleShPtr BLModel;
 double ChordLen = 1.0;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
-  double AoA = 25 / 180. * M_PI;
+  double AoA = 0. / 180. * M_PI;
   p["AoA"] = AoA;
-  double Thickness = 0.05;
+  double Thickness = 0.12;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
+  p["TEThickness"] = 0.00252;
   // outside
   double hFirstLayer = 0.005;
   p["hFirstLayer"] = hFirstLayer;
@@ -48,26 +49,22 @@ void DefineBLParams(std::map<std::string, double> &p,
   double maxLayerh = 0.035;
   p["maxLayerh"] = maxLayerh;
 
-  double upperx1 = 0.2;
+  double upperx1 = 0.1;
   p["upperx1"] = upperx1;
   double upperx2 = ChordLen * 0.5;
   p["upperx2"] = upperx2;
-  double upperx3 = ChordLen - 0.2;
+  double upperx3 = ChordLen - 0.1;
   p["upperx3"] = upperx3;
-  double lowerx1 = 0.2;
+  double lowerx1 = 0.1;
   p["lowerx1"] = lowerx1;
   double lowerx2 = ChordLen * 0.5;
   p["lowerx2"] = lowerx2;
-  double lowerx3 = ChordLen - 0.2;
+  double lowerx3 = ChordLen - 0.1;
   p["lowerx3"] = lowerx3;
 
   // number starts from leading to trailing
-  double curvedBLStr = 1.8;
-  double LEradius = 0.5 * Thickness + upperBL0;
-  int nUp0 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 6)));
+  int nUp0 = std::max(int(0.5 * upperBL0 * M_PI / maxLayerh + 0.5), 6);
   q["nUp0"] = nUp0;
-
   int nUp1 = (upperx1) / maxLayerh + 4;
   q["nUp1"] = nUp1;
   int nUp2 = (upperx2 - upperx1) / maxLayerh + 0.5;
@@ -77,16 +74,13 @@ void DefineBLParams(std::map<std::string, double> &p,
   int nUp4 = (ChordLen - upperx3) / maxLayerh + 4;
   q["nUp4"] = nUp4;
 
-  LEradius = 0.5 * Thickness + upperBL5;
+  double radiusTE = p["TEThickness"] * 0.5 + upperBL5;
   int nUp5 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
+      std::min(10, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
+
   q["nUp5"] = nUp5;
-
-  LEradius = 0.5 * Thickness + lowerBL0;
-  int nLow0 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 6)));
+  int nLow0 = std::max(int(0.5 * lowerBL0 * M_PI / maxLayerh + 0.5), 6);
   q["nLow0"] = nLow0;
-
   int nLow1 = (lowerx1) / maxLayerh + 4;
   q["nLow1"] = nLow1;
   int nLow2 = (lowerx2 - lowerx1) / maxLayerh + 0.5;
@@ -96,22 +90,23 @@ void DefineBLParams(std::map<std::string, double> &p,
   int nLow4 = (ChordLen - lowerx3) / maxLayerh + 4;
   q["nLow4"] = nLow4;
 
-  LEradius = 0.5 * Thickness + lowerBL5;
+  radiusTE = p["TEThickness"] * 0.5 + lowerBL5;
   int nLow5 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
+      std::min(30, std::max(int(0.5 * radiusTE * M_PI / maxLayerh + 0.5), 2));
   q["nLow5"] = nLow5;
-
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
-  BLModel = std::make_shared<BLFlatPlate>(p, q);
+  q["NACAFOIL"] = 1;
+  q["CutFore"] = 1;
+  BLModel = std::make_shared<BLAirfoil>(p, q);
   BLModel->Initialise();
 }
 
 double nearmaxLayerh = 0.05;
 double nearBoxLeft = -0.3;
 double nearBoxRight = ChordLen + 0.2;
-double nearBoxDown = -0.8;
-double nearBoxUp = 0.8;
+double nearBoxDown = -1.6;
+double nearBoxUp = 1.6;
 double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
@@ -121,7 +116,7 @@ double wakeDiffuseAngle = 32. / 180. * M_PI;
 double wakedist = 0.4;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
 double farWakeCy = -0.2 + wakedist * sin(farWakeAoA);
-double farWakeHeight = 3.;
+double farWakeHeight = 3.2;
 double farWakeLength = 10.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
 int nFarWakex = farWakeLength / maxLayerhWake / 2 + 0.5;
