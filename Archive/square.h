@@ -3,18 +3,6 @@
 #include "params.h"
 
 double pts[NUMPTS][2];
-int findNlayers(double h, double q, double R, double m){
-    int n = 0;
-    double len = 0;
-    double delta = h;
-    for(n=1;n<=1000000; ++n) {
-        if(delta>=m) delta = m;
-        len += delta;
-        if(len>=R) return n;
-        delta *= q;
-    }
-    return n;
-}
 
 int N1x = std::ceil((p2x-p1x)/meshsize);
 int N1y = findNlayers(hfirstlayer, hgrowth, p2y-p1y, meshsize);
