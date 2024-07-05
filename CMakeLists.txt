@@ -37,3 +37,7 @@ target_link_libraries(meshOut LIBPROCESSING)
 # process executable
 add_executable(stretchgrid stretchgrid.cpp)
 target_link_libraries(stretchgrid LIBPROCESSING)
+
+# process executable
+add_executable(cargeo OutputGeo.cpp)
+target_link_libraries(cargeo LIBPROCESSING)
