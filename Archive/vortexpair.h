@@ -4,21 +4,20 @@
 double hcenter = 0.05;
 double hgrowth = 1.1;
 double hfar = 0.5;
-double hwake = 0.5;
 
 double p0x = -10.;
-double p1x = -3.;
-double p2x = -1.5;
-double p3x = 0.;
+double p1x = -1.5;
+double p2x = 1.5;
+double p3x = 10.;
 
-double p0y = -8.;
+double p0y = -10.;
 double p1y = -1.;
 double p2y = 1.;
 double p3y = 10.;
 
-int N0x = std::ceil((p1x - p0x) / hfar);
-int N1x = findNlayers(hcenter, hgrowth, p2x-p1x, hfar);;
-int N2x = std::ceil((p3x - p2x) / hcenter);
+int N0x = findNlayers(hcenter, hgrowth, p1x-p0x, hfar);
+int N1x = std::ceil((p2x - p1x) / hcenter);
+int N2x = findNlayers(hcenter, hgrowth, p3x-p2x, hfar);
 
 double pts[NUMPTS][2];
 
@@ -31,9 +30,9 @@ CompositEdge Cedge69;
 CompositEdge Cedge06;
 CompositEdge Cedge39;
 
-LineEdge Cedge01(pts[0], pts[1], N0x, UNIFORM, 0., 0.);
-LineEdge Cedge12(pts[1], pts[2], N1x, BOUNDARYLAYER1, 0, 0, 0, hcenter, hgrowth, N1x-1);
-LineEdge Cedge23(pts[2], pts[3], N2x, UNIFORM, 0., 0.);
+LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER1, 0, 0, 0, hcenter, hgrowth, N0x-1);
+LineEdge Cedge12(pts[1], pts[2], N1x, UNIFORM, 0., 0.);
+LineEdge Cedge23(pts[2], pts[3], N2x, BOUNDARYLAYER0, hcenter, hgrowth, N2x-1, 0, 0, 0);
 std::vector<double> edge01(double s) {
     return Cedge01.Evaluate(s);
 }
@@ -47,9 +46,9 @@ std::vector<double> edge03(double s) {
     return Cedge03.Evaluate(s);
 }
 
-LineEdge Cedge67(pts[6], pts[7], N0x, UNIFORM, 0., 0.);
-LineEdge Cedge78(pts[7], pts[8], N1x, BOUNDARYLAYER1, 0, 0, 0, hcenter, hgrowth, N1x-1);
-LineEdge Cedge89(pts[8], pts[9], N2x, UNIFORM, 0., 0.);
+LineEdge Cedge67(pts[6], pts[7], N0x, BOUNDARYLAYER1, 0, 0, 0, hcenter, hgrowth, N0x-1);
+LineEdge Cedge78(pts[7], pts[8], N1x, UNIFORM, 0., 0.);
+LineEdge Cedge89(pts[8], pts[9], N2x, BOUNDARYLAYER0, hcenter, hgrowth, N2x-1, 0, 0, 0);
 std::vector<double> edge67(double s) {
     return Cedge67.Evaluate(s);
 }
