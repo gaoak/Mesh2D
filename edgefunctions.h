@@ -24,48 +24,14 @@ static std::vector<double> BLMapFunc(std::vector<double> p) {
 
 int InitPts() {
   // far boundary
-  double deltax = (xBoxRight - xBoxLeft) / nBoxDown;
-  double deltay = (yBoxUp - yBoxDown) / nBoxLeft;
-  g_ptsF[0][0] = xBoxLeft;
-  g_ptsF[1][0] = xBoxLeft + deltax;
-  g_ptsF[2][0] = xBoxRight - deltax;
-  g_ptsF[3][0] = xBoxRight;
-  g_ptsF[0][1] = yBoxDown;
-  g_ptsF[1][1] = yBoxDown;
-  g_ptsF[2][1] = yBoxDown;
-  g_ptsF[3][1] = yBoxDown;
-
-  g_ptsF[8][0] = xBoxLeft;
-  g_ptsF[9][0] = xBoxLeft + deltax;
-  g_ptsF[10][0] = xBoxRight - deltax;
-  g_ptsF[11][0] = xBoxRight;
-  g_ptsF[8][1] = yBoxUp;
-  g_ptsF[9][1] = yBoxUp;
-  g_ptsF[10][1] = yBoxUp;
-  g_ptsF[11][1] = yBoxUp;
-
-  g_ptsF[4][0] = xBoxLeft + deltax;
-  g_ptsF[5][0] = xBoxRight - deltax;
-  g_ptsF[4][1] = yBoxDown + deltay;
-  g_ptsF[5][1] = yBoxDown + deltay;
-
-  g_ptsF[6][0] = xBoxLeft + deltax;
-  g_ptsF[7][0] = xBoxRight - deltax;
-  g_ptsF[6][1] = yBoxUp - deltay;
-  g_ptsF[7][1] = yBoxUp - deltay;
-  // wake
-  g_ptsW[0][0] = farWakeCx - 0.5 * farWakeHeight * sin(farWakeAoA);
-  g_ptsW[0][1] = farWakeCy - 0.5 * farWakeHeight * cos(farWakeAoA);
-  g_ptsW[3][0] = farWakeCx + 0.5 * farWakeHeight * sin(farWakeAoA);
-  g_ptsW[3][1] = farWakeCy + 0.5 * farWakeHeight * cos(farWakeAoA);
-  double cx = farWakeCx + farWakeLength * cos(farWakeAoA);
-  double cy = farWakeCy - farWakeLength * sin(farWakeAoA);
-  double height =
-      farWakeHeight + 2. * farWakeLength * tan(wakeDiffuseAngle * 0.5);
-  g_ptsW[1][0] = cx - 0.5 * height * sin(farWakeAoA);
-  g_ptsW[1][1] = cy - 0.5 * height * cos(farWakeAoA);
-  g_ptsW[2][0] = cx + 0.5 * height * sin(farWakeAoA);
-  g_ptsW[2][1] = cy + 0.5 * height * cos(farWakeAoA);
+  g_ptsF[0][0] = nearBoxLeft;
+  g_ptsF[1][0] = nearBoxRight;
+  g_ptsF[2][0] = nearBoxRight;
+  g_ptsF[3][0] = nearBoxLeft;
+  g_ptsF[0][1] = nearBoxDown;
+  g_ptsF[1][1] = nearBoxDown;
+  g_ptsF[2][1] = nearBoxUp;
+  g_ptsF[3][1] = nearBoxUp;
 
   BLedges.push_back((void *)BLedge0);
   BLedges.push_back((void *)BLedge1);
@@ -83,25 +49,14 @@ int InitPts() {
   return 0;
 }
 
-LineEdge Cwake01(g_ptsW[0], g_ptsW[1], nFarWakex, QUDREFINE0,
-                 farWakeHeight / nFarWakey, 0.);
-LineEdge Cwake12(g_ptsW[1], g_ptsW[2], nFarWakey, UNIFORM, 0., 0.);
-LineEdge Cwake23(g_ptsW[2], g_ptsW[3], nFarWakex, QUDREFINE1, 0.,
-                 farWakeHeight / nFarWakey);
-LineEdge Cwake30(g_ptsW[3], g_ptsW[0], nFarWakey, UNIFORM, 0., 0.);
+LineEdge Cwake01(g_ptsF[0], g_ptsF[1], nFarWakex, UNIFORM, 0., 0.);
+LineEdge Cwake12(g_ptsF[1], g_ptsF[2], nFarWakey, UNIFORM, 0., 0.);
+LineEdge Cwake23(g_ptsF[2], g_ptsF[3], nFarWakex, UNIFORM, 0., 0.);
+LineEdge Cwake30(g_ptsF[3], g_ptsF[0], nFarWakey, UNIFORM, 0., 0.);
 std::vector<double> wake01(double s) { return Cwake01.Evaluate(s); }
 std::vector<double> wake12(double s) { return Cwake12.Evaluate(s); }
 std::vector<double> wake23(double s) { return Cwake23.Evaluate(s); }
 std::vector<double> wake30(double s) { return Cwake30.Evaluate(s); }
-
-LineEdge Cfar03(g_ptsF[0], g_ptsF[3], nBoxDown, UNIFORM, 0., 0.);
-LineEdge Cfar811(g_ptsF[8], g_ptsF[11], nBoxUp, UNIFORM, 0., 0.);
-LineEdge Cfar08(g_ptsF[0], g_ptsF[8], nBoxLeft, UNIFORM, 0., 0.);
-LineEdge Cfar311(g_ptsF[3], g_ptsF[11], nBoxRight, UNIFORM, 0., 0.);
-std::vector<double> far03(double s) { return Cfar03.Evaluate(s); }
-std::vector<double> far811(double s) { return Cfar811.Evaluate(s); }
-std::vector<double> far08(double s) { return Cfar08.Evaluate(s); }
-std::vector<double> far311(double s) { return Cfar311.Evaluate(s); }
 
 std::vector<double> g_boundingbox;
 bool toremove(std::vector<double> p) {
