@@ -11,7 +11,7 @@ BLMeshModuleShPtr BLModel;
 double ChordLen = 1.0;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
-  double AoA = 25 / 180. * M_PI;
+  double AoA = 15 / 180. * M_PI;
   p["AoA"] = AoA;
   double Thickness = 0.05;
   p["Thickness"] = Thickness;
