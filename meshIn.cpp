@@ -76,9 +76,7 @@ int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
   // output wall mapping from wall to one layer offset
   std::map<int, int> wallmapping;
   std::vector<int> wallPts;
-  vector<double> center;
-  center.push_back(0.);
-  center.push_back(0.);
+  vector<double> center = BLedge0(0.);
   outFoilRegion.omeshBoundaryMapping(wallmapping, wallPts, "wallmapping.dat",
                                      center, 0.02);
   //
