@@ -19,9 +19,9 @@ void DefineBLParams(std::map<std::string, double> &p,
   double Tx0 = 0.;
   p["Tx0"] = Tx0;
   // outside
-  double hFirstLayer = 0.003;
+  double hFirstLayer = 0.01;
   p["hFirstLayer"] = hFirstLayer;
-  double progress = 1.6;
+  double progress = 1.3;
   p["progress"] = progress;
   double maxLayerh = 0.1;
   p["maxLayerh"] = maxLayerh;
@@ -40,13 +40,13 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["Theta3"] = Theta3;
   double Theta4 = M_PI * (1. + eps);
   p["Theta4"] = Theta4;
-  int nLE = 40;
+  int nLE = 16;
   q["nLE"] = nLE;
-  int nUp = 40;
+  int nUp = 16;
   q["nUp"] = nUp;
-  int nTE = 40;
+  int nTE = 16;
   q["nTE"] = nTE;
-  int nLow = 40;
+  int nLow = 16;
   q["nLow"] = nLow;
   int curvedpts = 6;
   q["curvedpts"] = curvedpts;
