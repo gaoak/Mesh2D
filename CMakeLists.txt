@@ -41,3 +41,7 @@ target_link_libraries(stretchgrid LIBPROCESSING)
 # process executable
 add_executable(cargeo OutputGeo.cpp)
 target_link_libraries(cargeo LIBPROCESSING)
+
+# process executable
+add_executable(ConvertXml ConvertXml.cpp)
+target_link_libraries(ConvertXml LIBPROCESSING)
