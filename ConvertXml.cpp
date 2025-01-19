@@ -116,9 +116,9 @@ std::vector<std::vector<double>> wallFunction(std::vector<double> &p0,
 void OutputWallmapping(std::string filename) {
   std::ofstream file(filename);
   char buffer[1000];
-  file << wallmapping.size() << " 2\n";
+  file << wallmapping.size() << " 3\n";
   for (size_t i = 0; i < wallmapping.size(); ++i) {
-    sprintf(buffer, "%25.18lf %25.18lf %25.18lf %25.18lf\n", wallmapping[i][0],
+    sprintf(buffer, "%25.18lf %25.18lf 0.\n%25.18lf %25.18lf 0.\n", wallmapping[i][0],
             wallmapping[i][1], wallmapping[i][2], wallmapping[i][3]);
     file << buffer;
   }
