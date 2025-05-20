@@ -112,13 +112,13 @@ int meshingNearBody(MeshRegions &combinedReg) {
   combinedReg.GetBoundBox(g_boundingbox);
   g_boundingbox.push_back(neargap);
   /////////////////////////postprocess
-  double ds = 2. / pic0.m_M;
-  printf("PTS: variables=x, y\n");
-  for(int i=0; i<=pic0.m_M; ++i) {
-    std::vector<double> tmp = pic0.EvaluateEdgePts(0, -1. + i*ds);
-    if(tmp[0]>=g_boundingbox[1]+neargap)
-      printf("PTS: %24.18lf 0\n", tmp[0]);
-  }
+  //double ds = 2. / pic0.m_M;
+  //printf("PTS: variables=x, y\n");
+  //for(int i=0; i<=pic0.m_M; ++i) {
+  //  std::vector<double> tmp = pic0.EvaluateEdgePts(0, -1. + i*ds);
+  //  if(tmp[0]>=g_boundingbox[1]+neargap)
+  //    printf("PTS: %24.18lf 0\n", tmp[0]);
+  //}
   /////////////////////////
   nearBodyRegion.RemoveElements((void *)toremove);
   //////////////combine region//////////
@@ -135,11 +135,11 @@ int meshingWake(MeshRegions &combinedReg) {
   RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
   farwakeRegion.MeshGen(Cwake01.m_N, Cwake12.m_N);
   farwakeRegion.Tec360Pts("farwake.dat");
-  double ds = 2. / farwakeRegion.m_M;
-  for(int i=0; i<=farwakeRegion.m_M; ++i) {
-    std::vector<double> tmp = farwakeRegion.EvaluateEdgePts(0, -1. + i*ds);
-    printf("PTS: %24.18lf 0\n", tmp[0]);
-  }
+  //double ds = 2. / farwakeRegion.m_M;
+  //for(int i=0; i<=farwakeRegion.m_M; ++i) {
+  //  std::vector<double> tmp = farwakeRegion.EvaluateEdgePts(0, -1. + i*ds);
+  //  printf("PTS: %24.18lf 0\n", tmp[0]);
+  //}
   //////////////combine region//////////
   combinedReg.AddRegion(farwakeRegion);
   return 0;
