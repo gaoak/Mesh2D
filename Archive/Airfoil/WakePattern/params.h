@@ -106,22 +106,22 @@ void DefineBLParams(std::map<std::string, double> &p,
 
 double nearmaxLayerh = 0.05;
 double nearBoxLeft = -0.3;
-double nearBoxRight = ChordLen + 0.2;
-double nearBoxDown = -0.5;
-double nearBoxUp = 0.5;
+double nearBoxRight = ChordLen + 0.5;
+double nearBoxDown = -0.6;
+double nearBoxUp = 0.6;
 double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
-double maxLayerhWake = 0.08;
+double maxLayerhWake = 0.1;
 double farWakeAoA = 0.;
 double wakeDiffuseAngle = 1./3.;
 double wakedist = 0.1;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
 double farWakeCy = wakedist * sin(farWakeAoA);
-double farWakeHeight = 2.;
+double farWakeHeight = 4.;
 double farWakeLength = 20.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
-int nFarWakex = farWakeLength / maxLayerhWake * 0.4;
+int nFarWakex = farWakeLength / maxLayerhWake * 0.54;
 
 double xBoxLeft = -40.;
 double xBoxRight = 60.;
@@ -129,7 +129,7 @@ double yBoxUp = 40.;
 double yBoxDown = -40.;
 int nBoxLeft = 10;
 int nBoxRight = 10;
-int nBoxUp = 10;
-int nBoxDown = 10;
+int nBoxUp = 12;
+int nBoxDown = 12;
 
 #endif
