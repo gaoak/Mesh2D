@@ -1,1 +1,19 @@
-20200710 generate 2D base mesh for 3D extruded and glued mesh.
+This branch generates a structured quadrilateral mesh in a concentric annulus.
+
+Configure the geometry and resolution in params.h. The computational-domain
+edges, radial-layer mapping and element topology are defined in edgefunctions.h.
+mesh.cpp contains the mesh-generation workflow. Then run:
+
+    ./make.sh
+
+The default output is ring.xml. To use another output name:
+
+    ./make.sh my-ring.xml
+
+Boundary composites in the generated Nektar++ XML are:
+
+    C[0]  inner circle
+    C[1]  outer circle
+
+radialGrowth controls radial spacing. A value of 1 gives uniform spacing; a
+value greater than 1 clusters cells near the inner circle.
