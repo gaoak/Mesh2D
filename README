@@ -1,19 +1,27 @@
-This branch generates a structured quadrilateral mesh in a concentric annulus.
+This branch generates a hybrid mesh for an eccentric annular domain.
 
-Configure the geometry and resolution in params.h. The computational-domain
-edges, radial-layer mapping and element topology are defined in edgefunctions.h.
-mesh.cpp contains the mesh-generation workflow. Then run:
+The mesh has three regions:
+
+    structured quadrilateral boundary layer at the inner cylinder
+    recombined unstructured Gmsh quadrilateral core
+    structured quadrilateral boundary layer at the outer cylinder
+
+Geometry, independent inner/outer circumferential divisions, boundary-layer
+thicknesses and coreMeshSize are configured in params.h. Boundary topology and
+derived radial layer counts are defined in edgefunctions.h. mesh.cpp implements
+the two-stage generation and merge flow.
+
+Run:
 
     ./make.sh
 
-The default output is ring.xml. To use another output name:
+This writes core.geo, meshes it with Gmsh 2.14 in MSH2 format, merges the core
+with both boundary layers, and writes ring.xml. A different output name can be
+given as the first argument:
 
     ./make.sh my-ring.xml
 
-Boundary composites in the generated Nektar++ XML are:
+Boundary composites in the final Nektar++ XML are:
 
-    C[0]  inner circle
-    C[1]  outer circle
-
-radialGrowth controls radial spacing. A value of 1 gives uniform spacing; a
-value greater than 1 clusters cells near the inner circle.
+    C[0]  inner cylinder wall
+    C[1]  outer cylinder wall
