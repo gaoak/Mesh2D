@@ -15,16 +15,16 @@ using namespace std;
 #include "edgefunctions.h"
 int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
-int meshingWake(MeshRegions &combinedReg);
+int meshingFarBox(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int outputOuterXML(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
-  bool merge = false, withwake = false;
+  bool merge = false, withFarBox = false;
   std::vector<string> mshfilename;
   for (int i = 1; i < argc;) {
-    if (strcmp(argv[i], "wake") == 0) {
-      withwake = true;
+    if (strcmp(argv[i], "farbox") == 0) {
+      withFarBox = true;
       ++i;
     } else if (strcmp(argv[i], "merge") == 0) {
       merge = true;
@@ -45,12 +45,13 @@ int main(int argc, char *argv[]) {
   MeshRegions combinedReg("RComb_", 1.E-6);
   meshingBoundaryLayer(combinedReg);
   meshingNearBody(combinedReg);
-  if (withwake) {
-    meshingWake(combinedReg);
+  if (withFarBox) {
+    meshingFarBox(combinedReg);
   }
   meshingOuterBoundary(combinedReg);
   if (!merge) {
-    std::vector<int> OutLevels = {1, 3};
+    std::vector<int> OutLevels = withFarBox ? std::vector<int>{1, 3, 5}
+                                            : std::vector<int>{1, 3};
     outputGeo(combinedReg, OutLevels);
     cout << "output CAD file" << endl;
     cout << "=======================================" << endl;
@@ -126,22 +127,34 @@ int meshingNearBody(MeshRegions &combinedReg) {
   return 0;
 }
 
-int meshingWake(MeshRegions &combinedReg) {
-  std::vector<void *> edges4;
-  edges4.push_back((void *)wake01);
-  edges4.push_back((void *)wake12);
-  edges4.push_back((void *)wake23);
-  edges4.push_back((void *)wake30);
-  RectRegion farwakeRegion = RectRegion(edges4, "R_FarWake");
-  farwakeRegion.MeshGen(Cwake01.m_N, Cwake12.m_N);
-  farwakeRegion.Tec360Pts("farwake.dat");
-  //double ds = 2. / farwakeRegion.m_M;
-  //for(int i=0; i<=farwakeRegion.m_M; ++i) {
-  //  std::vector<double> tmp = farwakeRegion.EvaluateEdgePts(0, -1. + i*ds);
-  //  printf("PTS: %24.18lf 0\n", tmp[0]);
-  //}
-  //////////////combine region//////////
-  combinedReg.AddRegion(farwakeRegion);
+int meshingFarBox(MeshRegions &combinedReg) {
+  MeshRegions farBoxRegion("RfarBox_", 1e-8);
+  vector<vector<double>> p = {{farBoxLeft, farBoxDown},
+                              {farBoxRight, farBoxDown},
+                              {farBoxRight, farBoxUp},
+                              {farBoxLeft, farBoxUp}};
+  vector<vector<vector<double>>> edges;
+  vector<int> pi = {0, 1, 2, 3, 0};
+  for (int i = 0; i < 4; ++i) {
+    vector<vector<double>> edge;
+    edge.push_back(p[pi[i]]);
+    edge.push_back(p[pi[i + 1]]);
+    edges.push_back(edge);
+  }
+
+  RectRegion box = RectRegion(edges, "farBox");
+  box.MeshGen(int((farBoxRight - farBoxLeft) / farmaxLayerh + 0.5),
+              int((farBoxUp - farBoxDown) / farmaxLayerh + 0.5));
+  farBoxRegion.AddRegion(box);
+  farBoxRegion.transformation(farAoA, 0., 0.);
+
+  // Remove the central part containing the existing near-body mesh.  The
+  // resulting inner boundary and the nearBox outer boundary delimit a
+  // Gmsh-filled gap.
+  combinedReg.GetBoundBox(g_boundingbox);
+  g_boundingbox.push_back(fargap);
+  farBoxRegion.RemoveElements((void *)toremove);
+  combinedReg.AddRegion(farBoxRegion);
   return 0;
 }
 

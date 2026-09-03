@@ -62,20 +62,23 @@ double nearBoxUp = 1.5;
 double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
-double farmaxLayerh = 0.4;
-double farBoxLeft = -5.;
-double farBoxRight = 5.;
-double farBoxDown = -20.;
-double farBoxUp = 20.;
-double farAoA = 0.;
-double fargap = farmaxLayerh;
+double maxLayerhWake = 0.1;
+double farWakeAoA = 0.;
+double wakeDiffuseAngle = 16. / 180. * M_PI;
+double wakedist = 0.15;
+double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
+double farWakeCy = wakedist * sin(farWakeAoA);
+double farWakeHeight = 4.;
+double farWakeLength = 12.;
+int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
+int nFarWakex = farWakeLength / maxLayerhWake / 1.5;
 
-double xBoxLeft = -60.;
-double xBoxRight = 60.;
-double yBoxUp = 60.;
-double yBoxDown = -60.;
-int nBoxLeft = 20;
-int nBoxRight = 20;
+double xBoxLeft = -50.;
+double xBoxRight = 80.;
+double yBoxUp = 50.;
+double yBoxDown = -50.;
+int nBoxLeft = 15;
+int nBoxRight = 15;
 int nBoxUp = 20;
 int nBoxDown = 20;
 
