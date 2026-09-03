@@ -16,15 +16,19 @@ using namespace std;
 int meshingNearBody(MeshRegions &combinedReg);
 int meshingBoundaryLayer(MeshRegions &combinedReg);
 int meshingFarBox(MeshRegions &combinedReg);
+int meshingWake(MeshRegions &combinedReg);
 int outputXML(MeshRegions &combinedReg);
 int meshingOuterBoundary(MeshRegions &combinedReg);
 int outputOuterXML(MeshRegions &combinedReg);
 int main(int argc, char *argv[]) {
-  bool merge = false, withFarBox = false;
+  bool merge = false, withFarBox = false, withWake = false;
   std::vector<string> mshfilename;
   for (int i = 1; i < argc;) {
     if (strcmp(argv[i], "farbox") == 0) {
       withFarBox = true;
+      ++i;
+    } else if (strcmp(argv[i], "wake") == 0) {
+      withWake = true;
       ++i;
     } else if (strcmp(argv[i], "merge") == 0) {
       merge = true;
@@ -47,6 +51,9 @@ int main(int argc, char *argv[]) {
   meshingNearBody(combinedReg);
   if (withFarBox) {
     meshingFarBox(combinedReg);
+  }
+  if (withWake) {
+    meshingWake(combinedReg);
   }
   meshingOuterBoundary(combinedReg);
   if (!merge) {
@@ -155,6 +162,19 @@ int meshingFarBox(MeshRegions &combinedReg) {
   g_boundingbox.push_back(fargap);
   farBoxRegion.RemoveElements((void *)toremove);
   combinedReg.AddRegion(farBoxRegion);
+  return 0;
+}
+
+int meshingWake(MeshRegions &combinedReg) {
+  std::vector<void *> edges4;
+  edges4.push_back((void *)wake01);
+  edges4.push_back((void *)wake12);
+  edges4.push_back((void *)wake23);
+  edges4.push_back((void *)wake30);
+  RectRegion farWakeRegion = RectRegion(edges4, "R_FarWake");
+  farWakeRegion.MeshGen(Cwake01.m_N, Cwake12.m_N);
+  farWakeRegion.Tec360Pts("farwake.dat");
+  combinedReg.AddRegion(farWakeRegion);
   return 0;
 }
 

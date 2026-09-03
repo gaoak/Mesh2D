@@ -70,6 +70,18 @@ double farBoxUp = 20.;
 double farAoA = 0.;
 double fargap = farmaxLayerh;
 
+double maxLayerhWake = 0.4;
+double farWakeAoA = 0.;
+double wakeDiffuseAngle = 16. / 180. * M_PI;
+double wakegap = farmaxLayerh;
+double farWakeCx = farBoxRight + wakegap * cos(farWakeAoA);
+double farWakeCy = 0.5 * (farBoxDown + farBoxUp) +
+                   wakegap * sin(farWakeAoA);
+double farWakeHeight = 8.;
+double farWakeLength = 20.;
+int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
+int nFarWakex = farWakeLength / maxLayerhWake / 1.5;
+
 double xBoxLeft = -60.;
 double xBoxRight = 60.;
 double yBoxUp = 60.;

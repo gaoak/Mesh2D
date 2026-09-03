@@ -9,7 +9,7 @@ else
   cmake ..
 fi
 make
-./meshOut farbox
+./meshOut farbox wake
 echo "gmsh FarField0.geo"
 echo "Mesh.RecombinationAlgorithm = 1;" >> FarField0.geo
 gmsh FarField0.geo -2 -algo del2d -clscale 10 -smooth 5 -format msh2 \
@@ -22,5 +22,5 @@ echo "gmsh FarField2.geo"
 echo "Mesh.RecombinationAlgorithm = 1;" >> FarField2.geo
 gmsh FarField2.geo -2 -algo del2d -clscale 10 -smooth 5 -format msh2 \
   -o FarField2.msh > logmesh.dat
-./meshOut merge FarField0.msh FarField1.msh FarField2.msh farbox
+./meshOut merge FarField0.msh FarField1.msh FarField2.msh farbox wake
 FieldConvert outerRegion.xml outerRegion.plt -f
