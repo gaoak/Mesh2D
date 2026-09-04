@@ -11,15 +11,15 @@ BLMeshModuleShPtr BLModel;
 double ChordLen = 1.0;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
-  double AoA = 0. / 180. * M_PI;
+  double AoA = 15. / 180. * M_PI;
   p["AoA"] = AoA;
-  double Thickness = 1.0;
+  double Thickness = 0.125;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
-  double Tx0 = 0.;
+  double Tx0 = 0.5*ChordLen;
   p["Tx0"] = Tx0;
   // outside
-  double hFirstLayer = 0.003;
+  double hFirstLayer = 0.001;
   p["hFirstLayer"] = hFirstLayer;
   double progress = 1.5;
   p["progress"] = progress;
@@ -40,11 +40,11 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["Theta3"] = Theta3;
   double Theta4 = -M_PI * (1. - eps);
   p["Theta4"] = Theta4;
-  int nLE = 25;
+  int nLE = 30;
   q["nLE"] = nLE;
   int nUp = 25;
   q["nUp"] = nUp;
-  int nTE = 25;
+  int nTE = 30;
   q["nTE"] = nTE;
   int nLow = 25;
   q["nLow"] = nLow;
@@ -55,8 +55,8 @@ void DefineBLParams(std::map<std::string, double> &p,
 }
 
 double nearmaxLayerh = 0.075;
-double nearBoxLeft = -1.5;
-double nearBoxRight = 1.5;
+double nearBoxLeft = -1;
+double nearBoxRight = 2;
 double nearBoxDown = -1.5;
 double nearBoxUp = 1.5;
 double nearAoA = 0.;
