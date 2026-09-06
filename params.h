@@ -1,24 +1,25 @@
-//for 3D simulation of isolated vortex with a hump
 #ifndef PARAMS_H
 #define PARAMS_H
-#define NUMPTS 20
-double hfirstlayer = 0.1;
-double hgrowth = 1.5;
-double meshsize = 0.1;
 
-double p0x = -10.;
-double p1x = -2.;
-double p2x = 2.;
-double p3x = 10.;
+// Hartmann channel geometry.
+// The classical channel occupies y in [-1, 1].
+double xMin = 0.0;
+double xMax = 1.0;
+double yMin = 0.;
+double yLowerLayerEnd = 0.1;
+double yUpperLayerStart = 0.9;
+double yMax = 1.0;
 
-double p0y = -10.;
-double p1y = -2.;
-double p2y = 2.;
-double p3y = 10.;
+// Uniform streamwise mesh. Nx may be any integer greater than or equal to 1.
+int Nx = 1;
 
-int N0y = 10;
-int N2y = 10;
-int N0x = 10;
-int N2x = 10;
+// Wall-normal mesh controls. The lower and upper intervals use geometric
+// boundary-layer spacing; the middle interval is uniform.
+double yFirstLayerHeight = 0.0001;
+double yLayerGrowth = 1.6;
+double yMaximumLayerHeight = 0.1;
+double yCoreMeshSize = 0.1;
+
+double meshTolerance = 1.0e-10;
 
 #endif

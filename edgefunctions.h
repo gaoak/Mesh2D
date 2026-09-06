@@ -1,147 +1,154 @@
 #ifndef EDGEFUNCTIONS_H
 #define EDGEFUNCTIONS_H
-#define NUMPTS 20
-double hcenterx = 0.05;
-double hgrowthx = 1.5;
-double hfarx = 0.1;
 
-double hcentery = 0.02;
-double hgrowthy = 1.5;
-double hfary = 0.1;
+#include <cmath>
+#include <iostream>
+#include <vector>
 
-double p0x = -1.;
-double p1x = -0.8;
-double p2x = 0.8;
-double p3x = 1.;
+#include "CAD2D/CompositEdge.h"
+#include "CAD2D/LineEdge.h"
+#include "CAD2D/util.h"
+#include "params.h"
 
-double p0y = -1.;
-double p1y = -0.9;
-double p2y = 0.9;
-double p3y = 1.;
+// Corner and y-partition points:
+//   6 ----- 7       yMax
+//   4 ----- 5       yUpperLayerStart
+//   2 ----- 3       yLowerLayerEnd
+//   0 ----- 1       yMin
+double pts[8][2];
 
-int N0x = findNlayers(hcenterx, hgrowthx, p1x-p0x, hfarx);
-int N1x = std::ceil((p2x - p1x) / hfarx);
-int N2x = findNlayers(hcenterx, hgrowthx, p3x-p2x, hfarx);
+int NyLower = 0;
+int NyCore = 0;
+int NyUpper = 0;
 
-double pts[NUMPTS][2];
+LineEdge bottomEdge;
+LineEdge topEdge;
+LineEdge leftLowerEdge;
+LineEdge leftCoreEdge;
+LineEdge leftUpperEdge;
+LineEdge rightLowerEdge;
+LineEdge rightCoreEdge;
+LineEdge rightUpperEdge;
 
-int N0y = findNlayers(hcentery, hgrowthy, p1y-p0y, hfary);
-int N1y = std::ceil((p2y-p1y)/hfary);
-int N2y = findNlayers(hcentery, hgrowthy, p3y-p2y, hfary);
+CompositEdge leftEdge;
+CompositEdge rightEdge;
 
-CompositEdge Cedge03;
-CompositEdge Cedge69;
-CompositEdge Cedge06;
-CompositEdge Cedge39;
+std::vector<double> edgeBottom(double s) { return bottomEdge.Evaluate(s); }
+std::vector<double> edgeTop(double s) { return topEdge.Evaluate(s); }
 
-LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER0, hcenterx, hgrowthx, N0x-1, 0, 0, 0);
-LineEdge Cedge12(pts[1], pts[2], N1x, UNIFORM, 0., 0.);
-LineEdge Cedge23(pts[2], pts[3], N2x, BOUNDARYLAYER1, 0, 0, 0, hcenterx, hgrowthx, N2x-1);
-std::vector<double> edge01(double s) {
-    return Cedge01.Evaluate(s);
+std::vector<double> edgeLeftLower(double s) {
+    return leftLowerEdge.Evaluate(s);
 }
-std::vector<double> edge12(double s) {
-    return Cedge12.Evaluate(s);
+std::vector<double> edgeLeftCore(double s) {
+    return leftCoreEdge.Evaluate(s);
 }
-std::vector<double> edge23(double s) {
-    return Cedge23.Evaluate(s);
+std::vector<double> edgeLeftUpper(double s) {
+    return leftUpperEdge.Evaluate(s);
 }
-std::vector<double> edge03(double s) {
-    return Cedge03.Evaluate(s);
-}
+std::vector<double> edgeLeft(double s) { return leftEdge.Evaluate(s); }
 
-LineEdge Cedge67(pts[6], pts[7], N0x, BOUNDARYLAYER0, hcenterx, hgrowthx, N0x-1, 0, 0, 0);
-LineEdge Cedge78(pts[7], pts[8], N1x, UNIFORM, 0., 0.);
-LineEdge Cedge89(pts[8], pts[9], N2x, BOUNDARYLAYER1, 0, 0, 0, hcenterx, hgrowthx, N2x-1);
-std::vector<double> edge67(double s) {
-    return Cedge67.Evaluate(s);
+std::vector<double> edgeRightLower(double s) {
+    return rightLowerEdge.Evaluate(s);
 }
-std::vector<double> edge78(double s) {
-    return Cedge78.Evaluate(s);
+std::vector<double> edgeRightCore(double s) {
+    return rightCoreEdge.Evaluate(s);
 }
-std::vector<double> edge89(double s) {
-    return Cedge89.Evaluate(s);
+std::vector<double> edgeRightUpper(double s) {
+    return rightUpperEdge.Evaluate(s);
 }
-std::vector<double> edge69(double s) {
-    return Cedge69.Evaluate(s);
-}
+std::vector<double> edgeRight(double s) { return rightEdge.Evaluate(s); }
 
-LineEdge Cedge010(pts[0], pts[10], N0y, BOUNDARYLAYER0, hcentery, hgrowthy, N0y-1, 0, 0, 0);
-LineEdge Cedge104(pts[10], pts[4], N1y, UNIFORM, 0, 0);
-LineEdge Cedge46(pts[4], pts[6], N2y, BOUNDARYLAYER1, 0, 0, 0, hcentery, hgrowthy, N2y-1);
-std::vector<double> edge010(double s) {
-    return Cedge010.Evaluate(s);
-}
-std::vector<double> edge104(double s) {
-    return Cedge104.Evaluate(s);
-}
-std::vector<double> edge46(double s) {
-    return Cedge46.Evaluate(s);
-}
-std::vector<double> edge06(double s) {
-    return Cedge06.Evaluate(s);
-}
+bool validateParameters() {
+    bool valid = true;
 
-LineEdge Cedge311(pts[3], pts[11], N0y, BOUNDARYLAYER0, hcentery, hgrowthy, N0y-1, 0, 0, 0);
-LineEdge Cedge115(pts[11], pts[5], N1y, UNIFORM, 0, 0);
-LineEdge Cedge59(pts[5], pts[9], N2y, BOUNDARYLAYER1, 0, 0, 0, hcentery, hgrowthy, N2y-1);
-std::vector<double> edge311(double s) {
-    return Cedge311.Evaluate(s);
-}
-std::vector<double> edge115(double s) {
-    return Cedge115.Evaluate(s);
-}
-std::vector<double> edge59(double s) {
-    return Cedge59.Evaluate(s);
-}
-std::vector<double> edge39(double s) {
-    return Cedge39.Evaluate(s);
+    if (xMax <= xMin) {
+        std::cerr << "error: xMax must be greater than xMin\n";
+        valid = false;
+    }
+    if (Nx < 1) {
+        std::cerr << "error: Nx must be at least 1\n";
+        valid = false;
+    }
+    if (!(yMin < yLowerLayerEnd &&
+          yLowerLayerEnd < yUpperLayerStart &&
+          yUpperLayerStart < yMax)) {
+        std::cerr << "error: y coordinates must satisfy "
+                  << "yMin < yLowerLayerEnd < yUpperLayerStart < yMax\n";
+        valid = false;
+    }
+    if (yFirstLayerHeight <= 0.0 || yLayerGrowth < 1.0 ||
+        yMaximumLayerHeight <= 0.0 || yCoreMeshSize <= 0.0) {
+        std::cerr << "error: y mesh sizes must be positive and "
+                  << "yLayerGrowth must be at least 1\n";
+        valid = false;
+    }
+
+    return valid;
 }
 
-int InitPts(){
-    pts[0][0] = p0x;
-    pts[0][1] = p0y;
-    pts[1][0] = p1x;
-    pts[1][1] = p0y;
-    pts[2][0] = p2x;
-    pts[2][1] = p0y;
-    pts[3][0] = p3x;
-    pts[3][1] = p0y;
+int initialiseEdges() {
+    pts[0][0] = xMin;
+    pts[0][1] = yMin;
+    pts[1][0] = xMax;
+    pts[1][1] = yMin;
 
-    pts[10][0] = p0x;
-    pts[10][1] = p1y;
-    pts[11][0] = p3x;
-    pts[11][1] = p1y;
+    pts[2][0] = xMin;
+    pts[2][1] = yLowerLayerEnd;
+    pts[3][0] = xMax;
+    pts[3][1] = yLowerLayerEnd;
 
-    pts[4][0] = p0x;
-    pts[4][1] = p2y;
-    pts[5][0] = p3x;
-    pts[5][1] = p2y;
+    pts[4][0] = xMin;
+    pts[4][1] = yUpperLayerStart;
+    pts[5][0] = xMax;
+    pts[5][1] = yUpperLayerStart;
 
-    pts[6][0] = p0x;
-    pts[6][1] = p3y;
-    pts[7][0] = p1x;
-    pts[7][1] = p3y;
-    pts[8][0] = p2x;
-    pts[8][1] = p3y;
-    pts[9][0] = p3x;
-    pts[9][1] = p3y;
+    pts[6][0] = xMin;
+    pts[6][1] = yMax;
+    pts[7][0] = xMax;
+    pts[7][1] = yMax;
 
-    Cedge03.addEdge(Cedge01, (void*) edge01);
-    Cedge03.addEdge(Cedge12, (void*) edge12);
-    Cedge03.addEdge(Cedge23, (void*) edge23);
+    NyLower = findNlayers(yFirstLayerHeight, yLayerGrowth,
+                          yLowerLayerEnd - yMin,
+                          yMaximumLayerHeight);
+    NyCore = static_cast<int>(
+        std::ceil((yUpperLayerStart - yLowerLayerEnd) / yCoreMeshSize));
+    NyUpper = findNlayers(yFirstLayerHeight, yLayerGrowth,
+                          yMax - yUpperLayerStart,
+                          yMaximumLayerHeight);
 
-    Cedge69.addEdge(Cedge67, (void*) edge67);
-    Cedge69.addEdge(Cedge78, (void*) edge78);
-    Cedge69.addEdge(Cedge89, (void*) edge89);
+    bottomEdge = LineEdge(pts[0], pts[1], Nx, UNIFORM, 0.0, 0.0);
+    topEdge = LineEdge(pts[6], pts[7], Nx, UNIFORM, 0.0, 0.0);
 
-    Cedge06.addEdge(Cedge010, (void*) edge010);
-    Cedge06.addEdge(Cedge104, (void*) edge104);
-    Cedge06.addEdge(Cedge46, (void*) edge46);
+    leftLowerEdge = LineEdge(pts[0], pts[2], NyLower, BOUNDARYLAYER0,
+                             yFirstLayerHeight, yLayerGrowth, NyLower - 1,
+                             0.0, 0.0, 0);
+    leftCoreEdge = LineEdge(pts[2], pts[4], NyCore, UNIFORM, 0.0, 0.0);
+    leftUpperEdge = LineEdge(pts[4], pts[6], NyUpper, BOUNDARYLAYER1,
+                             0.0, 0.0, 0, yFirstLayerHeight,
+                             yLayerGrowth, NyUpper - 1);
 
-    Cedge39.addEdge(Cedge311, (void*) edge311);
-    Cedge39.addEdge(Cedge115, (void*) edge115);
-    Cedge39.addEdge(Cedge59, (void*) edge59);
+    rightLowerEdge = LineEdge(pts[1], pts[3], NyLower, BOUNDARYLAYER0,
+                              yFirstLayerHeight, yLayerGrowth, NyLower - 1,
+                              0.0, 0.0, 0);
+    rightCoreEdge = LineEdge(pts[3], pts[5], NyCore, UNIFORM, 0.0, 0.0);
+    rightUpperEdge = LineEdge(pts[5], pts[7], NyUpper, BOUNDARYLAYER1,
+                              0.0, 0.0, 0, yFirstLayerHeight,
+                              yLayerGrowth, NyUpper - 1);
+
+    leftEdge.addEdge(leftLowerEdge,
+                     reinterpret_cast<void *>(edgeLeftLower));
+    leftEdge.addEdge(leftCoreEdge,
+                     reinterpret_cast<void *>(edgeLeftCore));
+    leftEdge.addEdge(leftUpperEdge,
+                     reinterpret_cast<void *>(edgeLeftUpper));
+
+    rightEdge.addEdge(rightLowerEdge,
+                      reinterpret_cast<void *>(edgeRightLower));
+    rightEdge.addEdge(rightCoreEdge,
+                      reinterpret_cast<void *>(edgeRightCore));
+    rightEdge.addEdge(rightUpperEdge,
+                      reinterpret_cast<void *>(edgeRightUpper));
+
     return 0;
 }
 

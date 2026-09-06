@@ -1,5 +1,5 @@
-C0, airfoil wall
-C1, inlet
-C2, outlet
-C3, upper surface
-C4, lower surface
+C0, inlet (x = xMin)
+C1, outlet (x = xMax)
+C2, lower Hartmann wall (y = yMin)
+C3, upper Hartmann wall (y = yMax)
+C4, two-dimensional domain

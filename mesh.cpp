@@ -1,39 +1,44 @@
-#include<iostream>
-#include<vector>
-#include<cmath>
-#include<cstring>
-#include"CAD2D/CompositEdge.h"
-#include"CAD2D/MeshRegions.h"
-#include"CAD2D/RectRegion.h"
-#include"CAD2D/LineEdge.h"
-#include"CAD2D/airfoil.h"
-#include"CAD2D/util.h"
-using namespace std;
+#include <iostream>
+#include <vector>
 
-#include"edgefunctions.h"
-int main(int argc, char* argv[])
-{
-    InitPts();
-    std::vector<void*> edges0;
-    edges0.push_back((void*)edge03);
-    edges0.push_back((void*)edge39);
-    edges0.push_back((void*)edge69);
-    edges0.push_back((void*)edge06);
-    RectRegion reg1(edges0, "reg1");
-    reg1.MeshGen(Cedge03.m_N, Cedge06.m_N);
+#include "CAD2D/MeshRegions.h"
+#include "CAD2D/RectRegion.h"
 
-    MeshRegions combinedReg("domain", 1E-6);
-    combinedReg.AddRegion(reg1);
+#include "edgefunctions.h"
 
-    vector<int> comp2;
-    comp2.push_back(0);
-    //inlet
-    combinedReg.defineBoundary((void*)edge03,  Cedge03.m_N, 1);
-    combinedReg.defineBoundary((void*)edge69 , Cedge69.m_N, 2);
-    combinedReg.defineBoundary((void*)edge06,  Cedge06.m_N, 3);
-    combinedReg.defineBoundary((void*)edge39,  Cedge39.m_N, 4);
-    //output
-    combinedReg.outXml("square.xml");
-    combinedReg.outCOMPO("square.xml", comp2);
+int main() {
+    if (!validateParameters()) {
+        return 1;
+    }
+    initialiseEdges();
+
+    std::vector<void *> edges;
+    edges.push_back(reinterpret_cast<void *>(edgeBottom));
+    edges.push_back(reinterpret_cast<void *>(edgeRight));
+    edges.push_back(reinterpret_cast<void *>(edgeTop));
+    edges.push_back(reinterpret_cast<void *>(edgeLeft));
+
+    RectRegion channel(edges, "HartmannChannel", true, meshTolerance);
+    channel.MeshGen(Nx, leftEdge.m_N, eIsoparametric);
+
+    MeshRegions mesh("HartmannChannel", meshTolerance);
+    mesh.AddRegion(channel);
+    mesh.ResetBndPts();
+    mesh.rebuildEdgesIndex();
+
+    // XML composites: C0 inlet, C1 outlet, C2 lower wall, C3 upper wall.
+    mesh.defineBoundary(reinterpret_cast<void *>(edgeLeft), leftEdge.m_N, 0);
+    mesh.defineBoundary(reinterpret_cast<void *>(edgeRight), rightEdge.m_N, 1);
+    mesh.defineBoundary(reinterpret_cast<void *>(edgeBottom), Nx, 2);
+    mesh.defineBoundary(reinterpret_cast<void *>(edgeTop), Nx, 3);
+
+    mesh.CheckMesh();
+    mesh.outXml("hartmann.xml");
+    mesh.outCOMPO("hartmann.xml", std::vector<int>(1, 0));
+
+    std::cout << "Generated hartmann.xml: " << Nx << " x "
+              << leftEdge.m_N << " quadrilateral elements\n"
+              << "  y partitions: " << NyLower << " + " << NyCore
+              << " + " << NyUpper << '\n';
     return 0;
 }

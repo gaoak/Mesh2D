@@ -1,2 +1,22 @@
-this branch generates mesh for square domain without a body
-20200710 generate 2D base mesh for 3D extruded and glued mesh.
+# Hartmann channel mesh
+
+This program generates a structured quadrilateral mesh for the classical
+Hartmann channel problem.
+
+- x is uniform and defaults to `[0, 1]`.
+- y defaults to `[-1, 1]` and is split into a lower wall layer, a uniform
+  core, and an upper wall layer.
+- XML boundary composites are: C0 inlet, C1 outlet, C2 lower wall, and C3
+  upper wall. C4 is the two-dimensional domain.
+
+Edit `params.h` to set the geometry and mesh controls. `Nx` must be at least
+one; no artificial upper limit is imposed.
+
+Build and generate the mesh with:
+
+```bash
+./make.sh
+```
+
+The Nektar++ mesh is written to `hartmann.xml`. If `FieldConvert` is available,
+`hartmann.plt` is also generated.
