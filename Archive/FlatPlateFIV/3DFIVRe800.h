@@ -79,7 +79,7 @@ void DefineBLParams(std::map<std::string, double> &p,
 
   LEradius = 0.5 * Thickness + upperBL5;
   int nUp5 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2))) + 2;
   q["nUp5"] = nUp5;
 
   LEradius = 0.5 * Thickness + lowerBL0;
@@ -98,7 +98,7 @@ void DefineBLParams(std::map<std::string, double> &p,
 
   LEradius = 0.5 * Thickness + lowerBL5;
   int nLow5 =
-      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2)));
+      std::min(30, std::max(int(0.5 * LEradius * M_PI / maxLayerh + 0.5), std::max(int(0.25 * Thickness * M_PI / hFirstLayer / curvedBLStr + 0.5), 2))) + 2;
   q["nLow5"] = nLow5;
 
   int curvedpts = 6;
