@@ -13,7 +13,7 @@ void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 15 / 180. * M_PI;
   p["AoA"] = AoA;
-  double Thickness = 0.05;
+  double Thickness = 1./30;
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
   // outside
