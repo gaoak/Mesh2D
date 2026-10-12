@@ -1,2 +1,8 @@
 this branch generates mesh for square domain without a body
 20200710 generate 2D base mesh for 3D extruded and glued mesh.
+
+圆管内网格：bash makein.sh；所有网格参数均在 params.h 中设置。
+边界层厚度上限由 wallBLThickness0 给定；首层为 hFirstLayer，后续按 progress 增长并受 maxLayerh 限制。
+仅保留完整层，不压缩末层；无法容纳下一层时舍弃该层，实际总厚度可小于 wallBLThickness0。
+参数包括 wallBLThickness0、coreMeshSize、hFirstLayer、progress、maxLayerh、curvedpts。
+输出 build/inFoil.xml，圆周物理边界为 C[0]，圆周各边使用 curvedpts 个曲边点。

@@ -4,144 +4,119 @@
 #include "CAD2D/MeshRegions.h"
 #include "CAD2D/MeshTool.h"
 #include "CAD2D/RectRegion.h"
-#include "CAD2D/airfoil.h"
 #include "CAD2D/util.h"
 #include <cmath>
-#include <cstring>
+#include <fstream>
 #include <iostream>
 #include <vector>
 using namespace std;
 
 #include "edgefunctions.h"
-int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
-                  std::map<std::string, double> &p);
-int outputXML(MeshRegions &combinedReg);
+
+// The ellipse wall is clockwise. Negative growth points into the pipe.
+static vector<double> inwardRadiusEdge(double s) {
+  vector<double> point = radiusEdge(s);
+  point[0] = -point[0];
+  return point;
+}
+
+int meshingInFoil(MeshRegions &region) {
+  map<string, double> p;
+  map<string, int> q;
+  DefineBLParams(p, q);
+  if (!isfinite(wallBLThickness0) || wallBLThickness0 < p["hFirstLayer"] ||
+      wallBLThickness0 >= 0.5 * min(p["ChordLen"], p["Thickness"]) ||
+      p["hFirstLayer"] <= 0. || p["progress"] < 1. ||
+      p["maxLayerh"] < p["hFirstLayer"] || coreMeshSize <= p["maxLayerh"] ||
+      q["curvedpts"] < 3) {
+    cerr << "Error: require first-layer <= BL thickness < pipe radius, growth >= 1, "
+            "maxLayerh >= first-layer, coreMeshSize > maxLayerh and curvedpts >= 3\n";
+    return -1;
+  }
+  int layers = findNlayers(p["hFirstLayer"], p["progress"], wallBLThickness0, p["maxLayerh"]);
+  setRadiusMesh(p["hFirstLayer"], p["progress"], p["maxLayerh"]);
+  setRadiusLayers(layers);
+  // Keep complete layers with the prescribed growth; never squeeze the last
+  // layer to fill the remaining thickness. Allow roundoff at an exact fit.
+  if (radiusEdge(1.)[0] > wallBLThickness0 * (1. + 1.e-12))
+    setRadiusLayers(--layers);
+  double actualThickness = radiusEdge(1.)[0];
+  const char *names[] = {"LE", "Up", "TE", "Low"};
+  const char *counts[] = {"nLE", "nUp", "nTE", "nLow"};
+  for (int i = 0; i < 4; ++i) {
+    vector<void *> edges = {BLedges[i], (void *)inwardRadiusEdge, nullptr, nullptr};
+    RectRegion block(edges, names[i], false);
+    block.MeshGen(q[counts[i]], layers, eBoundaryLayer1);
+    block.Tec360Pts(string(names[i]) + ".dat");
+    region.AddRegion(block);
+  }
+  region.FixMesh();
+  region.ResetBndPts();
+  region.rebuildEdgesIndex();
+  map<int, int> wallmapping;
+  vector<int> wallPts;
+  region.omeshBoundaryMapping(wallmapping, wallPts, "wallmapping.dat",
+                              BLedge0(0.), p["hFirstLayer"] * 0.5);
+  cout << "Boundary layer target thickness: " << wallBLThickness0
+       << ", actual thickness: " << actualThickness << ", layers: " << layers
+       << ", core target size: " << coreMeshSize << endl;
+  return 0;
+}
+
 int main(int argc, char *argv[]) {
   bool merge = false;
-  std::vector<string> mshfilename;
-  for (int i = 1; i < argc;) {
-    if (strcmp(argv[i], "merge") == 0) {
+  string mshfilename;
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    if (arg == "merge" && i + 1 < argc && !merge) {
       merge = true;
-      for (++i; i < argc; ++i) {
-        std::string tmpname(argv[i]);
-        int len = tmpname.length();
-        if (len >= 4 && tmpname.substr(len - 4, 4) == ".msh") {
-          mshfilename.push_back(argv[i]);
-        } else {
-          break;
-        }
-      }
+      mshfilename = argv[++i];
+    } else {
+      cerr << "Usage: meshIn [merge core.msh]\n";
+      return 1;
     }
   }
-  /// initialise
   InitPts();
-  cout << "start meshing --------" << endl;
-  MeshRegions inFoilRegion("RComb_", 1.E-6);
-  MeshRegions outFoilRegion("RComb_", 1.E-6);
-  std::map<std::string, double> dparams;
-  meshingInFoil(inFoilRegion, outFoilRegion, dparams);
+  MeshRegions inFoilRegion("RComb_", 1.E-8);
+  if (meshingInFoil(inFoilRegion) != 0) return 1;
   if (!merge) {
-    std::vector<int> OutLevels = {1};
-    outputGeo(outFoilRegion, OutLevels);
-    cout << "output CAD file" << endl;
-    cout << "=======================================" << endl;
+    outputGeo(inFoilRegion, {1});
+    int n = inFoilRegion.m_bndPts.size() / 2;
+    ofstream geo("FarField0.geo", ios::app);
+    geo.precision(17);
+    geo << "Transfinite Line {" << n + 1 << ":" << 2 * n << "} = 2;\n"
+        << "Mesh.CharacteristicLengthMin = " << coreMeshSize << ";\n"
+        << "Mesh.CharacteristicLengthMax = " << coreMeshSize << ";\n"
+        << "Mesh.CharacteristicLengthFromPoints = 0;\n"
+        << "Mesh.CharacteristicLengthExtendFromBoundary = 0;\n"
+        << "Mesh.RecombinationAlgorithm = 0;\n";
   } else {
-    // load gmsh1
-    for (auto file : mshfilename) {
-      MeshRegions gmshReg("R_gmsh_", 1.E-8);
-      gmshReg.loadFromMsh(file, 115. / 180. * 3.14159);
-      cout << "load " << file << endl;
-      if (!outFoilRegion.consistancyCheck(gmshReg)) {
-        cout << "Error: node mismatch, exit" << endl;
-        return -1;
-      }
-      if (!gmshReg.consistancyCheck(outFoilRegion)) {
-        cout << "Error: node mismatch, exit" << endl;
-        return -1;
-      }
-      inFoilRegion.AddRegion(gmshReg);
+    MeshRegions gmshReg("R_gmsh_", 1.E-8);
+    if (gmshReg.loadFromMsh(mshfilename, 115. / 180. * M_PI) != 0 || gmshReg.m_cells.empty()) {
+      cerr << "Error: could not load core mesh " << mshfilename << endl;
+      return 1;
     }
-    inFoilRegion.transformation(dparams["AoA"], 0., 0.);
-    outputXML(inFoilRegion);
+    // The smaller loop is the core interface; check every node before merging.
+    auto loops = inFoilRegion.extractBoundaryPoints();
+    if (loops.size() != 2) return 1;
+    auto loopRadius = [&](int i) {
+      const auto &pt = inFoilRegion.m_pts[loops[i][0]];
+      return hypot(pt[0] - BLModel->p["Tx0"], pt[1] - BLModel->p["Ty0"]);
+    };
+    vector<vector<double>> interfacePts;
+    for (int id : loops[loopRadius(0) < loopRadius(1) ? 0 : 1])
+      interfacePts.push_back(inFoilRegion.m_pts[id]);
+    if (!gmshReg.consistancyCheck(interfacePts)) {
+      cerr << "Error: core interface mismatch; use the same BL thickness in both stages\n";
+      return 1;
+    }
+    inFoilRegion.AddRegion(gmshReg);
+    inFoilRegion.ResetBndPts();
+    inFoilRegion.rebuildEdgesIndex();
+    BLModel->DefineBCs(inFoilRegion, 0, BLedges);
+    inFoilRegion.CheckMesh();
+    inFoilRegion.outXml("inFoil.xml");
+    inFoilRegion.outCOMPO("inFoil.xml", {0});
   }
-  return 0;
-}
-
-int meshingInFoil(MeshRegions &inFoilRegion, MeshRegions &outFoilRegion,
-                  std::map<std::string, double> &p) {
-  // generate outer boundary layer mesh
-  std::map<std::string, int> q;
-  DefineBLParams(p, q);
-  BLModel->MeshGen(outFoilRegion, BLedges);
-  // output wall mapping from wall to one layer offset
-  std::map<int, int> wallmapping;
-  std::vector<int> wallPts;
-  vector<double> center = BLedge0(0.);
-  outFoilRegion.omeshBoundaryMapping(wallmapping, wallPts, "wallmapping.dat",
-                                     center, 0.02);
-  //
-  outFoilRegion.transformation(-p["AoA"], 0., 0.);
-  double TEx = 1. - 0.5 * p["TEThickness"];
-  std::set<int> TEpts;
-  int npts = wallPts.size();
-  for (int i = 0; i < npts; ++i) {
-    int pid0 = wallPts[i], pid1 = wallPts[(1 + i) % npts];
-    vector<double> pA = outFoilRegion.m_pts[pid0];
-    vector<double> pA1 = outFoilRegion.m_pts[wallmapping[pid0]];
-    vector<double> pB = outFoilRegion.m_pts[pid1];
-    vector<double> pB1 = outFoilRegion.m_pts[wallmapping[pid1]];
-    vector<double> pD(2, 0.), pC(2, 0.);
-    for (int d = 0; d < 2; ++d) {
-      pC[d] = 2. * pB[d] - pB1[d];
-      pD[d] = 2. * pA[d] - pA1[d];
-    }
-    if (pA[0] >= TEx) {
-      TEpts.insert(i);
-    }
-    if (pA[1] * pD[1] < 0. || pB[1] * pC[1] < 0.)
-      continue;
-    else if (pA[1] * pB[1] >= 0.) {
-      double d = p["hFirstLayer"] *
-                 fabs((pA[1] + pB[1]) / (pA1[1] - pA[1] + pB1[1] - pB[1]));
-      if (d < 2. * p["hFirstLayer"])
-        continue;
-    }
-    std::vector<std::vector<double>> pts;
-    pts.push_back(pA);
-    pts.push_back(pB);
-    pts.push_back(pC);
-    pts.push_back(pD);
-    outFoilRegion.AddElement(pts);
-    inFoilRegion.AddElement(pts);
-  }
-  if (p["TEThickness"] * 0.25 < p["hFirstLayer"] && TEpts.size() > 1) {
-    int i0 = *TEpts.begin(), np = TEpts.size() - 1;
-    vector<double> pC(2, 0.);
-    pC[0] = p["ChordLen"] - 0.5 * p["TEThickness"];
-    for (int i = 0; i < np; ++i) {
-      int pid0 = wallPts[i + i0], pid1 = wallPts[1 + i + i0];
-      vector<double> pA = outFoilRegion.m_pts[pid0];
-      vector<double> pB = outFoilRegion.m_pts[pid1];
-      std::vector<std::vector<double>> pts;
-      pts.push_back(pA);
-      pts.push_back(pB);
-      pts.push_back(pC);
-      outFoilRegion.AddElement(pts);
-      inFoilRegion.AddElement(pts);
-    }
-  }
-  outFoilRegion.FixMesh();
-  inFoilRegion.FixMesh();
-  outFoilRegion.ResetBndPts();
-  inFoilRegion.ResetBndPts();
-  return 0;
-}
-
-int outputXML(MeshRegions &combinedReg) {
-  // output outer region
-  vector<int> comp3;
-  comp3.push_back(0);
-  combinedReg.outXml("inFoil.xml");
-  combinedReg.outCOMPO("inFoil.xml", comp3);
   return 0;
 }

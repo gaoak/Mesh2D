@@ -1,17 +1,20 @@
 #!/bin/bash
-if test -d build; then
-  echo "running"
-  cd build
-else
-  echo "running"
-  mkdir build
-  cd build
-  cmake ..
+set -e
+# Usage: bash makein.sh; all mesh settings are in params.h.
+if [ "$#" -ne 0 ]; then
+  echo "Usage: bash makein.sh (set mesh parameters in params.h)" >&2
+  exit 1
 fi
-make
+cd "$(dirname "$0")"
+mkdir -p build
+cd build
+cmake ..
+make meshIn
 ./meshIn
-echo "gmsh FarField0.geo"
-echo "Mesh.RecombinationAlgorithm = 0;" >> FarField0.geo
-gmsh FarField0.geo  -2 -algo meshadapt  -clscale 10  > logmesh.dat
+gmsh FarField0.geo -2 -algo meshadapt -format msh2 -o FarField0.msh > logmesh.dat 2>&1
 ./meshIn merge FarField0.msh
-FieldConvert inFoil.xml inFoil.plt -f
+if command -v FieldConvert >/dev/null; then
+  FieldConvert inFoil.xml inFoil.plt -f
+else
+  echo "Generated build/inFoil.xml; FieldConvert is not on PATH, skipped PLT export."
+fi
