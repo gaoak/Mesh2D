@@ -27,7 +27,7 @@ int meshingInFoil(MeshRegions &region) {
   if (!isfinite(wallBLThickness0) || wallBLThickness0 < p["hFirstLayer"] ||
       wallBLThickness0 >= 0.5 * min(p["ChordLen"], p["Thickness"]) ||
       p["hFirstLayer"] <= 0. || p["progress"] < 1. ||
-      p["maxLayerh"] < p["hFirstLayer"] || coreMeshSize <= p["maxLayerh"] ||
+      p["maxLayerh"] < p["hFirstLayer"] || coreMeshSize < p["maxLayerh"] ||
       q["curvedpts"] < 3) {
     cerr << "Error: require first-layer <= BL thickness < pipe radius, growth >= 1, "
             "maxLayerh >= first-layer, coreMeshSize > maxLayerh and curvedpts >= 3\n";

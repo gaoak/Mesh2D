@@ -11,7 +11,7 @@ BLMeshModuleShPtr BLModel;
 double ChordLen = 1.0;
 // Pipe interior: BL thickness limit (complete layers only) and core target size.
 double wallBLThickness0 = 0.1;
-double coreMeshSize = 0.05;
+double coreMeshSize = 0.1;
 void DefineBLParams(std::map<std::string, double> &p,
                     std::map<std::string, int> &q) {
   double AoA = 0. / 180. * M_PI;
@@ -22,11 +22,11 @@ void DefineBLParams(std::map<std::string, double> &p,
   double Tx0 = 0.;
   p["Tx0"] = Tx0;
   // Boundary layer: first height and growth are preserved; total thickness may be smaller.
-  double hFirstLayer = 0.001;
+  double hFirstLayer = 0.005;
   p["hFirstLayer"] = hFirstLayer;
   double progress = 1.6;
   p["progress"] = progress;
-  double maxLayerh = 0.02;
+  double maxLayerh = 0.1;
   p["maxLayerh"] = maxLayerh;
   p["wallBLThickness0"] = wallBLThickness0;
 
