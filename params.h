@@ -17,7 +17,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   p["Thickness"] = Thickness;
   p["ChordLen"] = ChordLen;
   // outside
-  double hFirstLayer = 0.01;
+  double hFirstLayer = 0.012;
   p["hFirstLayer"] = hFirstLayer;
   double progress = 1.2;
   p["progress"] = progress;
