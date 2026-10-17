@@ -126,10 +126,10 @@ double farWakeLength = 5.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
 int nFarWakex = farWakeLength / maxLayerhWake / 1.6 + 0.5;
 
-double xBoxLeft = -40.;
-double xBoxRight = 60.;
-double yBoxUp = 40.;
-double yBoxDown = -40.;
+double xBoxLeft = -20.;
+double xBoxRight = 30.;
+double yBoxUp = 20.;
+double yBoxDown = -20.;
 int nBoxLeft = 10;
 int nBoxRight = 10;
 int nBoxUp = 10;
