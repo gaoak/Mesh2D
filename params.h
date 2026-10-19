@@ -107,7 +107,7 @@ void DefineBLParams(std::map<std::string, double> &p,
   BLModel->Initialise();
 }
 
-double nearmaxLayerh = 0.06;
+double nearmaxLayerh = 0.075;
 double nearBoxLeft = -0.3;
 double nearBoxRight = ChordLen + 0.2;
 double nearBoxDown = -0.8;
@@ -116,12 +116,12 @@ double nearAoA = 0.;
 double neargap = nearmaxLayerh;
 
 double maxLayerhWake = 0.1;
-double farWakeAoA = 0. / 180. * M_PI;
-double wakeDiffuseAngle = 32. / 180. * M_PI;
+double farWakeAoA = 4. / 180. * M_PI;
+double wakeDiffuseAngle = 36. / 180. * M_PI;
 double wakedist = 0.4;
 double farWakeCx = nearBoxRight + wakedist * cos(farWakeAoA);
 double farWakeCy = -0.2 + wakedist * sin(farWakeAoA);
-double farWakeHeight = 3.;
+double farWakeHeight = 3.6;
 double farWakeLength = 5.;
 int nFarWakey = farWakeHeight / maxLayerhWake + 0.5;
 int nFarWakex = farWakeLength / maxLayerhWake / 1.6 + 0.5;
