@@ -1,148 +1,47 @@
 #ifndef EDGEFUNCTIONS_H
 #define EDGEFUNCTIONS_H
-#define NUMPTS 20
-double hcenterx = 0.05;
-double hgrowthx = 1.5;
-double hfarx = 0.1;
 
-double hcentery = 0.02;
-double hgrowthy = 1.5;
-double hfary = 0.1;
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <vector>
 
-double p0x = -1.;
-double p1x = -0.8;
-double p2x = 0.8;
-double p3x = 1.;
+// Explicit element boundaries for the Ha=1000 square duct.
+// Change these arrays directly to change the mesh; no growth-rate fitting is used.
+const std::array<double, 8> x_nodes = {{
+    -1.0, -0.98, -0.94, -0.85, 0.85, 0.94, 0.98, 1.0
+}};
+const std::array<double, 8> y_nodes = {{
+    -1.0, -0.9985, -0.996, -0.99, 0.99, 0.996, 0.9985, 1.0
+}};
+const int Nx = static_cast<int>(x_nodes.size()) - 1;
+const int Ny = static_cast<int>(y_nodes.size()) - 1;
 
-double p0y = -1.;
-double p1y = -0.9;
-double p2y = 0.9;
-double p3y = 1.;
-
-int N0x = findNlayers(hcenterx, hgrowthx, p1x-p0x, hfarx);
-int N1x = std::ceil((p2x - p1x) / hfarx);
-int N2x = findNlayers(hcenterx, hgrowthx, p3x-p2x, hfarx);
-
-double pts[NUMPTS][2];
-
-int N0y = findNlayers(hcentery, hgrowthy, p1y-p0y, hfary);
-int N1y = std::ceil((p2y-p1y)/hfary);
-int N2y = findNlayers(hcentery, hgrowthy, p3y-p2y, hfary);
-
-CompositEdge Cedge03;
-CompositEdge Cedge69;
-CompositEdge Cedge06;
-CompositEdge Cedge39;
-
-LineEdge Cedge01(pts[0], pts[1], N0x, BOUNDARYLAYER0, hcenterx, hgrowthx, N0x-1, 0, 0, 0);
-LineEdge Cedge12(pts[1], pts[2], N1x, UNIFORM, 0., 0.);
-LineEdge Cedge23(pts[2], pts[3], N2x, BOUNDARYLAYER1, 0, 0, 0, hcenterx, hgrowthx, N2x-1);
-std::vector<double> edge01(double s) {
-    return Cedge01.Evaluate(s);
-}
-std::vector<double> edge12(double s) {
-    return Cedge12.Evaluate(s);
-}
-std::vector<double> edge23(double s) {
-    return Cedge23.Evaluate(s);
-}
-std::vector<double> edge03(double s) {
-    return Cedge03.Evaluate(s);
+// RectRegion samples s uniformly; map each parameter interval to one element.
+template <std::size_t N>
+double coordinateFromNodes(const std::array<double, N>& nodes, double s) {
+    static_assert(N >= 2, "At least two element-boundary coordinates are required");
+    const double index = 0.5 * (std::max(-1.0, std::min(1.0, s)) + 1.0) * (N - 1);
+    const std::size_t lower = static_cast<std::size_t>(std::floor(index));
+    if (lower >= N - 1) {
+        return nodes.back();
+    }
+    const double weight = index - lower;
+    return (1.0 - weight) * nodes[lower] + weight * nodes[lower + 1];
 }
 
-LineEdge Cedge67(pts[6], pts[7], N0x, BOUNDARYLAYER0, hcenterx, hgrowthx, N0x-1, 0, 0, 0);
-LineEdge Cedge78(pts[7], pts[8], N1x, UNIFORM, 0., 0.);
-LineEdge Cedge89(pts[8], pts[9], N2x, BOUNDARYLAYER1, 0, 0, 0, hcenterx, hgrowthx, N2x-1);
-std::vector<double> edge67(double s) {
-    return Cedge67.Evaluate(s);
+// Keep the existing callback names and boundary directions.
+inline std::vector<double> edge03(double s) {
+    return {coordinateFromNodes(x_nodes, s), y_nodes.front()};  // Bottom.
 }
-std::vector<double> edge78(double s) {
-    return Cedge78.Evaluate(s);
+inline std::vector<double> edge69(double s) {
+    return {coordinateFromNodes(x_nodes, s), y_nodes.back()};   // Top.
 }
-std::vector<double> edge89(double s) {
-    return Cedge89.Evaluate(s);
+inline std::vector<double> edge06(double s) {
+    return {x_nodes.front(), coordinateFromNodes(y_nodes, s)};  // Left.
 }
-std::vector<double> edge69(double s) {
-    return Cedge69.Evaluate(s);
-}
-
-LineEdge Cedge010(pts[0], pts[10], N0y, BOUNDARYLAYER0, hcentery, hgrowthy, N0y-1, 0, 0, 0);
-LineEdge Cedge104(pts[10], pts[4], N1y, UNIFORM, 0, 0);
-LineEdge Cedge46(pts[4], pts[6], N2y, BOUNDARYLAYER1, 0, 0, 0, hcentery, hgrowthy, N2y-1);
-std::vector<double> edge010(double s) {
-    return Cedge010.Evaluate(s);
-}
-std::vector<double> edge104(double s) {
-    return Cedge104.Evaluate(s);
-}
-std::vector<double> edge46(double s) {
-    return Cedge46.Evaluate(s);
-}
-std::vector<double> edge06(double s) {
-    return Cedge06.Evaluate(s);
-}
-
-LineEdge Cedge311(pts[3], pts[11], N0y, BOUNDARYLAYER0, hcentery, hgrowthy, N0y-1, 0, 0, 0);
-LineEdge Cedge115(pts[11], pts[5], N1y, UNIFORM, 0, 0);
-LineEdge Cedge59(pts[5], pts[9], N2y, BOUNDARYLAYER1, 0, 0, 0, hcentery, hgrowthy, N2y-1);
-std::vector<double> edge311(double s) {
-    return Cedge311.Evaluate(s);
-}
-std::vector<double> edge115(double s) {
-    return Cedge115.Evaluate(s);
-}
-std::vector<double> edge59(double s) {
-    return Cedge59.Evaluate(s);
-}
-std::vector<double> edge39(double s) {
-    return Cedge39.Evaluate(s);
-}
-
-int InitPts(){
-    pts[0][0] = p0x;
-    pts[0][1] = p0y;
-    pts[1][0] = p1x;
-    pts[1][1] = p0y;
-    pts[2][0] = p2x;
-    pts[2][1] = p0y;
-    pts[3][0] = p3x;
-    pts[3][1] = p0y;
-
-    pts[10][0] = p0x;
-    pts[10][1] = p1y;
-    pts[11][0] = p3x;
-    pts[11][1] = p1y;
-
-    pts[4][0] = p0x;
-    pts[4][1] = p2y;
-    pts[5][0] = p3x;
-    pts[5][1] = p2y;
-
-    pts[6][0] = p0x;
-    pts[6][1] = p3y;
-    pts[7][0] = p1x;
-    pts[7][1] = p3y;
-    pts[8][0] = p2x;
-    pts[8][1] = p3y;
-    pts[9][0] = p3x;
-    pts[9][1] = p3y;
-
-    Cedge03.addEdge(Cedge01, (void*) edge01);
-    Cedge03.addEdge(Cedge12, (void*) edge12);
-    Cedge03.addEdge(Cedge23, (void*) edge23);
-
-    Cedge69.addEdge(Cedge67, (void*) edge67);
-    Cedge69.addEdge(Cedge78, (void*) edge78);
-    Cedge69.addEdge(Cedge89, (void*) edge89);
-
-    Cedge06.addEdge(Cedge010, (void*) edge010);
-    Cedge06.addEdge(Cedge104, (void*) edge104);
-    Cedge06.addEdge(Cedge46, (void*) edge46);
-
-    Cedge39.addEdge(Cedge311, (void*) edge311);
-    Cedge39.addEdge(Cedge115, (void*) edge115);
-    Cedge39.addEdge(Cedge59, (void*) edge59);
-    return 0;
+inline std::vector<double> edge39(double s) {
+    return {x_nodes.back(), coordinateFromNodes(y_nodes, s)};   // Right.
 }
 
 #endif
